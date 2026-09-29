@@ -22,6 +22,19 @@ const REQUIRED_SPRITES := [
 	"listeners_dial",
 	"desk_lamp",
 	"on_air_sign",
+	"phone_body",
+	"letter_sheet",
+	"official_sheet",
+	"notebook_page",
+	"bubble_them",
+	"wax_seal",
+	"stamp_ministry",
+	"avatar_celia",
+	"avatar_toledo",
+	"avatar_mendes",
+	"avatar_anonimo",
+	"avatar_valvula",
+	"avatar_ministerio",
 ]
 
 var _sprites: Array = []

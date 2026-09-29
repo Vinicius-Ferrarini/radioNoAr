@@ -1,0 +1,147 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scenes/parts/close_item.gd" id="1_close"]
+[ext_resource type="Texture2D" path="res://assets/sprites/phone_body.png" id="2_phone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/letter_sheet.png" id="3_letter"]
+[ext_resource type="Texture2D" path="res://assets/sprites/official_sheet.png" id="4_official"]
+[ext_resource type="Texture2D" path="res://assets/sprites/wax_seal.png" id="5_seal"]
+[ext_resource type="Texture2D" path="res://assets/sprites/stamp_ministry.png" id="6_stamp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/bubble_them.png" id="7_bubble"]
+[ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="8_row"]
+
+[node name="CloseItem" type="Control"]
+offset_right = 232.0
+offset_bottom = 112.0
+script = ExtResource("1_close")
+row_scene = ExtResource("8_row")
+phone_surface = ExtResource("2_phone")
+letter_surface = ExtResource("3_letter")
+official_surface = ExtResource("4_official")
+seal_texture = ExtResource("5_seal")
+stamp_texture = ExtResource("6_stamp")
+
+[node name="Surface" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_phone")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="AvatarRow" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 140.0
+offset_bottom = 23.0
+theme_override_constants/separation = 2
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 216.0
+offset_top = 5.0
+offset_right = 228.0
+offset_bottom = 17.0
+text = "x"
+
+[node name="SenderName" type="Label" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 25.0
+offset_right = 150.0
+offset_bottom = 35.0
+mouse_filter = 2
+text = "—"
+clip_text = true
+
+[node name="SenderHandle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 35.0
+offset_right = 150.0
+offset_bottom = 44.0
+mouse_filter = 2
+clip_text = true
+
+[node name="ReceivedAt" type="Label" parent="."]
+layout_mode = 0
+offset_left = 120.0
+offset_top = 25.0
+offset_right = 202.0
+offset_bottom = 35.0
+mouse_filter = 2
+horizontal_alignment = 2
+clip_text = true
+
+[node name="Mark" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 204.0
+offset_top = 24.0
+offset_right = 224.0
+offset_bottom = 44.0
+mouse_filter = 2
+texture = ExtResource("5_seal")
+stretch_mode = 3
+
+[node name="BubbleFrame" type="NinePatchRect" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 46.0
+offset_right = 224.0
+offset_bottom = 88.0
+mouse_filter = 2
+texture = ExtResource("7_bubble")
+patch_margin_left = 4
+patch_margin_top = 4
+patch_margin_right = 4
+patch_margin_bottom = 4
+
+[node name="BodyScroll" type="ScrollContainer" parent="BubbleFrame"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 3.0
+offset_right = -4.0
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_scroll_mode = 0
+
+[node name="Body" type="RichTextLabel" parent="BubbleFrame/BodyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+fit_content = true
+scroll_active = false
+
+[node name="ClaimsTitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 92.0
+offset_right = 52.0
+offset_bottom = 102.0
+mouse_filter = 2
+text = "CONFERIR"
+
+[node name="ClaimsList" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 92.0
+offset_right = 174.0
+offset_bottom = 106.0
+theme_override_constants/separation = 2
+
+[node name="SuspectButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 178.0
+offset_top = 92.0
+offset_right = 226.0
+offset_bottom = 106.0
+toggle_mode = true
+text = "SUSPEITO"

@@ -108,6 +108,15 @@ func item_by_id(item_id: String) -> BroadcastItem:
 	return null
 
 
+## Quem mandou o item. A cena pergunta aqui em vez de abrir data/ por
+## conta propria (ADR 0010).
+func sender_of(item_id: String) -> Sender:
+	var item := item_by_id(item_id)
+	if item == null:
+		return null
+	return ContentLibrary.sender(item.sender_id)
+
+
 func notebook_entries() -> Array[NotebookEntry]:
 	return _run.notebook().all_entries() if _run != null else [] as Array[NotebookEntry]
 

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Sender" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/sender.gd" id="1_sender"]
+
+[resource]
+script = ExtResource("1_sender")
+id = "irma_de_a_mendes"
+display_name = "A irmã de A. Mendes"
+avatar = "avatar_mendes"
+handle = "Rua do Porto, 212"
+relationship = 0
+voice = "Escreve com cuidado de quem reescreveu três vezes. Não acusa ninguém. Pede uma coisa só, e sabe o tamanho do que está pedindo."

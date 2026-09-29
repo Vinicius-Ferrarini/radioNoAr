@@ -59,6 +59,46 @@ func test_discard_framings_have_no_immediate_deltas() -> void:
 						"descarte de %s nao pode ter delta imediato" % item.id)
 
 
+func test_every_sender_cited_by_an_item_exists() -> void:
+	# sender_id deixou de ser string solta no M8B (ADR 0010): se um item
+	# cita alguem que nao existe em data/senders/, o close fica sem nome
+	# e sem cara, e o jogo nao avisa.
+	for path in NIGHT_PATHS:
+		var night: NightDefinition = load(path)
+		for item in night.inbox:
+			assert_false(item.sender_id.is_empty(), "item %s sem remetente" % item.id)
+			var sender := ContentLibrary.sender(item.sender_id)
+			assert_not_null(sender, "remetente inexistente: %s (item %s)" % [item.sender_id, item.id])
+
+
+func test_every_sender_has_a_name_an_avatar_and_a_voice() -> void:
+	var dir := DirAccess.open("res://data/senders/")
+	assert_not_null(dir, "a pasta de remetentes deveria existir")
+
+	var checked := 0
+	for file_name in dir.get_files():
+		if not file_name.ends_with(".tres"):
+			continue
+		var sender: Sender = load("res://data/senders/" + file_name)
+		assert_not_null(sender, "remetente deveria carregar: %s" % file_name)
+		assert_false(sender.display_name.is_empty(), "%s sem nome" % file_name)
+		assert_false(sender.voice.is_empty(),
+			"%s sem descricao de voz: quem escrever conteudo precisa saber como essa pessoa fala" % file_name)
+		assert_true(ResourceLoader.exists("res://assets/sprites/%s.png" % sender.avatar),
+			"avatar inexistente: %s (%s)" % [sender.avatar, file_name])
+		checked += 1
+
+	assert_gt(checked, 0, "deveria haver remetentes em disco")
+
+
+func test_every_item_says_when_it_arrived() -> void:
+	for path in NIGHT_PATHS:
+		var night: NightDefinition = load(path)
+		for item in night.inbox:
+			assert_false(item.received_at.is_empty(),
+				"item %s sem hora de chegada: o close mostra isso" % item.id)
+
+
 func test_order_rules_file_loads() -> void:
 	var rule_set: OrderRuleSet = load(ORDER_RULES)
 	assert_not_null(rule_set, "o arquivo de regras de ordem deveria carregar")

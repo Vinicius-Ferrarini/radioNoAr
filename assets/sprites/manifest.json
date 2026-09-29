@@ -2,6 +2,88 @@
 	"sprites": [
 		{
 			"height": 16,
+			"name": "avatar_anonimo",
+			"palette": [
+				"desk_dark",
+				"desk_mid",
+				"red_dim",
+				"shadow"
+			],
+			"path": "res://assets/sprites/avatar_anonimo.png",
+			"sha256": "1a820b8af73eca68f83dc3b1cc1eb37f762fb62a1775eb97f7700b014144917f",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "avatar_celia",
+			"palette": [
+				"amber_dim",
+				"amber_mid",
+				"night_deep",
+				"shadow",
+				"street_blue"
+			],
+			"path": "res://assets/sprites/avatar_celia.png",
+			"sha256": "3c8192c9005a31e156d9553dfdcc410909a69500d424ae512e9fdeb1ead58de5",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "avatar_mendes",
+			"palette": [
+				"amber_dim",
+				"desk_dark",
+				"paper_dark",
+				"paper_shade",
+				"shadow"
+			],
+			"path": "res://assets/sprites/avatar_mendes.png",
+			"sha256": "93d6f8dd76dfd06ce2ead915f8241b57dda4a4c7e83ef170b5fe68891e6c99d9",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "avatar_ministerio",
+			"palette": [
+				"paper_shade",
+				"red_dim",
+				"red_hi"
+			],
+			"path": "res://assets/sprites/avatar_ministerio.png",
+			"sha256": "19d05d7ce725f2367a959e0268e7fbf78a5d5571301215b339ccfab980b3c12a",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "avatar_toledo",
+			"palette": [
+				"amber_dim",
+				"desk_dark",
+				"night_deep",
+				"shadow",
+				"street_blue"
+			],
+			"path": "res://assets/sprites/avatar_toledo.png",
+			"sha256": "c2314837367c53c54d34d55092a091c743a07c590b77ea0a4f323d0e223ec642",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "avatar_valvula",
+			"palette": [
+				"amber_dim",
+				"amber_hi",
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"night_deep"
+			],
+			"path": "res://assets/sprites/avatar_valvula.png",
+			"sha256": "d9ab8088939763a7e95bc87920344bcb021231a913fa73f391e73bb158c7e747",
+			"width": 16
+		},
+		{
+			"height": 16,
 			"name": "block_slot",
 			"nine_patch": 5,
 			"palette": [
@@ -24,6 +106,31 @@
 			"path": "res://assets/sprites/block_slot_quota.png",
 			"sha256": "222ff2a51871ca81c8450864cd3c6426a32b1b684454113b0a8a1e9270822038",
 			"width": 16
+		},
+		{
+			"height": 12,
+			"name": "bubble_them",
+			"nine_patch": 4,
+			"palette": [
+				"night_blue",
+				"street_blue",
+				"street_hi"
+			],
+			"path": "res://assets/sprites/bubble_them.png",
+			"sha256": "a5c2eb1f57d97224c34d56ffd16951297c707899809adf652ac603cc64de9c49",
+			"width": 12
+		},
+		{
+			"height": 12,
+			"name": "close_button",
+			"palette": [
+				"desk_dark",
+				"desk_hi",
+				"paper_shade"
+			],
+			"path": "res://assets/sprites/close_button.png",
+			"sha256": "e812df7a45eca21e5b7ab09b73b34c794bf17b42b24b5b964b3b011a1c763c09",
+			"width": 12
 		},
 		{
 			"height": 26,
@@ -53,6 +160,19 @@
 			"path": "res://assets/sprites/desk_surface.png",
 			"sha256": "8bddb569bcc6af91d2c7f83be5960ce61158cbb1a4c3a73887f7f629a7afec4f",
 			"width": 24
+		},
+		{
+			"height": 32,
+			"name": "letter_sheet",
+			"nine_patch": 10,
+			"palette": [
+				"paper",
+				"paper_dark",
+				"paper_shade"
+			],
+			"path": "res://assets/sprites/letter_sheet.png",
+			"sha256": "34bcbf52a70f9c990175664eb10de0f9a9c0a15325ee484ced7f757be8ffa222",
+			"width": 32
 		},
 		{
 			"height": 26,
@@ -114,6 +234,35 @@
 			"width": 34
 		},
 		{
+			"height": 32,
+			"name": "notebook_page",
+			"nine_patch": 12,
+			"palette": [
+				"desk_hi",
+				"paper",
+				"paper_dark",
+				"paper_shade",
+				"red_dim"
+			],
+			"path": "res://assets/sprites/notebook_page.png",
+			"sha256": "92b69978e3bbe0a14a2ccf3fb04126feb8c7fe1196976e39bfbdaacff5c6f6df",
+			"width": 32
+		},
+		{
+			"height": 32,
+			"name": "official_sheet",
+			"nine_patch": 12,
+			"palette": [
+				"desk_dark",
+				"paper_dark",
+				"paper_shade",
+				"shadow"
+			],
+			"path": "res://assets/sprites/official_sheet.png",
+			"sha256": "4cb1f8a1768e00c1ad61e2d1c67384f2f65c90159fdbe1ae00455ff790b562aa",
+			"width": 32
+		},
+		{
 			"height": 14,
 			"name": "on_air_sign",
 			"palette": [
@@ -141,6 +290,33 @@
 			"width": 26
 		},
 		{
+			"height": 32,
+			"name": "phone_body",
+			"nine_patch": 12,
+			"palette": [
+				"desk_dark",
+				"desk_hi",
+				"ink",
+				"night_blue",
+				"shadow"
+			],
+			"path": "res://assets/sprites/phone_body.png",
+			"sha256": "4e26acb8dcca5babcf88cfdaf910b4928a9ae19683404bcd88b55855d56c38e9",
+			"width": 32
+		},
+		{
+			"height": 20,
+			"name": "stamp_ministry",
+			"palette": [
+				"night_deep",
+				"red_dim",
+				"red_hi"
+			],
+			"path": "res://assets/sprites/stamp_ministry.png",
+			"sha256": "92d5ea053e46b6536ad98ad143c2bb61efb3f968026dbf5a9e65fba12fd95a85",
+			"width": 20
+		},
+		{
 			"height": 24,
 			"name": "teleprompter_frame",
 			"nine_patch": 8,
@@ -154,6 +330,19 @@
 			"path": "res://assets/sprites/teleprompter_frame.png",
 			"sha256": "f41f239511920d170be87d7236bfbed3611623e801751446b835f86521e39453",
 			"width": 24
+		},
+		{
+			"height": 20,
+			"name": "wax_seal",
+			"palette": [
+				"paper_shade",
+				"red_dim",
+				"red_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/wax_seal.png",
+			"sha256": "65cf0aa4d4224bcfe1151c2718285e4785fd69c869d2841f3d4b8d49e34185c9",
+			"width": 20
 		},
 		{
 			"height": 56,

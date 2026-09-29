@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Sender" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/sender.gd" id="1_sender"]
+
+[resource]
+script = ExtResource("1_sender")
+id = "dona_celia"
+display_name = "Dona Célia"
+avatar = "avatar_celia"
+handle = "(fixo) 2-4417"
+relationship = 1
+voice = "Escreve como quem fala: frases longas, sem vírgula onde devia, e sempre começa se identificando. Nunca pede nada para si. Mora na Bandeira há quarenta anos e conhece cada fila do bairro."

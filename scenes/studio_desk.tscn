@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Theme" path="res://theme/theme.tres" id="1_theme"]
 [ext_resource type="Script" path="res://scenes/studio_desk.gd" id="1b_script"]
@@ -14,7 +14,9 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/notebook.png" id="11_notebook"]
 [ext_resource type="Texture2D" path="res://assets/sprites/block_slot_quota.png" id="13_slot_quota"]
 [ext_resource type="PackedScene" path="res://scenes/parts/program_block.tscn" id="14_block"]
-[ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="15_row"]
+[ext_resource type="PackedScene" path="res://scenes/parts/close_item.tscn" id="15_close_item"]
+[ext_resource type="PackedScene" path="res://scenes/parts/close_notebook.tscn" id="16_close_nb"]
+[ext_resource type="PackedScene" path="res://scenes/parts/framing_strip.tscn" id="17_strip"]
 
 [node name="StudioDesk" type="Control"]
 layout_mode = 3
@@ -25,7 +27,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_theme")
 script = ExtResource("1b_script")
-row_scene = ExtResource("15_row")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -69,9 +70,9 @@ texture = ExtResource("3_window")
 
 [node name="OnAirSign" type="TextureRect" parent="Studio"]
 layout_mode = 0
-offset_left = 110.0
+offset_left = 112.0
 offset_top = 16.0
-offset_right = 150.0
+offset_right = 152.0
 offset_bottom = 30.0
 mouse_filter = 2
 texture = ExtResource("4_onair")
@@ -91,9 +92,9 @@ vertical_alignment = 1
 [node name="DeskLamp" type="TextureRect" parent="Studio"]
 layout_mode = 0
 offset_left = 216.0
-offset_top = 16.0
+offset_top = 14.0
 offset_right = 236.0
-offset_bottom = 42.0
+offset_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource("5_lamp")
 
@@ -108,10 +109,10 @@ texture = ExtResource("6_dial")
 
 [node name="Teleprompter" type="NinePatchRect" parent="Studio"]
 layout_mode = 0
-offset_left = 110.0
-offset_top = 40.0
+offset_left = 112.0
+offset_top = 36.0
 offset_right = 240.0
-offset_bottom = 100.0
+offset_bottom = 96.0
 mouse_filter = 2
 texture = ExtResource("8_prompter")
 patch_margin_left = 8
@@ -132,10 +133,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 bbcode_enabled = true
-text = "O microfone ainda está desligado.
-
-O programa começa quando os quatro
-blocos estiverem escalados."
 scroll_active = false
 
 [node name="Microphone" type="TextureRect" parent="Studio"]
@@ -147,29 +144,50 @@ offset_bottom = 124.0
 mouse_filter = 2
 texture = ExtResource("7_mic")
 
-[node name="Phone" type="TextureRect" parent="."]
+[node name="Phone" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 6.0
-offset_top = 132.0
+offset_top = 130.0
 offset_right = 32.0
-offset_bottom = 176.0
-texture = ExtResource("9_phone")
+offset_bottom = 174.0
+tooltip_text = "Celular"
+texture_normal = ExtResource("9_phone")
 
-[node name="LetterStack" type="TextureRect" parent="."]
+[node name="PhoneBadge" type="Label" parent="Phone"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = -2.0
+offset_right = 30.0
+offset_bottom = 8.0
+mouse_filter = 2
+horizontal_alignment = 1
+
+[node name="LetterStack" type="TextureButton" parent="."]
 layout_mode = 0
 offset_left = 214.0
-offset_top = 140.0
+offset_top = 138.0
 offset_right = 258.0
-offset_bottom = 166.0
-texture = ExtResource("10_letters")
+offset_bottom = 164.0
+tooltip_text = "Cartas e comunicados"
+texture_normal = ExtResource("10_letters")
 
-[node name="Notebook" type="TextureRect" parent="."]
+[node name="LetterBadge" type="Label" parent="LetterStack"]
 layout_mode = 0
-offset_left = 264.0
-offset_top = 140.0
-offset_right = 298.0
-offset_bottom = 166.0
-texture = ExtResource("11_notebook")
+offset_left = 30.0
+offset_top = -4.0
+offset_right = 46.0
+offset_bottom = 6.0
+mouse_filter = 2
+horizontal_alignment = 1
+
+[node name="Notebook" type="TextureButton" parent="."]
+layout_mode = 0
+offset_left = 266.0
+offset_top = 138.0
+offset_right = 300.0
+offset_bottom = 164.0
+tooltip_text = "Caderno do apresentador"
+texture_normal = ExtResource("11_notebook")
 
 [node name="Header" type="Control" parent="."]
 layout_mode = 0
@@ -212,173 +230,44 @@ offset_right = 314.0
 offset_bottom = 13.0
 text = "AO AR"
 
-[node name="WorkPanel" type="Panel" parent="."]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 16.0
-offset_right = 316.0
-offset_bottom = 124.0
-
-[node name="InboxTitle" type="Label" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 4.0
-offset_top = 2.0
-offset_right = 118.0
-offset_bottom = 12.0
+[node name="Closes" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
-text = "CHEGOU HOJE"
 
-[node name="InboxScroll" type="ScrollContainer" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 4.0
+[node name="CloseItem" parent="Closes" instance=ExtResource("15_close_item")]
+visible = false
+offset_left = 44.0
 offset_top = 14.0
-offset_right = 118.0
-offset_bottom = 104.0
-horizontal_scroll_mode = 0
+offset_right = 276.0
+offset_bottom = 126.0
 
-[node name="InboxList" type="VBoxContainer" parent="WorkPanel/InboxScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 1
-
-[node name="TabItem" type="Button" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 122.0
-offset_top = 2.0
-offset_right = 172.0
-offset_bottom = 14.0
-toggle_mode = true
-text = "ITEM"
-
-[node name="TabNotebook" type="Button" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 174.0
-offset_top = 2.0
-offset_right = 234.0
-offset_bottom = 14.0
-toggle_mode = true
-text = "CADERNO"
-
-[node name="TabBlock" type="Button" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 236.0
-offset_top = 2.0
-offset_right = 286.0
-offset_bottom = 14.0
-toggle_mode = true
-text = "BLOCO"
-
-[node name="ItemView" type="Control" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 122.0
-offset_top = 16.0
-offset_right = 308.0
-offset_bottom = 92.0
-mouse_filter = 2
-
-[node name="Headline" type="Label" parent="WorkPanel/ItemView"]
-layout_mode = 0
-offset_right = 186.0
-offset_bottom = 10.0
-mouse_filter = 2
-text = "Escolha um item à esquerda"
-clip_text = true
-
-[node name="BodyScroll" type="ScrollContainer" parent="WorkPanel/ItemView"]
-layout_mode = 0
-offset_top = 12.0
-offset_right = 186.0
-offset_bottom = 46.0
-horizontal_scroll_mode = 0
-
-[node name="Body" type="RichTextLabel" parent="WorkPanel/ItemView/BodyScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-fit_content = true
-scroll_active = false
-
-[node name="ClaimsTitle" type="Label" parent="WorkPanel/ItemView"]
-layout_mode = 0
-offset_top = 48.0
-offset_right = 130.0
-offset_bottom = 58.0
-mouse_filter = 2
-text = "CONFERIR:"
-
-[node name="ClaimsList" type="HBoxContainer" parent="WorkPanel/ItemView"]
-layout_mode = 0
-offset_top = 60.0
-offset_right = 130.0
-offset_bottom = 74.0
-theme_override_constants/separation = 2
-
-[node name="SuspectButton" type="Button" parent="WorkPanel/ItemView"]
-layout_mode = 0
-offset_left = 134.0
-offset_top = 60.0
-offset_right = 186.0
-offset_bottom = 74.0
-toggle_mode = true
-text = "SUSPEITO"
-
-[node name="NotebookView" type="ScrollContainer" parent="WorkPanel"]
+[node name="CloseNotebook" parent="Closes" instance=ExtResource("16_close_nb")]
 visible = false
-layout_mode = 0
-offset_left = 122.0
-offset_top = 16.0
-offset_right = 308.0
-offset_bottom = 92.0
-horizontal_scroll_mode = 0
+offset_left = 44.0
+offset_top = 14.0
+offset_right = 276.0
+offset_bottom = 126.0
 
-[node name="NotebookList" type="VBoxContainer" parent="WorkPanel/NotebookView"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 1
-
-[node name="BlockView" type="Control" parent="WorkPanel"]
+[node name="FramingStrip" parent="Closes" instance=ExtResource("17_strip")]
 visible = false
+offset_left = 44.0
+offset_top = 80.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="Feedback" type="Label" parent="."]
 layout_mode = 0
-offset_left = 122.0
-offset_top = 16.0
-offset_right = 308.0
-offset_bottom = 92.0
+offset_left = 44.0
+offset_top = 128.0
+offset_right = 276.0
+offset_bottom = 138.0
 mouse_filter = 2
-
-[node name="BlockTitle" type="Label" parent="WorkPanel/BlockView"]
-layout_mode = 0
-offset_right = 186.0
-offset_bottom = 10.0
-mouse_filter = 2
-text = "Bloco -"
-clip_text = true
-
-[node name="FramingScroll" type="ScrollContainer" parent="WorkPanel/BlockView"]
-layout_mode = 0
-offset_top = 12.0
-offset_right = 122.0
-offset_bottom = 76.0
-horizontal_scroll_mode = 0
-
-[node name="FramingList" type="VBoxContainer" parent="WorkPanel/BlockView/FramingScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 1
-
-[node name="ClearBlockButton" type="Button" parent="WorkPanel/BlockView"]
-layout_mode = 0
-offset_left = 126.0
-offset_top = 12.0
-offset_right = 186.0
-offset_bottom = 26.0
-text = "TIRAR"
-
-[node name="Feedback" type="Label" parent="WorkPanel"]
-layout_mode = 0
-offset_left = 122.0
-offset_top = 94.0
-offset_right = 308.0
-offset_bottom = 104.0
-mouse_filter = 2
+horizontal_alignment = 1
 clip_text = true
 
 [node name="Blocks" type="Control" parent="."]
@@ -416,3 +305,6 @@ offset_top = 14.0
 offset_right = 209.0
 offset_bottom = 44.0
 block_index = 3
+
+[node name="Lighting" type="CanvasModulate" parent="."]
+color = Color(1, 0.964706, 0.905882, 1)

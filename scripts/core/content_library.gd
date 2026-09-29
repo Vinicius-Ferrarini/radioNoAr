@@ -11,6 +11,7 @@ extends RefCounted
 const NIGHTS_DIR := "res://data/nights/"
 const NOTEBOOK_DIR := "res://data/notebook/"
 const CONSEQUENCES_DIR := "res://data/consequences/"
+const SENDERS_DIR := "res://data/senders/"
 const ORDER_RULES_PATH := "res://data/rules/order_rules.tres"
 
 
@@ -24,6 +25,10 @@ static func notebook_entry(id: String) -> NotebookEntry:
 
 static func consequence(id: String) -> ConsequenceEffect:
 	return _load(CONSEQUENCES_DIR + id + ".tres")
+
+
+static func sender(id: String) -> Sender:
+	return _load(SENDERS_DIR + id + ".tres")
 
 
 static func order_rules() -> Array[OrderRule]:

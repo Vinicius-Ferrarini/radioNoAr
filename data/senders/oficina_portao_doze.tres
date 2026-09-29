@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Sender" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/sender.gd" id="1_sender"]
+
+[resource]
+script = ExtResource("1_sender")
+id = "oficina_portao_doze"
+display_name = "Oficina do Portão Doze"
+avatar = "avatar_valvula"
+handle = "9-3310"
+relationship = 0
+voice = "Objetivo, técnico, sem cumprimento. Sabe o nome das peças que o seu transmissor come. Bom demais para ser só simpatia."

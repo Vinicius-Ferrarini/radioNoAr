@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Sender" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/sender.gd" id="1_sender"]
+
+[resource]
+script = ExtResource("1_sender")
+id = "j_toledo"
+display_name = "J. Toledo"
+avatar = "avatar_toledo"
+handle = "9-8822"
+relationship = 1
+voice = "Caixa alta, ponto de exclamação, certeza absoluta. Viu tudo com os próprios olhos, sempre. Já jurou um incêndio que não houve."

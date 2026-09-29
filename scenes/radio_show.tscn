@@ -1,11 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cbogw5u7gx115"]
 
 [ext_resource type="Theme" path="res://theme/theme.tres" id="1_fjowt"]
-[ext_resource type="Script" path="res://scenes/radio_show.gd" id="2_js3mx"]
+[ext_resource type="Script" uid="uid://c3w48payxc13l" path="res://scenes/radio_show.gd" id="2_js3mx"]
 
 [node name="RadioShow" type="Control" unique_id=1446778859]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 theme = ExtResource("1_fjowt")
@@ -57,12 +57,16 @@ layout_mode = 2
 [node name="Choice2" type="Button" parent="Choices" unique_id=1677698628]
 layout_mode = 2
 
-[node name="Choice3" type="Button" parent="Choices" unique_id=696868031]
-layout_mode = 2
-
 [node name="FadeOverlay" type="ColorRect" parent="." unique_id=717775784]
 layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="Choice3" type="Button" parent="FadeOverlay" unique_id=696868031]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 155.0
+offset_right = 311.0
+offset_bottom = 161.0

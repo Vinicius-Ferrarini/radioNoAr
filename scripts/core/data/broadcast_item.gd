@@ -22,7 +22,10 @@ enum Channel {
 @export var id: String
 @export var type: ItemType
 @export var channel: Channel
+## Aponta para um Sender em data/senders/ (ADR 0010).
 @export var sender_id: String
+## Hora em que chegou, como o aparelho mostra: "21:47", "manhã", "ontem".
+@export var received_at: String
 @export var headline: String
 ## O texto como chegou, sem enquadramento.
 @export var body: String

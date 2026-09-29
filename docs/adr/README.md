@@ -24,6 +24,7 @@ escopo, ou ao reverter uma decisão anterior.
 | [0007](0007-tempo-e-rng-injetados-na-logica-pura.md) | Tempo e RNG injetados; eventos drenados | aceito |
 | [0008](0008-degradacao-da-paleta-conforme-o-cerco.md) | Como a cor se esvai conforme o cerco aperta | aceito |
 | [0009](0009-formato-do-conteudo-das-noites.md) | Formato do conteúdo das noites | aceito |
+| [0010](0010-a-mesa-e-a-casa.md) | A mesa é a casa: closes diegéticos no lugar do painel com abas | aceito |
 
 O 0003 é o único ainda **proposto**: ele descreve quando e como o loop v0
 é removido, e depende da aprovação do plano da v1 como um todo.

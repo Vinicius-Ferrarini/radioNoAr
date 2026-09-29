@@ -26,6 +26,18 @@ func setup(row_id: String, row_text: String, draggable: bool = false) -> void:
 	text = row_text
 
 
+## Um chip só de foto: é assim que o jogador arrasta uma pessoa para um
+## bloco do programa, em vez de arrastar uma linha de lista.
+func setup_avatar(row_id: String, avatar: Texture2D, hint: String, draggable: bool = false) -> void:
+	_row_id = row_id
+	_draggable = draggable
+	text = ""
+	icon = avatar
+	tooltip_text = hint
+	custom_minimum_size = Vector2(18, 18)
+	expand_icon = true
+
+
 func row_id() -> String:
 	return _row_id
 

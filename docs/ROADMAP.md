@@ -33,7 +33,9 @@ conteúdo no formato v0 agora seria trabalho perdido (ADR 0003).
 | M6 | `Meters`, `ProgramRundown`, `ConsequenceQueue`, `RunState`, `NightCycle` | ✅ ³ | M5 |
 | M7 | Pipeline de pixel art + manifesto + mesa estática + resolução/escala | ✅ ⁴ | M4 |
 | M8 | Triagem e escalação: closes, marcar e cruzar, arrastar para os 4 blocos | ✅ ⁵ | M6, M7 |
-| M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ⬜ | M6 |
+| M8B | Remetentes como personagens, closes diegéticos (celular/carta/caderno), luz | ✅ ⁶ | M8 |
+| M8C | Tela de título, opções e transições | ⬜ | M8B |
+| M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ⬜ | M6, M8B |
 | M10 | Manhã + **fatia vertical: noite 1 de ponta a ponta**; remoção da v0 | ⬜ | M8, M9 |
 | M11 | Fase de dia: transmissor, sinal, equipe, dinheiro | ⬜ | M10 |
 | M12 | Finais país × pessoal (`EndingResolver` v2) | ⬜ | M10 + nº de noites |
@@ -76,6 +78,14 @@ métodos) ao lado da API v0; `scenes/parts/list_row.tscn` e
 suspeita, arrastar para os 4 blocos e escolha de enquadramento, tudo pela
 interface. Suíte **205/205, 13 322 asserts, 0 órfãos**.
 
+⁶ M8B concluído em 2026-09-29 (ADR 0010): `Sender` como dado, 6
+remetentes da noite 1 com nome, avatar e voz; 14 sprites novos
+(avatares, corpo do celular, folha de carta, papel oficial, página de
+caderno, balão, lacre, carimbo); `close_item`, `close_notebook` e
+`framing_strip` no lugar do painel com abas; a mesa nunca sai da tela.
+Suíte **217/217, 19 806 asserts**. Os testes de interface do M8 foram
+reescritos, não apagados.
+
 M7 não depende tecnicamente de M5/M6 — a pixel art e a lógica não se
 cruzam. Ficou decidido rodar a lógica primeiro (M5 → M6) e só então o M7:
 o custo é ficar dois marcos sem novidade na tela.
@@ -85,9 +95,10 @@ o custo é ficar dois marcos sem novidade na tela.
 1. **M4** destrava tudo (uma decisão sua, depois meia hora de trabalho).
 2. **M5 → M6** constroem a lógica testável sem nenhuma cena.
 3. **M7** dá o primeiro visual novo.
-4. **M8 → M9 → M10** fecham a fatia vertical — é aqui que o jogo passa a
-   ser o jogo do design.
-5. **M11 → M14** expandem sobre uma base já provada.
+4. **M8B → M8C** dão identidade visual ao que já existe (ADR 0010).
+5. **M9 → M10** fecham a fatia vertical — é aqui que o jogo passa a ser o
+   jogo do design.
+6. **M11 → M14** expandem sobre uma base já provada.
 
 ## Riscos conhecidos
 
@@ -97,6 +108,7 @@ o custo é ficar dois marcos sem novidade na tela.
 | 320×180 pode não caber os closes de texto | ADR 0005 prevê a troca para 480×270 como substituição de ADR, mudança pequena |
 | Conteúdo de ~30 noites é o maior volume de trabalho do projeto | Teste de sanidade de conteúdo (ADR 0009) evita conteúdo quebrado silencioso |
 | Dois modelos de dados convivendo entre M5 e M9 | Prazo de remoção fixado no ADR 0003 (M10), não indefinido |
+| Interface que funciona mas não é o jogo (aconteceu no M8) | Rodar o jogo e olhar, não só a suíte verde. ADR 0010 |
 
 ## Decisões tomadas (2026-09-29)
 
