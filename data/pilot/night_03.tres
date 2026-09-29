@@ -6,6 +6,71 @@
 [ext_resource type="Script" path="res://scripts/core/data/item_claim.gd" id="c"]
 [ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="e"]
 [ext_resource type="Script" path="res://scripts/core/data/radio_call.gd" id="r"]
+[ext_resource type="Script" path="res://scripts/core/data/chat_message.gd" id="m"]
+[ext_resource type="Script" path="res://scripts/core/data/reply_option.gd" id="rp"]
+
+[sub_resource type="Resource" id="rup_t0"]
+script = ExtResource("m")
+from_me = false
+text = "Ouviram meu nome ontem."
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="rup_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Me tiraram da linha dois."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rup_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Posso fazer frete por conta."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rup_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Se puder anunciar, ajuda."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rup_a0_0"]
+script = ExtResource("m")
+from_me = false
+text = "Você me põe de pé de novo."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rup_r0"]
+script = ExtResource("rp")
+id = "rup_r0"
+text = "Anuncio seu frete hoje."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("rup_a0_0")])
+
+[sub_resource type="Resource" id="rup_a1_0"]
+script = ExtResource("m")
+from_me = false
+text = "Tarde para isso, mas obrigado."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rup_r1"]
+script = ExtResource("rp")
+id = "rup_r1"
+text = "Não repito seu nome no ar."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("rup_a1_0")])
+
+[sub_resource type="Resource" id="rup_a2_0"]
+script = ExtResource("m")
+from_me = false
+text = "Eu entendo. Amanhã eu volto."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rup_r2"]
+script = ExtResource("rp")
+id = "rup_r2"
+text = "Hoje não dá espaço."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("rup_a2_0")])
 
 [sub_resource type="Resource" id="p3_rui_public_0"]
 script = ExtResource("f")
@@ -41,6 +106,71 @@ counts_for_quota = false
 required_flag = "rui_aired"
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p3_rui_public_0"), SubResource("p3_rui_public_2"), SubResource("p3_rui_public_5")])
+thread = Array[ExtResource("m")]([SubResource("rup_t0"), SubResource("rup_t1"), SubResource("rup_t2"), SubResource("rup_t3")])
+replies = Array[ExtResource("rp")]([SubResource("rup_r0"), SubResource("rup_r1"), SubResource("rup_r2")])
+
+[sub_resource type="Resource" id="rpr_t0"]
+script = ExtResource("m")
+from_me = false
+text = "Meu nome ficou protegido."
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="rpr_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Obrigado por isso."
+delay_seconds = 1.3
+
+[sub_resource type="Resource" id="rpr_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Mas o pessoal ficou preso lá."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rpr_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Hoje passo o desvio sem citar ninguém."
+delay_seconds = 1.6
+
+[sub_resource type="Resource" id="rpr_a0_0"]
+script = ExtResource("m")
+from_me = false
+text = "Vou avisar os outros motoristas."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rpr_r0"]
+script = ExtResource("rp")
+id = "rpr_r0"
+text = "Transmito o desvio agora."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("rpr_a0_0")])
+
+[sub_resource type="Resource" id="rpr_a1_0"]
+script = ExtResource("m")
+from_me = false
+text = "É o que eu preciso. Obrigado."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rpr_r1"]
+script = ExtResource("rp")
+id = "rpr_r1"
+text = "Continuo sem citar ninguém."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("rpr_a1_0")])
+
+[sub_resource type="Resource" id="rpr_a2_0"]
+script = ExtResource("m")
+from_me = false
+text = "O desvio não espera muito."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="rpr_r2"]
+script = ExtResource("rp")
+id = "rpr_r2"
+text = "Guardo para depois."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("rpr_a2_0")])
 
 [sub_resource type="Resource" id="p3_rui_private_0"]
 script = ExtResource("f")
@@ -76,6 +206,77 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = "rui_aired"
 framings = Array[ExtResource("f")]([SubResource("p3_rui_private_0"), SubResource("p3_rui_private_2"), SubResource("p3_rui_private_5")])
+thread = Array[ExtResource("m")]([SubResource("rpr_t0"), SubResource("rpr_t1"), SubResource("rpr_t2"), SubResource("rpr_t3")])
+replies = Array[ExtResource("rp")]([SubResource("rpr_r0"), SubResource("rpr_r1"), SubResource("rpr_r2")])
+
+[sub_resource type="Resource" id="ce3_t0"]
+script = ExtResource("m")
+from_me = false
+text = "O Antônio voltou tarde."
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="ce3_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Mas voltou."
+delay_seconds = 1.2
+
+[sub_resource type="Resource" id="ce3_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Hoje eu queria conversar."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ce3_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Ligo no segundo bloco."
+delay_seconds = 1.4
+
+[sub_resource type="Resource" id="ce3_t4"]
+script = ExtResource("m")
+from_me = false
+text = "Sem pedir música dessa vez."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ce3_a0_0"]
+script = ExtResource("m")
+from_me = false
+text = "Então eu ligo. Obrigada."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ce3_r0"]
+script = ExtResource("rp")
+id = "ce3_r0"
+text = "Abro espaço para você falar."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("ce3_a0_0")])
+
+[sub_resource type="Resource" id="ce3_a1_0"]
+script = ExtResource("m")
+from_me = false
+text = "Eu falo baixo, prometo."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ce3_r1"]
+script = ExtResource("rp")
+id = "ce3_r1"
+text = "Peço que fale com calma."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("ce3_a1_0")])
+
+[sub_resource type="Resource" id="ce3_a2_0"]
+script = ExtResource("m")
+from_me = false
+text = "Fica para quando você puder."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ce3_r2"]
+script = ExtResource("rp")
+id = "ce3_r2"
+text = "Hoje não consigo."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("ce3_a2_0")])
 
 [sub_resource type="Resource" id="p3_celia_0"]
 script = ExtResource("f")
@@ -111,6 +312,8 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p3_celia_0"), SubResource("p3_celia_2"), SubResource("p3_celia_5")])
+thread = Array[ExtResource("m")]([SubResource("ce3_t0"), SubResource("ce3_t1"), SubResource("ce3_t2"), SubResource("ce3_t3"), SubResource("ce3_t4")])
+replies = Array[ExtResource("rp")]([SubResource("ce3_r0"), SubResource("ce3_r1"), SubResource("ce3_r2")])
 
 [sub_resource type="Resource" id="p3_oficial_0"]
 script = ExtResource("f")
@@ -182,6 +385,75 @@ required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p3_ajuda_0"), SubResource("p3_ajuda_3"), SubResource("p3_ajuda_5")])
 
+[sub_resource type="Resource" id="of3_t0"]
+script = ExtResource("m")
+from_me = false
+text = "O letreiro pode ficar."
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="of3_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Não vou pedir de volta."
+delay_seconds = 1.4
+
+[sub_resource type="Resource" id="of3_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Mas preciso saber uma coisa."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of3_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Ainda posso contar com a rádio?"
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of3_t4"]
+script = ExtResource("m")
+from_me = false
+text = "Se a prefeitura ligar, digo."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of3_a0_0"]
+script = ExtResource("m")
+from_me = false
+text = "É o que eu queria ouvir."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of3_r0"]
+script = ExtResource("rp")
+id = "of3_r0"
+text = "Conta comigo, dentro do combinado."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("of3_a0_0")])
+
+[sub_resource type="Resource" id="of3_a1_0"]
+script = ExtResource("m")
+from_me = false
+text = "Direto. Vou pensar no letreiro."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of3_r1"]
+script = ExtResource("rp")
+id = "of3_r1"
+text = "Anúncio é anúncio. Pauta é minha."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("of3_a1_0")])
+
+[sub_resource type="Resource" id="of3_a2_0"]
+script = ExtResource("m")
+from_me = false
+text = "Você sabe onde me achar."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of3_r2"]
+script = ExtResource("rp")
+id = "of3_r2"
+text = "Depois eu respondo."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("of3_a2_0")])
+
 [sub_resource type="Resource" id="p3_oficina_0"]
 script = ExtResource("f")
 kind = 0
@@ -216,6 +488,8 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p3_oficina_0"), SubResource("p3_oficina_2"), SubResource("p3_oficina_5")])
+thread = Array[ExtResource("m")]([SubResource("of3_t0"), SubResource("of3_t1"), SubResource("of3_t2"), SubResource("of3_t3"), SubResource("of3_t4")])
+replies = Array[ExtResource("rp")]([SubResource("of3_r0"), SubResource("of3_r1"), SubResource("of3_r2")])
 
 [sub_resource type="Resource" id="call"]
 script = ExtResource("r")
