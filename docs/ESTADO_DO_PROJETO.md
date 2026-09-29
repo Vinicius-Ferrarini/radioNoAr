@@ -38,6 +38,40 @@ Plano e decisões: `PLANO_RADIO_VIVA.md`, SPEC (revisão inicial) e ADR 0011.
 Fase de dia completa, campanha longa, finais, opções e salvamento seguem
 pendentes. Não interpretar as três noites como a campanha final pronta.
 
+## Atualização: redesenho em curso (ADR 0013)
+
+**Fase 1 — a conversa é a decisão.** O celular é um aparelho em pé: data
+(15/07/2008 na noite 1), relógio que começa às 19:00 e anda com a noite,
+lista de conversas com a hora da última fala e quantas não lidas, e dentro
+de cada uma os balões chegando um a um. **A resposta que você manda é o
+enquadramento**: ao escalar a pessoa, o bloco herda o que você disse a
+ela. A régua de enquadramento ficou só para papel (carta e ofício).
+
+As mensagens correm sozinhas desde o começo da noite — abrir o aparelho
+não dispara nada. Toda fala é marcada pelo relógio na entrega, então a
+ordem das horas é a ordem de chegada. As **onze conversas das três
+noites** estão escritas; nenhuma é sintetizada.
+
+Resposta que exige apuração não aparece como opção: as fichas
+conferíveis ficam na própria conversa, com o trecho palavra por palavra.
+
+**Fase 2 — o ao vivo é um console.** A noite tem várias ligações, cada uma
+com seu bloco e seu gatilho, e **a linha atende uma por vez**: quem chega
+com a linha ocupada espera na fila e entra quando ela vaga, por corte ou
+por ir ao ar. O console mostra três lâmpadas — livre, prévia, no ar — mais
+quantas esperam. Nenhuma ligação se perde na virada de bloco.
+
+O teleprompter ganhou varredura: uma cópia escurecida por cima revela até
+onde a leitura chegou. E ela tem dente — **a palavra proibida vai ao ar
+quando a leitura passa por ela**, não no fim da linha. A noite 2 declara a
+circular da semana no caderno ("interditada", termo aceito "com tráfego
+alterado") e a palavra aparece em dois roteiros: trocar depois que a
+varredura passou não evita a infração.
+
+Fases 3 (a cidade é o medidor) e 4 (fugir) seguem propostas, cada uma
+dependendo do playtest da anterior. Plano, tabela de mecânicas e
+validação: `PLANO_MUNDO_EM_VOLTA.md`.
+
 ### Atmosfera (ADR 0012)
 
 O estúdio tem leito de som contínuo: zumbido sempre presente e estática
