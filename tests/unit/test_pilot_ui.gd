@@ -192,13 +192,22 @@ func test_visible_controls_cut_call_preserve_reaction_and_reach_morning() -> voi
 	assert_string_contains(desk.get_node("CallPanel/Status").text, "PRÉVIA")
 	desk.get_node("CallPanel/Cut").pressed.emit()
 	assert_string_contains(desk.get_node("CallPanel/Status").text, "CORTADO")
+	assert_string_contains(desk.get_node("CallPanel/Transcript").text, "Essa eu te devo",
+		"a reação do corte aparece na hora")
+
 	steps = 0
 	while not GameState.is_live_done() and steps < 2000:
 		GameState._process(0.1)
 		steps += 1
 	assert_lt(steps, 2000)
 	desk._refresh_live()
-	assert_string_contains(desk.get_node("CallPanel/Transcript").text, "Essa eu te devo")
+	# Desde a Fase 2 a noite tem mais de uma ligação, e o painel fala da
+	# última resolvida. O que este teste garante é que a reação não
+	# desaparece na virada de bloco.
+	assert_false(desk.get_node("CallPanel/Transcript").text.is_empty(),
+		"a reação da última ligação continua na tela")
+	assert_false(desk.get_node("CallPanel/Status").text.contains("LINHA LIVRE"),
+		"o console não volta a dizer que a linha está livre depois de atender")
 	assert_eq(desk.get_node("Header/GoOnAirButton").text, "MANHÃ")
 	desk.get_node("Header/GoOnAirButton").pressed.emit()
 	assert_true(desk.get_node("Closes/CloseMorning").visible)

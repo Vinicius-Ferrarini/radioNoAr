@@ -148,6 +148,23 @@ mouse_filter = 1
 bbcode_enabled = true
 scroll_active = false
 
+[node name="Spoken" type="RichTextLabel" parent="Studio/Teleprompter"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = -6.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(0.42, 0.45, 0.4, 1)
+bbcode_enabled = true
+scroll_active = false
+visible_ratio = 0.0
+
 [node name="LineProgress" type="ProgressBar" parent="Studio/Teleprompter" unique_id=1112154213]
 layout_mode = 0
 offset_left = 7.0
@@ -339,6 +356,40 @@ offset_right = 302.0
 offset_bottom = 13.0
 focus_mode = 0
 text = "CORTAR [C]"
+
+[node name="Lamps" type="HBoxContainer" parent="CallPanel"]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 28.0
+offset_right = 200.0
+offset_bottom = 38.0
+theme_override_constants/separation = 4
+
+[node name="Free" type="Label" parent="CallPanel/Lamps"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 7
+text = "o LIVRE"
+
+[node name="Preview" type="Label" parent="CallPanel/Lamps"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 7
+text = "o PREVIA"
+
+[node name="OnAir" type="Label" parent="CallPanel/Lamps"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 7
+text = "o NO AR"
+
+[node name="Queue" type="Label" parent="CallPanel"]
+layout_mode = 0
+offset_left = 204.0
+offset_top = 28.0
+offset_right = 301.0
+offset_bottom = 38.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 7
+horizontal_alignment = 2
+text = ""
 
 [node name="Delay" type="ProgressBar" parent="CallPanel" unique_id=1374375848]
 layout_mode = 0

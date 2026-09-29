@@ -58,6 +58,11 @@ const _RESULT_MESSAGES := {
 @onready var _call_text: Label = $CallPanel/Transcript
 @onready var _call_status: Label = $CallPanel/Status
 @onready var _call_progress: ProgressBar = $CallPanel/Delay
+@onready var _spoken: RichTextLabel = $Studio/Teleprompter/Spoken
+@onready var _lamp_free: Label = $CallPanel/Lamps/Free
+@onready var _lamp_preview: Label = $CallPanel/Lamps/Preview
+@onready var _lamp_on_air: Label = $CallPanel/Lamps/OnAir
+@onready var _queue_label: Label = $CallPanel/Queue
 @onready var _cut_button: Button = $CallPanel/Cut
 @onready var _music: Button = $LiveControls/Music
 @onready var _ad: Button = $LiveControls/Ad
@@ -84,6 +89,11 @@ const _STATIC_OFF_AIR := -26.0
 const _STATIC_ON_AIR := -34.0
 const _STATIC_DEAD_AIR := -11.0
 const _STATIC_BREAK := -42.0
+
+## Lâmpadas do console: apagada, acesa e a que pede decisão.
+const _LAMP_OFF := Color(0.36, 0.38, 0.35, 1.0)
+const _LAMP_ON := Color(0.58, 0.85, 0.6, 1.0)
+const _LAMP_ALERT := Color(1.0, 0.72, 0.3, 1.0)
 
 @onready var _blocks: Array[Node] = [
 	$Blocks/Block1,
@@ -642,6 +652,10 @@ func _on_improv_chosen(option_index: int) -> void:
 func _on_live_events(events: Array) -> void:
 	for event in events:
 		match int(event["kind"]):
+			LiveBroadcast.EventKind.CALL_WAITING:
+				# Tocou com a linha ocupada: quem espera não some da tela.
+				_feedback.text = "%s está na linha, esperando. Corte para atender." % event["caller"]
+				_play_sound(_RING)
 			LiveBroadcast.EventKind.CALL_TRANSCRIPT:
 				_play_sound(_RING)
 			LiveBroadcast.EventKind.CALL_CUT, LiveBroadcast.EventKind.CALL_AIRED:
@@ -703,6 +717,11 @@ func _refresh_live() -> void:
 	parts.append("[b]%s[/b]" % _with_forbidden_links(index))
 
 	_prompter.text = "\n\n".join(parts)
+	# A varredura é a mesma caixa de texto por cima, escurecida e revelada
+	# até onde a leitura já chegou: dá para ver a palavra proibida se
+	# aproximando da antena, e o clique continua na caixa de baixo.
+	_spoken.text = _prompter.text
+	_spoken.visible_ratio = GameState.live_line_progress()
 	_line_progress.value = GameState.live_line_progress() * 100.0
 
 
@@ -732,6 +751,9 @@ func _refresh_console() -> void:
 		_call_text.text = "Quem ligar aparece aqui antes de ir ao ar. Você pode cortar com C."
 	if break_left > 0.0:
 		_call_status.text = "INTERVALO / PRÉVIA EM ESPERA / %.1fs" % break_left
+	_paint_lamps(pending, outcome, break_left)
+	var waiting: int = int(console.get("waiting", 0))
+	_queue_label.text = "%d NA FILA" % waiting if waiting > 0 else ""
 	_music.disabled = not GameState.can_take_break()
 	_ad.disabled = _music.disabled
 	_mic_switch.text = "MIC LIGADO" if GameState.microphone_open() else "MIC DESLIGADO"
@@ -739,6 +761,16 @@ func _refresh_console() -> void:
 		_go_on_air.text = "MANHÃ"
 		_go_on_air.disabled = false
 		_music_player.stop()
+
+
+## Três lâmpadas em vez de uma frase: o estado da linha se lê de
+## relance, que é o que dá para fazer com a mão no microfone.
+func _paint_lamps(pending: bool, outcome: String, break_left: float) -> void:
+	var on_air: bool = outcome == "aired" and not pending
+	var free: bool = not pending and not on_air and break_left <= 0.0
+	_lamp_free.modulate = _LAMP_ON if free else _LAMP_OFF
+	_lamp_preview.modulate = _LAMP_ALERT if pending else _LAMP_OFF
+	_lamp_on_air.modulate = _LAMP_ON if on_air else _LAMP_OFF
 
 
 func _with_forbidden_links(index: int) -> String:
