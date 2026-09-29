@@ -495,11 +495,23 @@ replies = Array[ExtResource("rp")]([SubResource("of3_r0"), SubResource("of3_r1")
 script = ExtResource("r")
 caller = "Célia / Rua Bandeira"
 transcript = "Eu ouvi vocês ontem. Não entendo de política. Só quero poder ligar quando o Antônio não voltar."
+block_position = 1
 trigger_seconds = 3.0
 aired_reaction = "Nilo deixa o café na mesa sem fazer piada. A linha continua aberta."
 cut_reaction = "A linha fica muda. Nilo olha para o telefone, depois para você."
 aired_consequence_ids = Array[String](["p_n3_air"])
 cut_consequence_ids = Array[String](["p_n3_cut"])
+
+[sub_resource type="Resource" id="call2"]
+script = ExtResource("r")
+caller = "Osvaldo / marido da Célia"
+transcript = "Ela não vai dizer, mas ficou esperando o senhor falar disso ontem."
+block_position = 2
+trigger_seconds = 5.0
+aired_reaction = "Osvaldo agradece baixo e desliga antes de você responder."
+cut_reaction = "Osvaldo fica na linha um instante e desiste."
+aired_consequence_ids = Array[String]([])
+cut_consequence_ids = Array[String]([])
 
 [resource]
 script = ExtResource("n")
@@ -508,7 +520,7 @@ title = "Quem ficou ouvindo"
 intro = "Hoje chegaram ofertas de ajuda e pedidos de silêncio. Escolha seus compromissos. Esta é a última noite da abertura."
 allow_breaks = true
 propaganda_quota = 1
-call = SubResource("call")
+calls = Array[ExtResource("r")]([SubResource("call"), SubResource("call2")])
 baseline_headline = "TRÊS NOITES NO AR. A PRÓXIMA PROGRAMAÇÃO JÁ NÃO SERÁ A MESMA."
 inbox = Array[ExtResource("i")]([SubResource("p3_rui_public"), SubResource("p3_rui_private"), SubResource("p3_celia"), SubResource("p3_oficial"), SubResource("p3_ajuda"), SubResource("p3_oficina")])
 opening_flag = "rui_aired"

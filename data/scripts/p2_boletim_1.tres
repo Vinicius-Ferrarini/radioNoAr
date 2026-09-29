@@ -2,11 +2,19 @@
 
 [ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
 [ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="fw"]
+
+[sub_resource type="Resource" id="fw0"]
+script = ExtResource("fw")
+word = "interditada"
+char_start = 63
+approved_synonym = "com tráfego alterado"
 
 [sub_resource type="Resource" id="l0"]
 script = ExtResource("l")
 text = "O boletim diz aberta. A vistoria assinada às dezoito horas diz interditada."
 read_seconds = 5.0
+forbidden_slots = Array[ExtResource("fw")]([SubResource("fw0")])
 
 [sub_resource type="Resource" id="l1"]
 script = ExtResource("l")

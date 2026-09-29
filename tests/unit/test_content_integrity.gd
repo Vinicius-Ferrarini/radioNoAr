@@ -157,10 +157,13 @@ func test_every_script_is_well_formed() -> void:
 
 func test_the_forbidden_words_of_the_night_show_up_in_some_script() -> void:
 	# O caderno avisa quais palavras estao proibidas hoje; se nenhuma
-	# delas aparece em roteiro nenhum, o aviso e decoracao.
-	var night: NightDefinition = load("res://data/nights/night_01.tres")
+	# delas aparece em roteiro nenhum, o aviso e decoracao. Vale para a
+	# noite legada e para as tres do piloto.
 	var notebook := Notebook.new()
-	notebook.add_entries(night.new_notebook_entries)
+	for caminho in ["res://data/nights/night_01.tres", "res://data/pilot/night_01.tres",
+			"res://data/pilot/night_02.tres", "res://data/pilot/night_03.tres"]:
+		var night: NightDefinition = load(caminho)
+		notebook.add_entries(night.new_notebook_entries)
 
 	var used: Dictionary = {}
 	var dir := DirAccess.open("res://data/scripts/")
@@ -172,7 +175,9 @@ func test_the_forbidden_words_of_the_night_show_up_in_some_script() -> void:
 			for slot in line.forbidden_slots:
 				used[slot.word] = true
 
-	for word in notebook.forbidden_words():
+	var words := notebook.forbidden_words()
+	assert_gt(words.size(), 0, "deveria haver palavra proibida declarada")
+	for word in words:
 		assert_true(used.has(word),
 			"a palavra proibida '%s' nao aparece em roteiro nenhum" % word)
 

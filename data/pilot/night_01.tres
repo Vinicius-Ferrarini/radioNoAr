@@ -489,11 +489,23 @@ framings = Array[ExtResource("f")]([SubResource("p1_nilo_0"), SubResource("p1_ni
 script = ExtResource("r")
 caller = "Toledo / ouvinte de sempre"
 transcript = "O bolo da minha mulher parece um tijolo. Não põe isso no ar, ela está ouvindo!"
+block_position = 1
 trigger_seconds = 3.0
 aired_reaction = "Nilo ri do outro lado do vidro. Toledo: \"Você deixou passar mesmo?\""
 cut_reaction = "Nilo faz sinal de positivo. Toledo: \"Essa eu te devo.\""
 aired_consequence_ids = Array[String](["p_n1_air"])
 cut_consequence_ids = Array[String](["p_n1_cut"])
+
+[sub_resource type="Resource" id="call2"]
+script = ExtResource("r")
+caller = "Dona Zilda / vizinha"
+transcript = "Seu Nilo, o bolo da Célia é ótimo! Não dê ouvidos ao Toledo, ele reclama de tudo."
+block_position = 1
+trigger_seconds = 5.5
+aired_reaction = "Nilo segura o riso. Zilda: \"Pronto, agora ele se acertou com a mulher.\""
+cut_reaction = "A linha cai. Zilda liga de novo mais tarde, sem insistir."
+aired_consequence_ids = Array[String]([])
+cut_consequence_ids = Array[String]([])
 
 [resource]
 script = ExtResource("n")
@@ -502,7 +514,7 @@ title = "A nossa frequência"
 intro = "19h55. Cheiro de café, transmissor quente. Hoje tem aniversário, futebol e recados.\nAbra o celular ou as cartas. Arraste quatro pessoas para os blocos e escolha o que dizer. O caderno ajuda a conferir."
 allow_breaks = true
 propaganda_quota = 0
-call = SubResource("call")
+calls = Array[ExtResource("r")]([SubResource("call"), SubResource("call2")])
 baseline_headline = "A RÁDIO TERMINA MAIS UMA NOITE JUNTO DO BAIRRO"
 inbox = Array[ExtResource("i")]([SubResource("p1_celia"), SubResource("p1_oficina"), SubResource("p1_placar"), SubResource("p1_chave"), SubResource("p1_nilo")])
 new_notebook_entries = Array[ExtResource("e")]([ExtResource("entry")])

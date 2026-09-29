@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_interditada"
+key = "interditada"
+text = "Circular desta semana: não dizer INTERDITADA no ar. O termo aceito é \"com tráfego alterado\"."
+category = 0
+night_added = 2

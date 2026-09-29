@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/core/data/reply_option.gd" id="rp"]
 
 [ext_resource type="Resource" path="res://data/notebook/p_ponte.tres" id="entry"]
+[ext_resource type="Resource" path="res://data/notebook/p_interditada.tres" id="circular"]
 
 [sub_resource type="Resource" id="p2_boletim_claim"]
 script = ExtResource("c")
@@ -406,11 +407,23 @@ framings = Array[ExtResource("f")]([SubResource("p2_nilo_0"), SubResource("p2_ni
 script = ExtResource("r")
 caller = "Rui / linha 2"
 transcript = "A ponte está bloqueada. Mandaram dizer que não. Sou o Rui da linha dois; podem perguntar por mim."
+block_position = 1
 trigger_seconds = 3.0
 aired_reaction = "Rui: \"Pronto, falei. Agora eles sabem que fui eu.\" O telefone da rádio volta a tocar."
 cut_reaction = "Nilo: \"O nome não saiu.\" Rui continua na prévia: \"Mas como aviso o pessoal?\""
 aired_consequence_ids = Array[String](["p_rui_air"])
 cut_consequence_ids = Array[String](["p_rui_cut"])
+
+[sub_resource type="Resource" id="call2"]
+script = ExtResource("r")
+caller = "Voz sem nome"
+transcript = "Aqui é da administração. O senhor está repetindo boato sobre a ponte. Pense bem."
+block_position = 2
+trigger_seconds = 4.0
+aired_reaction = "O técnico olha para você através do vidro e não diz nada."
+cut_reaction = "Você corta. O telefone volta a tocar duas vezes e para."
+aired_consequence_ids = Array[String]([])
+cut_consequence_ids = Array[String]([])
 
 [resource]
 script = ExtResource("n")
@@ -419,10 +432,10 @@ title = "A ponte"
 intro = "Ponte aberta, diz o boletim. Rui discorda. Confira o trecho no caderno antes de afirmar. Ele vai ligar durante o programa."
 allow_breaks = true
 propaganda_quota = 1
-call = SubResource("call")
+calls = Array[ExtResource("r")]([SubResource("call"), SubResource("call2")])
 baseline_headline = "A PONTE CONTINUA FECHADA; O BAIRRO PROCURA UM CAMINHO"
 inbox = Array[ExtResource("i")]([SubResource("p2_boletim"), SubResource("p2_rui"), SubResource("p2_celia"), SubResource("p2_oficina"), SubResource("p2_nilo")])
-new_notebook_entries = Array[ExtResource("e")]([ExtResource("entry")])
+new_notebook_entries = Array[ExtResource("e")]([ExtResource("entry"), ExtResource("circular")])
 opening_flag = "celia_music"
 opening_if_set = "O disco que Célia deixou já está na mesa."
 opening_if_unset = "Célia pergunta se hoje ainda cabe a valsa."

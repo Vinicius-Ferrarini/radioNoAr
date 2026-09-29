@@ -2,11 +2,19 @@
 
 [ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
 [ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="fw"]
+
+[sub_resource type="Resource" id="fw0"]
+script = ExtResource("fw")
+word = "interditada"
+char_start = 34
+approved_synonym = "com tráfego alterado"
 
 [sub_resource type="Resource" id="l0"]
 script = ExtResource("l")
-text = "Um motorista relata uma barreira na Ponte Velha. Ainda vamos ouvir o que ele viu."
+text = "Um motorista relata a Ponte Velha interditada. Ainda vamos ouvir o que ele viu."
 read_seconds = 6.2
+forbidden_slots = Array[ExtResource("fw")]([SubResource("fw0")])
 
 [resource]
 script = ExtResource("s")
