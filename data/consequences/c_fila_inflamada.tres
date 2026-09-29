@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_fila_inflamada"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"alignment": -5,
+"audience_trust": 6,
+"integrity": -2,
+"regime_attention": 4,
+"street_heat": 8
+}
+morning_headline = "FILAS: MINISTÉRIO NEGA DESABASTECIMENTO E CULPA PÂNICO INDUZIDO POR RÁDIOS"
+morning_letter = "Moço, depois que o senhor falou, a fila da Bandeira triplicou. Veio gente de outro bairro que não tinha por que vir. Deu quase briga na porta. Eu não sei se foi bom. — D. Célia"

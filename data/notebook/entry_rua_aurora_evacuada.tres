@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="1_nbe"]
+
+[resource]
+script = ExtResource("1_nbe")
+id = "entry_rua_aurora_evacuada"
+category = 1
+key = "rua_aurora"
+text = "Rua Aurora: evacuada anteontem de madrugada. Fecharam os dois lados. Ninguém dorme lá desde então."
+night_added = 1

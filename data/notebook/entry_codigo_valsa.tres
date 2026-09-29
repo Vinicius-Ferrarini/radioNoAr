@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="1_nbe"]
+
+[resource]
+script = ExtResource("1_nbe")
+id = "entry_codigo_valsa"
+category = 7
+key = "valsa_no_fim"
+text = "Valsa no encerramento = hoje não saiam. Combinado antes de tudo começar."
+night_added = 1

@@ -20,19 +20,19 @@ color = Color(0.07058824, 0.0627451, 0.05490196, 1)
 
 [node name="EndingText" type="RichTextLabel" parent="." unique_id=1672158308]
 layout_mode = 0
-offset_left = 60.0
-offset_top = 60.0
-offset_right = 1092.0
-offset_bottom = 460.0
+offset_left = 17.0
+offset_top = 17.0
+offset_right = 303.0
+offset_bottom = 128.0
 bbcode_enabled = true
 fit_content = true
 
 [node name="RestartButton" type="Button" parent="." unique_id=516691705]
 layout_mode = 0
-offset_left = 476.0
-offset_top = 500.0
-offset_right = 676.0
-offset_bottom = 548.0
+offset_left = 132.0
+offset_top = 139.0
+offset_right = 188.0
+offset_bottom = 152.0
 text = "Jogar novamente"
 
 [node name="FadeOverlay" type="ColorRect" parent="." unique_id=631836996]

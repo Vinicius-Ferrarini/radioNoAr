@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_nome_omitido"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"audience_trust": -4,
+"integrity": -5,
+"regime_attention": -2
+}
+morning_headline = ""
+morning_letter = "O senhor leu a carta do padeiro e a da moça do cachorro. A minha estava embaixo das duas. Eu vi quando o senhor pegou ela na mão. — a irmã"

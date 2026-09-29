@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_valvula_anunciada"
+delay_nights = 1
+condition = 1
+meter_deltas = {
+"audience_trust": -3,
+"regime_attention": 10
+}
+morning_headline = "TRÊS PESSOAS SÃO DETIDAS DE MADRUGADA EM PONTO DE ENTREGA NO CENTRO"
+morning_letter = "Fui no horário que o senhor anunciou. Não apareceu válvula nenhuma. Apareceu um carro parado com o farol aceso até as três da manhã. — O Técnico"
+flags_set = Array[String](["mordeu_isca_valvula"])

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_propaganda_ironizada"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"alignment": -7,
+"audience_trust": 10,
+"integrity": 2,
+"regime_attention": 14,
+"street_heat": 6
+}
+morning_headline = "MINISTÉRIO PEDE ATENÇÃO AO TOM DE EMISSORAS NA LEITURA DE COMUNICADOS OFICIAIS"
+morning_letter = "A gente entendeu. Todo mundo aqui em casa entendeu, até minha sogra entendeu. Espero muito que eles não tenham entendido."
+flags_set = Array[String](["ironizou_propaganda"])

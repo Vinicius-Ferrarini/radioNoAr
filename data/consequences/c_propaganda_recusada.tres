@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_propaganda_recusada"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"alignment": -4,
+"audience_trust": 3,
+"regime_attention": 18
+}
+morning_headline = "EMISSORAS DA FAIXA LIVRE PASSAM POR VISTORIA TÉCNICA DE ROTINA"
+morning_letter = "O senhor não leu o comunicado ontem. Eu estava com o rádio ligado e eles também estavam com o rádio ligado. — alguém que gosta do senhor"
+flags_set = Array[String](["recusou_cota"])

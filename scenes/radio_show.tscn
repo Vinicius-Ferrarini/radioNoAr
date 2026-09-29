@@ -20,35 +20,35 @@ color = Color(0.07058824, 0.0627451, 0.05490196, 1)
 
 [node name="NightLabel" type="Label" parent="." unique_id=1756793173]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 24.0
-offset_right = 332.0
-offset_bottom = 56.0
+offset_left = 9.0
+offset_top = 7.0
+offset_right = 92.0
+offset_bottom = 16.0
 text = "Noite 1 de 3"
 
 [node name="PowerBar" type="ProgressBar" parent="." unique_id=831686258]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 64.0
-offset_right = 432.0
-offset_bottom = 91.0
+offset_left = 9.0
+offset_top = 18.0
+offset_right = 120.0
+offset_bottom = 25.0
 value = 50.0
 
 [node name="EventText" type="RichTextLabel" parent="." unique_id=1587969134]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 110.0
-offset_right = 1120.0
-offset_bottom = 410.0
+offset_left = 9.0
+offset_top = 31.0
+offset_right = 311.0
+offset_bottom = 114.0
 bbcode_enabled = true
 fit_content = true
 
 [node name="Choices" type="VBoxContainer" parent="." unique_id=762081066]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 430.0
-offset_right = 1120.0
-offset_bottom = 610.0
+offset_left = 9.0
+offset_top = 119.0
+offset_right = 311.0
+offset_bottom = 169.0
 theme_override_constants/separation = 12
 
 [node name="Choice1" type="Button" parent="Choices" unique_id=1230923789]

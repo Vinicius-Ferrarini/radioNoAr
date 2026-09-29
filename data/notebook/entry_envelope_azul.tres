@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="1_nbe"]
+
+[resource]
+script = ExtResource("1_nbe")
+id = "entry_envelope_azul"
+category = 3
+key = "envelope_azul"
+text = "Envelope azul de lacre duplo é papel de repartição. Se chegou inteiro, alguém leu antes e deixou chegar."
+night_added = 1

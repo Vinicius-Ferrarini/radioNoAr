@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_denuncia_no_ar"
+delay_nights = 1
+condition = 1
+meter_deltas = {
+"audience_trust": -10,
+"integrity": -8,
+"regime_attention": 5,
+"street_heat": 4
+}
+morning_headline = "HOMEM ACUSADO EM PROGRAMA DE RÁDIO TEM A CASA PICHADA; ELE ESTAVA NO HOSPITAL"
+morning_letter = "Meu marido não entregou ninguém. Na noite que o senhor falou ele estava na fila do pronto-socorro comigo e com a nossa filha. E a Rua Aurora está vazia faz dois dias. O senhor não sabia?"
+flags_set = Array[String](["denuncia_falsa_no_ar"])

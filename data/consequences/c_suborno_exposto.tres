@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_suborno_exposto"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"alignment": -8,
+"audience_trust": 9,
+"integrity": 8,
+"regime_attention": 12,
+"street_heat": 3
+}
+morning_headline = "TENTARAM COMPRAR ESTA RÁDIO, DIZ APRESENTADOR; REPARTIÇÃO CHAMA DE DELÍRIO"
+morning_letter = "Não repita o que o senhor fez ontem. Quem manda envelope azul não gosta de ser citado pelo nome da cor. Isto não é ameaça, é aviso. — alguém que gosta do senhor"

@@ -1,0 +1,363 @@
+[gd_resource type="Resource" script_class="NightDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/item_claim.gd" id="1_claim"]
+[ext_resource type="Script" path="res://scripts/core/data/framing_option.gd" id="2_framing"]
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_item.gd" id="3_item"]
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="4_entry"]
+[ext_resource type="Script" path="res://scripts/core/data/night_definition.gd" id="5_night"]
+[ext_resource type="Resource" path="res://data/notebook/entry_palavra_greve.tres" id="6_e_greve"]
+[ext_resource type="Resource" path="res://data/notebook/entry_palavra_desaparecido.tres" id="7_e_desap"]
+[ext_resource type="Resource" path="res://data/notebook/entry_rua_aurora_evacuada.tres" id="8_e_aurora"]
+[ext_resource type="Resource" path="res://data/notebook/entry_toque_recolher_centro.tres" id="9_e_centro"]
+[ext_resource type="Resource" path="res://data/notebook/entry_envelope_azul.tres" id="10_e_azul"]
+[ext_resource type="Resource" path="res://data/notebook/entry_j_toledo_mentiu.tres" id="11_e_toledo"]
+[ext_resource type="Resource" path="res://data/notebook/entry_codigo_valsa.tres" id="12_e_valsa"]
+
+; ---------------------------------------------------------------------
+; A — Dona Célia, a fila do pão. Verdadeiro, e o caderno não alcança:
+; não há nenhuma entrada sobre a Rua Bandeira. Não achar nada aqui não
+; prova nada.
+; ---------------------------------------------------------------------
+
+[sub_resource type="Resource" id="claim_a_local"]
+script = ExtResource("1_claim")
+id = "c_a_local"
+field = 0
+key = "rua_bandeira"
+excerpt = "a fila do pão hoje dobrou o quarteirão"
+contradicted_by = Array[int]([1, 2])
+
+[sub_resource type="Resource" id="fr_a_lido"]
+script = ExtResource("2_framing")
+kind = 0
+immediate_deltas = {
+"audience_trust": 2
+}
+
+[sub_resource type="Resource" id="fr_a_verdade"]
+script = ExtResource("2_framing")
+kind = 1
+immediate_deltas = {
+"audience_trust": 4,
+"integrity": 3,
+"street_heat": 2
+}
+
+[sub_resource type="Resource" id="fr_a_suavizar"]
+script = ExtResource("2_framing")
+kind = 2
+immediate_deltas = {
+"audience_trust": -1,
+"integrity": -2,
+"street_heat": -3
+}
+
+[sub_resource type="Resource" id="fr_a_inflamar"]
+script = ExtResource("2_framing")
+kind = 3
+immediate_deltas = {
+"audience_trust": 5,
+"street_heat": 7
+}
+consequence_ids = Array[String](["c_fila_inflamada"])
+
+[sub_resource type="Resource" id="fr_a_descartar"]
+script = ExtResource("2_framing")
+kind = 5
+immediate_deltas = {}
+
+[sub_resource type="Resource" id="item_a"]
+script = ExtResource("3_item")
+id = "n01_msg_dona_celia"
+type = 3
+channel = 0
+sender_id = "dona_celia"
+headline = "A fila da Bandeira dobrou o quarteirão"
+body = "Moço, é a Célia da Rua Bandeira. Não é reclamação, é só pro senhor saber: a fila do pão hoje dobrou o quarteirão e passou da esquina da farmácia. Tinha gente sentada no meio-fio com a senha na mão desde as quatro da manhã. Ninguém falou em greve nem em nada disso, é fila mesmo. Mas eu moro aqui faz quarenta anos e nunca vi assim."
+claims = Array[ExtResource("1_claim")]([SubResource("claim_a_local")])
+framings = Array[ExtResource("2_framing")]([SubResource("fr_a_lido"), SubResource("fr_a_verdade"), SubResource("fr_a_suavizar"), SubResource("fr_a_inflamar"), SubResource("fr_a_descartar")])
+counts_for_quota = false
+is_fraudulent = false
+
+; ---------------------------------------------------------------------
+; B — Denúncia do J. Toledo. FALSA, e detectável por dois caminhos:
+; a Rua Aurora está evacuada e o próprio Toledo já mentiu antes.
+; ---------------------------------------------------------------------
+
+[sub_resource type="Resource" id="claim_b_local"]
+script = ExtResource("1_claim")
+id = "c_b_local"
+field = 0
+key = "rua_aurora"
+excerpt = "o sujeito do sobrado da Rua Aurora, aquele do portão verde"
+contradicted_by = Array[int]([1])
+
+[sub_resource type="Resource" id="claim_b_remetente"]
+script = ExtResource("1_claim")
+id = "c_b_remetente"
+field = 8
+key = "j_toledo"
+excerpt = "Aqui é o Toledo, o senhor me conhece"
+contradicted_by = Array[int]([6])
+
+[sub_resource type="Resource" id="fr_b_lido"]
+script = ExtResource("2_framing")
+kind = 0
+immediate_deltas = {
+"audience_trust": 3,
+"street_heat": 5
+}
+consequence_ids = Array[String](["c_denuncia_no_ar"])
+
+[sub_resource type="Resource" id="fr_b_verdade"]
+script = ExtResource("2_framing")
+kind = 1
+immediate_deltas = {
+"audience_trust": 2,
+"integrity": 4
+}
+consequence_ids = Array[String](["c_denuncia_checada"])
+
+[sub_resource type="Resource" id="fr_b_inflamar"]
+script = ExtResource("2_framing")
+kind = 3
+immediate_deltas = {
+"audience_trust": 6,
+"integrity": -4,
+"street_heat": 9
+}
+consequence_ids = Array[String](["c_denuncia_no_ar"])
+
+[sub_resource type="Resource" id="fr_b_descartar"]
+script = ExtResource("2_framing")
+kind = 5
+immediate_deltas = {}
+
+[sub_resource type="Resource" id="item_b"]
+script = ExtResource("3_item")
+id = "n01_msg_toledo"
+type = 2
+channel = 0
+sender_id = "j_toledo"
+headline = "Vizinho da Aurora estaria entregando nomes"
+body = "Aqui é o Toledo, o senhor me conhece. Ontem à noite eu vi com estes olhos o sujeito do sobrado da Rua Aurora, aquele do portão verde, conversando com dois homens dentro de um carro preto e passando uma lista na mão. Fala o número do sobrado no ar que o bairro inteiro sabe de quem eu estou falando."
+claims = Array[ExtResource("1_claim")]([SubResource("claim_b_local"), SubResource("claim_b_remetente")])
+framings = Array[ExtResource("2_framing")]([SubResource("fr_b_lido"), SubResource("fr_b_verdade"), SubResource("fr_b_inflamar"), SubResource("fr_b_descartar")])
+counts_for_quota = false
+is_fraudulent = true
+
+; ---------------------------------------------------------------------
+; C — A irmã de A. Mendes. VERDADEIRO, e o caderno também não alcança.
+; Dizer o nome protege ou condena, e o jogo não avisa qual.
+; ---------------------------------------------------------------------
+
+[sub_resource type="Resource" id="claim_c_nome"]
+script = ExtResource("1_claim")
+id = "c_c_nome"
+field = 2
+key = "a_mendes"
+excerpt = "o nome dele no ar, A. Mendes"
+contradicted_by = Array[int]([4, 5])
+
+[sub_resource type="Resource" id="fr_c_lido"]
+script = ExtResource("2_framing")
+kind = 0
+immediate_deltas = {
+"audience_trust": 4,
+"street_heat": 3
+}
+consequence_ids = Array[String](["c_nome_no_ar"])
+
+[sub_resource type="Resource" id="fr_c_verdade"]
+script = ExtResource("2_framing")
+kind = 1
+immediate_deltas = {
+"audience_trust": 6,
+"integrity": 4,
+"street_heat": 4
+}
+consequence_ids = Array[String](["c_nome_no_ar"])
+
+[sub_resource type="Resource" id="fr_c_suavizar"]
+script = ExtResource("2_framing")
+kind = 2
+immediate_deltas = {
+"audience_trust": -1,
+"integrity": -3
+}
+consequence_ids = Array[String](["c_nome_omitido"])
+
+[sub_resource type="Resource" id="fr_c_descartar"]
+script = ExtResource("2_framing")
+kind = 5
+immediate_deltas = {}
+consequence_ids = Array[String](["c_nome_omitido"])
+
+[sub_resource type="Resource" id="item_c"]
+script = ExtResource("3_item")
+id = "n01_carta_a_mendes"
+type = 4
+channel = 1
+sender_id = "irma_de_a_mendes"
+headline = "Uma carta pedindo um nome no ar"
+body = "Meu irmão saiu para o turno da noite na quinta-feira e não voltou. Na delegacia dizem que não há registro. No hospital dizem que não há registro. Se o senhor disser o nome dele no ar, A. Mendes, quem viu alguma coisa vai saber que tem gente procurando. Eu sei o que estou pedindo ao senhor. Escrevi esta carta três vezes antes de botar no correio."
+claims = Array[ExtResource("1_claim")]([SubResource("claim_c_nome")])
+framings = Array[ExtResource("2_framing")]([SubResource("fr_c_lido"), SubResource("fr_c_verdade"), SubResource("fr_c_suavizar"), SubResource("fr_c_descartar")])
+counts_for_quota = false
+is_fraudulent = false
+
+; ---------------------------------------------------------------------
+; D — O envelope azul. A proposta é real; o que o caderno denuncia é
+; que ela passou pela censura antes de chegar. Descartar é aceitar.
+; ---------------------------------------------------------------------
+
+[sub_resource type="Resource" id="claim_d_lacre"]
+script = ExtResource("1_claim")
+id = "c_d_lacre"
+field = 5
+key = "envelope_azul"
+excerpt = "envelope azul, lacre duplo, chegou inteiro"
+contradicted_by = Array[int]([3])
+
+[sub_resource type="Resource" id="fr_d_verdade"]
+script = ExtResource("2_framing")
+kind = 1
+immediate_deltas = {
+"audience_trust": 5,
+"integrity": 6
+}
+consequence_ids = Array[String](["c_suborno_exposto"])
+
+[sub_resource type="Resource" id="fr_d_inflamar"]
+script = ExtResource("2_framing")
+kind = 3
+immediate_deltas = {
+"audience_trust": 7,
+"integrity": 2,
+"street_heat": 6
+}
+consequence_ids = Array[String](["c_suborno_exposto"])
+
+[sub_resource type="Resource" id="fr_d_descartar"]
+script = ExtResource("2_framing")
+kind = 5
+immediate_deltas = {}
+consequence_ids = Array[String](["c_suborno_aceito"])
+
+[sub_resource type="Resource" id="item_d"]
+script = ExtResource("3_item")
+id = "n01_carta_envelope_azul"
+type = 0
+channel = 1
+sender_id = "remetente_sem_nome"
+headline = "Envelope azul, sem remetente"
+body = "Prezado senhor. Reconhecemos a dificuldade de manter uma emissora independente em funcionamento nestes tempos. Duzentos litros de combustível podem ser entregues na sexta-feira, sem nota e sem constrangimento para ninguém, desde que a programação desta semana não mencione a paralisação do turno da noite. Não é preciso responder a esta carta. Basta não falar."
+claims = Array[ExtResource("1_claim")]([SubResource("claim_d_lacre")])
+framings = Array[ExtResource("2_framing")]([SubResource("fr_d_verdade"), SubResource("fr_d_inflamar"), SubResource("fr_d_descartar")])
+counts_for_quota = false
+is_fraudulent = false
+
+; ---------------------------------------------------------------------
+; E — A válvula 807. FALSO: é isca. O horário da entrega cai depois do
+; toque de recolher do Centro.
+; ---------------------------------------------------------------------
+
+[sub_resource type="Resource" id="claim_e_entrega"]
+script = ExtResource("1_claim")
+id = "c_e_entrega"
+field = 0
+key = "centro"
+excerpt = "onze da noite, na esquina do Centro com a praça"
+contradicted_by = Array[int]([2])
+
+[sub_resource type="Resource" id="fr_e_lido"]
+script = ExtResource("2_framing")
+kind = 0
+immediate_deltas = {
+"audience_trust": 1
+}
+consequence_ids = Array[String](["c_valvula_anunciada"])
+
+[sub_resource type="Resource" id="fr_e_verdade"]
+script = ExtResource("2_framing")
+kind = 1
+immediate_deltas = {
+"audience_trust": 3,
+"integrity": 3
+}
+
+[sub_resource type="Resource" id="fr_e_descartar"]
+script = ExtResource("2_framing")
+kind = 5
+immediate_deltas = {}
+
+[sub_resource type="Resource" id="item_e"]
+script = ExtResource("3_item")
+id = "n01_msg_valvula"
+type = 1
+channel = 0
+sender_id = "oficina_portao_doze"
+headline = "Uma válvula 807 em troca de trinta segundos"
+body = "Tenho uma válvula 807 nova na caixa, dessas que o seu transmissor come de dois em dois meses. Não quero dinheiro. Quero que o senhor anuncie no ar que a oficina do Portão Doze está aberta e atende quem precisar. Entrego hoje mesmo, onze da noite, na esquina do Centro com a praça. É só mandar alguém de confiança."
+claims = Array[ExtResource("1_claim")]([SubResource("claim_e_entrega")])
+framings = Array[ExtResource("2_framing")]([SubResource("fr_e_lido"), SubResource("fr_e_verdade"), SubResource("fr_e_descartar")])
+counts_for_quota = false
+is_fraudulent = true
+
+; ---------------------------------------------------------------------
+; F — Comunicado oficial. Conta para a cota. Contradiz o caderno na Rua
+; Aurora, e é isso que abre a ironia.
+; ---------------------------------------------------------------------
+
+[sub_resource type="Resource" id="claim_f_aurora"]
+script = ExtResource("1_claim")
+id = "c_f_aurora"
+field = 0
+key = "rua_aurora"
+excerpt = "a Rua Aurora amanheceu em plena normalidade"
+contradicted_by = Array[int]([1])
+
+[sub_resource type="Resource" id="fr_f_lido"]
+script = ExtResource("2_framing")
+kind = 0
+immediate_deltas = {
+"alignment": 5,
+"audience_trust": -5,
+"regime_attention": -6
+}
+
+[sub_resource type="Resource" id="fr_f_ironia"]
+script = ExtResource("2_framing")
+kind = 4
+immediate_deltas = {
+"audience_trust": 8,
+"street_heat": 4
+}
+consequence_ids = Array[String](["c_propaganda_ironizada"])
+
+[sub_resource type="Resource" id="fr_f_descartar"]
+script = ExtResource("2_framing")
+kind = 5
+immediate_deltas = {}
+consequence_ids = Array[String](["c_propaganda_recusada"])
+
+[sub_resource type="Resource" id="item_f"]
+script = ExtResource("3_item")
+id = "n01_propaganda_normalidade"
+type = 5
+channel = 3
+sender_id = "ministerio_das_comunicacoes"
+headline = "Comunicado oficial nº 114"
+body = "O Ministério das Comunicações informa à população que não há qualquer paralisação em curso no país, e que as filas registradas em alguns bairros decorrem de procura espontânea e temporária. Informa ainda que a Rua Aurora amanheceu em plena normalidade, com comércio aberto e circulação regular de moradores. Reitera que a divulgação de informação não confirmada constitui crime previsto nas medidas de emergência."
+claims = Array[ExtResource("1_claim")]([SubResource("claim_f_aurora")])
+framings = Array[ExtResource("2_framing")]([SubResource("fr_f_lido"), SubResource("fr_f_ironia"), SubResource("fr_f_descartar")])
+counts_for_quota = true
+is_fraudulent = true
+
+[resource]
+script = ExtResource("5_night")
+night = 1
+era = 0
+inbox = Array[ExtResource("3_item")]([SubResource("item_a"), SubResource("item_b"), SubResource("item_c"), SubResource("item_d"), SubResource("item_e"), SubResource("item_f")])
+propaganda_quota = 1
+new_notebook_entries = Array[ExtResource("4_entry")]([ExtResource("6_e_greve"), ExtResource("7_e_desap"), ExtResource("8_e_aurora"), ExtResource("9_e_centro"), ExtResource("10_e_azul"), ExtResource("11_e_toledo"), ExtResource("12_e_valsa")])

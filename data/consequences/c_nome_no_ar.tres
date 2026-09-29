@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_nome_no_ar"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"alignment": -6,
+"audience_trust": 7,
+"integrity": 5,
+"regime_attention": 9,
+"street_heat": 5
+}
+morning_headline = "FAMÍLIA É RECEBIDA NA DELEGACIA CENTRAL APÓS NOME SER CITADO EM RÁDIO"
+morning_letter = "Obrigada por dizer o nome dele em voz alta. Ligaram de três bairros dizendo que viram. Ligou também um número que não fala nada, só respira. — a irmã"
+flags_set = Array[String](["nome_dito_no_ar"])

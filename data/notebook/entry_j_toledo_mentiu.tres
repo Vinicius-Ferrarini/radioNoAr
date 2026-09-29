@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="1_nbe"]
+
+[resource]
+script = ExtResource("1_nbe")
+id = "entry_j_toledo_mentiu"
+category = 6
+key = "j_toledo"
+text = "J. Toledo jurou que tinha visto o incêndio do galpão. Não houve incêndio nenhum. Conferir tudo que vier dele."
+night_added = 1

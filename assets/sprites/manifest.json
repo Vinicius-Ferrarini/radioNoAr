@@ -1,0 +1,176 @@
+{
+	"sprites": [
+		{
+			"height": 16,
+			"name": "block_slot",
+			"nine_patch": 5,
+			"palette": [
+				"desk_dark",
+				"desk_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/block_slot.png",
+			"sha256": "8377de88959f841eddea70a07ff291a0e4b225c12435bdcfd612d97ab31780ba",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "block_slot_quota",
+			"nine_patch": 5,
+			"palette": [
+				"desk_dark",
+				"red_hi"
+			],
+			"path": "res://assets/sprites/block_slot_quota.png",
+			"sha256": "222ff2a51871ca81c8450864cd3c6426a32b1b684454113b0a8a1e9270822038",
+			"width": 16
+		},
+		{
+			"height": 26,
+			"name": "desk_lamp",
+			"palette": [
+				"amber_dim",
+				"amber_mid",
+				"desk_dark",
+				"desk_hi",
+				"glow",
+				"shadow"
+			],
+			"path": "res://assets/sprites/desk_lamp.png",
+			"sha256": "8e975fe2e456fe25f2241f1d9ff9b2ea38f4b4da7708523c41211c7959e47bb6",
+			"width": 20
+		},
+		{
+			"height": 24,
+			"name": "desk_surface",
+			"nine_patch": 6,
+			"palette": [
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"shadow"
+			],
+			"path": "res://assets/sprites/desk_surface.png",
+			"sha256": "8bddb569bcc6af91d2c7f83be5960ce61158cbb1a4c3a73887f7f629a7afec4f",
+			"width": 24
+		},
+		{
+			"height": 26,
+			"name": "letter_stack",
+			"palette": [
+				"paper",
+				"paper_dark",
+				"paper_shade",
+				"red_dim"
+			],
+			"path": "res://assets/sprites/letter_stack.png",
+			"sha256": "2ee5d0d43366bb37b85c7a3a11c333befa9ac9f33efdc09382d18f312713b882",
+			"width": 44
+		},
+		{
+			"height": 22,
+			"name": "listeners_dial",
+			"palette": [
+				"amber_dim",
+				"amber_hi",
+				"amber_mid",
+				"desk_dark",
+				"desk_hi",
+				"ink",
+				"paper_dark",
+				"red_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/listeners_dial.png",
+			"sha256": "5122084727d37b9cc8e09659afa46a71b2e12eff137c344e4a2b8f369735ac4f",
+			"width": 56
+		},
+		{
+			"height": 48,
+			"name": "microphone",
+			"palette": [
+				"amber_dim",
+				"amber_mid",
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"shadow"
+			],
+			"path": "res://assets/sprites/microphone.png",
+			"sha256": "6fd559d90cc8a28cb450e476ee7f807108d1d4b2c9b503e2b08da99d8d586d38",
+			"width": 28
+		},
+		{
+			"height": 26,
+			"name": "notebook",
+			"palette": [
+				"desk_hi",
+				"paper",
+				"paper_dark",
+				"red_dim"
+			],
+			"path": "res://assets/sprites/notebook.png",
+			"sha256": "9e9e08f171a7da1ef12274e68a35a9e817b0223ac064203091f23e4165bf633a",
+			"width": 34
+		},
+		{
+			"height": 14,
+			"name": "on_air_sign",
+			"palette": [
+				"desk_hi",
+				"red_dim",
+				"red_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/on_air_sign.png",
+			"sha256": "927b7c000f9c75dfd80c60b9cadbb697457309bff728ccc059d8d206477fa999",
+			"width": 40
+		},
+		{
+			"height": 44,
+			"name": "phone",
+			"palette": [
+				"desk_dark",
+				"desk_hi",
+				"night_blue",
+				"shadow",
+				"street_blue"
+			],
+			"path": "res://assets/sprites/phone.png",
+			"sha256": "d505201f65a6043f8848034f1f0216f1282676e433414f5bc41879580eb955c7",
+			"width": 26
+		},
+		{
+			"height": 24,
+			"name": "teleprompter_frame",
+			"nine_patch": 8,
+			"palette": [
+				"amber_dim",
+				"desk_dark",
+				"desk_hi",
+				"ink",
+				"shadow"
+			],
+			"path": "res://assets/sprites/teleprompter_frame.png",
+			"sha256": "f41f239511920d170be87d7236bfbed3611623e801751446b835f86521e39453",
+			"width": 24
+		},
+		{
+			"height": 56,
+			"name": "window_night",
+			"palette": [
+				"amber_dim",
+				"cold_glow",
+				"desk_hi",
+				"night_blue",
+				"night_deep",
+				"shadow",
+				"street_blue",
+				"street_hi"
+			],
+			"path": "res://assets/sprites/window_night.png",
+			"sha256": "9973b9d0602f7a0585f4b4c4f72774376cdaaa45c5e93f5ee38fb869bbaaf1f5",
+			"width": 96
+		}
+	]
+}

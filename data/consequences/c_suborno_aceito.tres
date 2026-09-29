@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_suborno_aceito"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"alignment": 6,
+"integrity": -10,
+"regime_attention": -4
+}
+morning_headline = ""
+morning_letter = "Chegou o combustível de madrugada. Duzentos litros, sem nota e sem nome. O Técnico perguntou de onde tinha vindo e eu fiquei sem resposta."
+flags_set = Array[String](["aceitou_suborno"])

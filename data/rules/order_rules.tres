@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="OrderRuleSet" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/order_rule.gd" id="1_rule"]
+[ext_resource type="Script" path="res://scripts/core/data/order_rule_set.gd" id="2_set"]
+
+[sub_resource type="Resource" id="rule_denuncia_propaganda"]
+script = ExtResource("1_rule")
+id = "denuncia_seguida_de_propaganda"
+previous_type = 2
+next_type = 5
+meter_deltas = {
+"audience_trust": 4,
+"regime_attention": 3,
+"street_heat": 2
+}
+description = "Comunicado oficial logo depois de uma denúncia soa como ironia, mesmo lido com voz de missa. A audiência entende. Às vezes o regime também."
+
+[sub_resource type="Resource" id="rule_pedido_propaganda"]
+script = ExtResource("1_rule")
+id = "pedido_de_ajuda_seguido_de_propaganda"
+previous_type = 4
+next_type = 5
+meter_deltas = {
+"audience_trust": -5,
+"street_heat": 4
+}
+description = "Cortar de um pedido de socorro direto para a nota do Ministério soa como deboche com quem pediu ajuda."
+
+[sub_resource type="Resource" id="rule_propaganda_dupla"]
+script = ExtResource("1_rule")
+id = "dois_comunicados_seguidos"
+previous_type = 5
+next_type = 5
+meter_deltas = {
+"alignment": 5,
+"audience_trust": -6,
+"regime_attention": -4
+}
+description = "Dois comunicados oficiais em sequência param de parecer cota e passam a parecer programa do governo."
+
+[sub_resource type="Resource" id="rule_suborno_propaganda"]
+script = ExtResource("1_rule")
+id = "suborno_seguido_de_propaganda"
+previous_type = 0
+next_type = 5
+meter_deltas = {
+"regime_attention": 5
+}
+description = "Falar de um suborno e emendar no comunicado oficial deixa no ar uma pergunta que ninguém precisou fazer."
+
+[resource]
+script = ExtResource("2_set")
+rules = Array[ExtResource("1_rule")]([SubResource("rule_denuncia_propaganda"), SubResource("rule_pedido_propaganda"), SubResource("rule_propaganda_dupla"), SubResource("rule_suborno_propaganda")])

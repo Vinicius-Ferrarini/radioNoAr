@@ -4,38 +4,38 @@
 [ext_resource type="FontFile" path="res://assets/fonts/CourierPrime-Regular.ttf" id="2_4yjuo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gco77"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.21000001, 0.20333335, 0.19666667, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6l1ye"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.4537255, 0.14784314, 0.11980392, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ytkp"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.69803923, 0.22745098, 0.18431373, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rucdj"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.4537255, 0.14784314, 0.11980392, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_omiwu"]
-content_margin_left = 12.0
-content_margin_top = 12.0
-content_margin_right = 12.0
-content_margin_bottom = 12.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.31411764, 0.10235294, 0.082941175, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wxyd"]
@@ -54,7 +54,7 @@ bg_color = Color(0.69803923, 0.22745098, 0.18431373, 1)
 
 [resource]
 default_font = ExtResource("2_4yjuo")
-default_font_size = 20
+default_font_size = 7
 Button/colors/font_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
 Button/colors/font_focus_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
 Button/colors/font_hover_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
@@ -68,7 +68,7 @@ Label/colors/font_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
 ProgressBar/styles/background = SubResource("StyleBoxFlat_5wxyd")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_fppmr")
 RichTextLabel/colors/default_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
-RichTextLabel/font_sizes/bold_font_size = 28
-RichTextLabel/font_sizes/normal_font_size = 20
+RichTextLabel/font_sizes/bold_font_size = 10
+RichTextLabel/font_sizes/normal_font_size = 7
 RichTextLabel/fonts/bold_font = ExtResource("1_nrt0f")
 RichTextLabel/fonts/normal_font = ExtResource("2_4yjuo")

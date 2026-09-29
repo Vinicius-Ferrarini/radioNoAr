@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="1_nbe"]
+
+[resource]
+script = ExtResource("1_nbe")
+id = "entry_toque_recolher_centro"
+category = 2
+key = "centro"
+text = "Centro: toque de recolher às 22h. Depois disso, quem está na rua ou é do governo ou vai ser levado."
+night_added = 1

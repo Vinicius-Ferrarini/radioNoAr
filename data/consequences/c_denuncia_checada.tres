@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="1_cons"]
+
+[resource]
+script = ExtResource("1_cons")
+id = "c_denuncia_checada"
+delay_nights = 1
+condition = 0
+meter_deltas = {
+"audience_trust": 8,
+"integrity": 6,
+"regime_attention": 2,
+"street_heat": -2
+}
+morning_headline = "EMISSORA DESMENTE NO AR DENÚNCIA QUE ELA MESMA HAVIA RECEBIDO"
+morning_letter = "Foi a primeira vez na vida que ouvi alguém dizer no rádio: isto que me mandaram é mentira. Meu pai levantou da cadeira."
+flags_set = Array[String](["desmentiu_ao_vivo"])
