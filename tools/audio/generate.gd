@@ -13,14 +13,21 @@ func _init() -> void:
 	_write("neighborhood_waltz", 6.0, 3)
 	_write("workshop_ad", 6.0, 4)
 	_write("line_cut", 0.3, 5)
+	# Leitos contínuos: sem envelope nas pontas, para o loop não pulsar.
+	_write("room_tone", 4.0, 6, true)
+	_write("radio_static", 2.0, 7, true)
 	quit()
 
 
-func _write(id: String, duration: float, kind: int) -> void:
+func _write(id: String, duration: float, kind: int, seamless: bool = false) -> void:
 	var data := PackedByteArray()
 	var count := int(RATE * duration)
 	data.resize(count * 2)
 	var melody := [261.63, 329.63, 392.0, 329.63, 293.66, 349.23, 440.0, 349.23]
+	# Ruído reproduzível: semente fixa, para o mesmo WAV sair sempre igual.
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 20260929
+	var previous := 0.0
 	for i in count:
 		var t := float(i) / RATE
 		var wave := 0.0
@@ -33,7 +40,18 @@ func _write(id: String, duration: float, kind: int) -> void:
 				wave = (sin(TAU * frequency * t) + 0.25 * sin(TAU * frequency * 2 * t)) * 0.22 * (1.0 - fmod(t, 0.5))
 			4: wave = sin(TAU * float([392, 523, 659, 523][int(t * 3) % 4]) * t) * 0.22
 			5: wave = sin(TAU * 160 * t) * exp(-t * 12.0) * 0.4
-		var envelope := minf(1.0, t * 60.0) * minf(1.0, (duration - t) * 30.0)
+			6:
+				# Zumbido do estúdio à noite: harmônicas da rede elétrica em
+				# ciclos inteiros dentro da duração, para emendar sem estalo.
+				wave = (sin(TAU * 50.0 * t) * 0.6 + sin(TAU * 100.0 * t) * 0.25
+					+ sin(TAU * 150.0 * t) * 0.1) * 0.09
+				wave += sin(TAU * 0.5 * t) * 0.01
+			7:
+				# Estática: ruído filtrado por média com a amostra anterior.
+				var white := rng.randf_range(-1.0, 1.0)
+				previous = previous * 0.72 + white * 0.28
+				wave = previous * 0.5
+		var envelope := 1.0 if seamless 			else minf(1.0, t * 60.0) * minf(1.0, (duration - t) * 30.0)
 		data.encode_s16(i * 2, int(clampf(wave * envelope, -1, 1) * 18000))
 	var audio := AudioStreamWAV.new()
 	audio.format = AudioStreamWAV.FORMAT_16_BITS
