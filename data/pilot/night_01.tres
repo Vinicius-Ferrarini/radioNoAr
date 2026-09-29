@@ -6,8 +6,101 @@
 [ext_resource type="Script" path="res://scripts/core/data/item_claim.gd" id="c"]
 [ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="e"]
 [ext_resource type="Script" path="res://scripts/core/data/radio_call.gd" id="r"]
+[ext_resource type="Script" path="res://scripts/core/data/chat_message.gd" id="m"]
+[ext_resource type="Script" path="res://scripts/core/data/reply_option.gd" id="rp"]
 
 [ext_resource type="Resource" path="res://data/notebook/p_placar.tres" id="entry"]
+
+[sub_resource type="Resource" id="celia_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Boa noite, seu Nilo. É a Célia, da rua de baixo."
+delay_seconds = 0.0
+at = "19:10"
+
+[sub_resource type="Resource" id="celia_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Hoje faz quarenta anos que eu e o Osvaldo casamos."
+delay_seconds = 1.8
+at = "19:10"
+
+[sub_resource type="Resource" id="celia_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Ele vive dizendo que não dança mais."
+delay_seconds = 1.6
+at = "19:11"
+
+[sub_resource type="Resource" id="celia_t4"]
+script = ExtResource("m")
+from_me = false
+text = "Mas já afastou a mesa da sala."
+delay_seconds = 1.4
+at = "19:11"
+
+[sub_resource type="Resource" id="celia_t5"]
+script = ExtResource("m")
+from_me = false
+text = "Toca a nossa valsa hoje?"
+delay_seconds = 1.6
+at = "19:11"
+
+[sub_resource type="Resource" id="celia_a1"]
+script = ExtResource("m")
+from_me = false
+text = "Ai, que vergonha boa. Obrigada, meu filho."
+delay_seconds = 1.5
+at = "19:12"
+
+[sub_resource type="Resource" id="celia_a2"]
+script = ExtResource("m")
+from_me = false
+text = "Vou mandar ele sentar perto do rádio."
+delay_seconds = 1.6
+at = "19:12"
+
+[sub_resource type="Resource" id="celia_b1"]
+script = ExtResource("m")
+from_me = false
+text = "Tudo bem. Ele é tímido mesmo."
+delay_seconds = 1.5
+at = "19:12"
+
+[sub_resource type="Resource" id="celia_c1"]
+script = ExtResource("m")
+from_me = false
+text = "Eu entendo, o programa é seu."
+delay_seconds = 1.5
+at = "19:12"
+
+[sub_resource type="Resource" id="celia_c2"]
+script = ExtResource("m")
+from_me = false
+text = "Fica para o ano que vem, então."
+delay_seconds = 1.8
+at = "19:13"
+
+[sub_resource type="Resource" id="celia_parabens"]
+script = ExtResource("rp")
+id = "celia_parabens"
+text = "Dou os parabéns no ar."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("celia_a1"), SubResource("celia_a2")])
+
+[sub_resource type="Resource" id="celia_abraco"]
+script = ExtResource("rp")
+id = "celia_abraco"
+text = "Mando um abraço, sem nome."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("celia_b1")])
+
+[sub_resource type="Resource" id="celia_guardar"]
+script = ExtResource("rp")
+id = "celia_guardar"
+text = "Hoje não dá, dona Célia."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("celia_c1"), SubResource("celia_c2")])
 
 [sub_resource type="Resource" id="p1_celia_0"]
 script = ExtResource("f")
@@ -43,6 +136,8 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p1_celia_0"), SubResource("p1_celia_2"), SubResource("p1_celia_5")])
+thread = Array[ExtResource("m")]([SubResource("celia_t1"), SubResource("celia_t2"), SubResource("celia_t3"), SubResource("celia_t4"), SubResource("celia_t5")])
+replies = Array[ExtResource("rp")]([SubResource("celia_parabens"), SubResource("celia_abraco"), SubResource("celia_guardar")])
 
 [sub_resource type="Resource" id="p1_oficina_0"]
 script = ExtResource("f")
