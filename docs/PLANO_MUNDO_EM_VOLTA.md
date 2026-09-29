@@ -58,6 +58,43 @@ superfície da decisão e a existência de um lugar fora do estúdio.
 Nada é apagado em silêncio: eliminar a régua do fluxo do celular mexe em
 testes existentes, e isso fica registrado no ADR 0013.
 
+## Validação do plano (2026-09-29, depois da Fase 1)
+
+Revisado contra o código, não de memória. **O plano segue de pé**: as três
+mudanças estruturais e a ordem das fases continuam valendo. O que mudou:
+
+**Feito na Fase 1.** Dados (`ChatMessage`, `ReplyOption`), lógica pura
+(`Conversation`, `GameClock`), o celular como aparelho em pé com lista de
+conversas, e as **quatro conversas da noite 1 escritas** — nenhuma
+sintetizada. A régua saiu do fluxo de celular e ficou no papel.
+
+**Passou do que o plano previa**, por pedido do playtest: a lista de
+conversas com não lidas, a data da noite (15/07/2008) e o relógio que
+começa às 19:00 e marca a hora de cada fala. O plano falava só de "thread
+com histórico".
+
+**Falta na Fase 1:** as conversas das noites 2 e 3 — sete itens de
+celular, hoje ainda sintetizados a partir do corpo da mensagem. Funcionam,
+mas chegam como um balão único.
+
+**Duas premissas do plano precisam de correção:**
+
+- A Fase 2 dizia "`read_seconds` de 6 a 8 s". Medido: a linha mais longa
+  da noite 1 já tem 6,2 s, e os roteiros somam de 5 a 12 s. Não é a
+  duração da linha que faz o bloco parecer longo — é serem duas linhas
+  **sem nada para fazer**. O trabalho da Fase 2 é interação (fila de
+  ligações, palavra proibida chegando), não encurtar dado.
+- A linha 4 da tabela (marcar suspeito) virou **dívida**, não ajuste:
+  quando o celular saiu do `CloseItem`, o botão de suspeita ficou sem
+  superfície para item de celular. Nenhuma consequência do piloto usa
+  `FRAUD_CAUGHT` hoje, então nada quebrou — mas a mecânica está sem porta
+  no aparelho. Decidir entre devolvê-la ao celular ou cumprir o que a
+  tabela previa: anotação visível no caderno.
+
+**Parcial:** a linha 3 (cruzar trecho × caderno) manteve a regra e ganhou
+fichas conferíveis dentro da conversa, com o trecho palavra por palavra —
+mas não é ainda "arrastar a mensagem para a página do caderno".
+
 ## As três mudanças estruturais
 
 ### 1. A conversa é a decisão
