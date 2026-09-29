@@ -397,15 +397,27 @@ func _on_live_block_started(position: int, total: int, headline: String) -> void
 	_refresh_live()
 
 
+## Abrir e fechar o microfone continuam sendo duas entradas separadas: a
+## chave da mesa apenas escolhe qual delas chamar. Assim o caminho que o
+## jogador percorre e o que os testes exercitam sao o mesmo.
 func _on_mic_down() -> void:
 	if _is_live():
 		GameState.set_mic_held(true)
 
 
-func _toggle_mic() -> void:
+func _on_mic_up() -> void:
 	if _is_live():
-		GameState.toggle_microphone()
-		_play_sound(_SWITCH)
+		GameState.set_mic_held(false)
+
+
+func _toggle_mic() -> void:
+	if not _is_live():
+		return
+	if GameState.microphone_open():
+		_on_mic_up()
+	else:
+		_on_mic_down()
+	_play_sound(_SWITCH)
 
 
 func _cut_call() -> void:
@@ -417,11 +429,6 @@ func _cut_call() -> void:
 func _play_sound(stream: AudioStream) -> void:
 	_sfx.stream = stream
 	_sfx.play()
-
-
-func _on_mic_up() -> void:
-	if _is_live():
-		GameState.set_mic_held(false)
 
 
 ## As palavras proibidas vão para o roteiro como link invisível: clicar
