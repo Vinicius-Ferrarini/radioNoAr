@@ -25,6 +25,7 @@ const EXPECTED_NODES := [
 	"Header/QuotaLabel",
 	"Header/AudienceLabel",
 	"Header/GoOnAirButton",
+	"EnterAirButton",
 	"Closes/CloseItem",
 	"Closes/CloseNotebook",
 	"Closes/FramingStrip",
@@ -345,6 +346,39 @@ func test_an_incomplete_program_says_what_is_missing() -> void:
 	_drop_on_block(1, "n01_msg_toledo")
 	assert_string_contains(_node("Feedback").text, "Bloco 2: escolha",
 		"o rodape acompanha o bloco em que o jogador esta mexendo")
+
+
+## O botao dedicado nunca fica desabilitado e nunca fica calado: em
+## qualquer estado ele responde, e antes do ar ele abre o que falta.
+func test_the_enter_air_button_always_answers() -> void:
+	var button: Button = _node("EnterAirButton")
+	assert_false(button.disabled, "este botao nunca fica desabilitado")
+
+	# Mesa vazia: manda encher o bloco 1 e abre o celular para isso.
+	button.pressed.emit()
+	assert_eq(GameState.current_phase(), NightCycle.Phase.TRIAGE)
+	assert_string_contains(_node("Feedback").text, "Bloco 1 vazio")
+	assert_true(_close_item().visible, "abre o celular, onde estao as pessoas")
+	assert_false(button.disabled)
+
+	# Item sem enquadramento: abre a regua do bloco que falta.
+	_drop_on_block(0, "n01_msg_dona_celia")
+	_root._show_desk()
+	button.pressed.emit()
+	assert_string_contains(_node("Feedback").text, "Bloco 1: escolha")
+	assert_true(_node("Closes/FramingStrip").visible, "abre a regua do bloco 1")
+	assert_false(button.disabled)
+
+	# Programa completo: sobe ao ar de verdade.
+	_schedule_whole_program()
+	button.pressed.emit()
+	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)
+	assert_false(button.disabled, "no ar ele continua clicavel")
+
+	# Já no ar: continua respondendo, sem quebrar a transmissao.
+	button.pressed.emit()
+	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)
+	assert_string_contains(_node("Feedback").text, "já está no ar")
 
 
 ## Arrastar para um bloco ocupado nao pode ser silencioso.

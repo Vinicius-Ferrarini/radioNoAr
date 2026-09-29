@@ -52,6 +52,7 @@ const _RESULT_MESSAGES := {
 @onready var _block_label: Label = $Studio/BlockLabel
 @onready var _microphone: TextureButton = $Studio/Microphone
 @onready var _on_air_sign: TextureRect = $Studio/OnAirSign
+@onready var _enter_air: Button = $EnterAirButton
 @onready var _call_panel: Control = $CallPanel
 @onready var _call_text: Label = $CallPanel/Transcript
 @onready var _call_status: Label = $CallPanel/Status
@@ -99,6 +100,7 @@ func _ready() -> void:
 	GameState.live_block_started.connect(_on_live_block_started)
 	GameState.live_events.connect(_on_live_events)
 
+	_enter_air.pressed.connect(_on_enter_air_pressed)
 	_microphone.pressed.connect(_toggle_mic)
 	_mic_switch.pressed.connect(_toggle_mic)
 	_cut_button.pressed.connect(_cut_call)
@@ -421,6 +423,37 @@ func _on_go_on_air_pressed() -> void:
 	while GameState.current_phase() == NightCycle.Phase.TRIAGE \
 			or GameState.current_phase() == NightCycle.Phase.RUNDOWN:
 		if not GameState.advance_phase():
+			return
+
+
+## O botao dedicado a entrar no ar. Nunca fica desabilitado e nunca fica
+## calado: quando nao da para subir, ele diz por que e abre exatamente o
+## que falta resolver. Um botao desabilitado nao ensina nada.
+func _on_enter_air_pressed() -> void:
+	match GameState.current_phase():
+		NightCycle.Phase.LIVE:
+			if GameState.is_live_done():
+				_feedback.text = "O programa terminou. Use MANHÃ para ver a repercussão."
+			else:
+				_feedback.text = "Você já está no ar. ESPAÇO liga o microfone, C corta a ligação."
+			return
+		NightCycle.Phase.MORNING, NightCycle.Phase.DONE:
+			_feedback.text = "A noite já acabou. Continue pelo jornal da manhã."
+			return
+
+	$Briefing.hide()
+	if GameState.is_rundown_ready():
+		_on_go_on_air_pressed()
+		return
+
+	# Nao basta dizer o que falta: levar o jogador ate lá.
+	_feedback.text = _pending_hint()
+	for i in _blocks.size():
+		if GameState.block_item(i) == null:
+			_open_phone()
+			return
+		if GameState.block_framing(i) == ProgramRundown.NO_FRAMING:
+			_on_block_clicked(i)
 			return
 
 
