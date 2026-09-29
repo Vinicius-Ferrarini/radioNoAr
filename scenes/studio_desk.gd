@@ -15,6 +15,15 @@ extends Control
 ## Qual objeto está aberto em cima da mesa.
 enum View { DESK, ITEM, NOTEBOOK, BLOCK, IMPROV, MORNING }
 
+## Por que o item nao entrou no bloco. Sem isto a recusa e muda e o
+## jogador acha que colocou.
+const _PLACE_MESSAGES := {
+	ProgramRundown.PlaceResult.INVALID_BLOCK: "Esse bloco não existe.",
+	ProgramRundown.PlaceResult.BLOCK_TAKEN: "Esse bloco já tem alguém: tire antes de trocar.",
+	ProgramRundown.PlaceResult.ITEM_ALREADY_PLACED: "Essa pessoa já está em outro bloco.",
+	ProgramRundown.PlaceResult.FRAMING_NOT_ALLOWED: "A ordem do programa não permite esse item aqui.",
+}
+
 const _RESULT_MESSAGES := {
 	Validator.Result.CONTRADICTION: "CONTRADIÇÃO: as duas coisas não podem ser verdade.",
 	Validator.Result.CONSISTENT: "Confere com o caderno. Não prova que é verdade.",
@@ -197,13 +206,35 @@ func _on_rundown_changed() -> void:
 		var sender := GameState.sender_of(item.id)
 		var who: String = sender.display_name if sender != null else item.headline
 		var kind := GameState.block_framing(i)
+		if kind == ProgramRundown.NO_FRAMING:
+			# Sem isto um bloco sem enquadramento fica igual a um pronto, e
+			# o unico caminho adiante (AO AR) esta escuro e calado.
+			_blocks[i].show_item(who, "escolher")
+			continue
 		var label := GameState.framing_label(item, kind)
 		_blocks[i].show_item(who, label if not label.is_empty() else FramingStrip.label_for(kind))
 
 	_go_on_air.disabled = not GameState.is_rundown_ready()
+	if not _is_live() and not GameState.is_rundown_ready():
+		_feedback.text = _pending_hint()
 	_refresh_badges()
 	if _view == View.BLOCK:
 		_refresh_framing_strip()
+
+
+## O proximo passo, um por vez: o rodape da mesa e a unica linha que o
+## jogador le sem procurar. Dizer "falta algo" nao serve — tem que dizer
+## qual bloco e o que fazer nele.
+func _pending_hint() -> String:
+	# Bloco por bloco, e nao todos os vazios primeiro: quem acabou de
+	# soltar alguem num bloco precisa ouvir sobre o enquadramento dele,
+	# que e a regua aberta na frente do jogador naquele instante.
+	for i in _blocks.size():
+		if GameState.block_item(i) == null:
+			return "Bloco %d vazio: arraste alguém do celular ou das cartas." % (i + 1)
+		if GameState.block_framing(i) == ProgramRundown.NO_FRAMING:
+			return "Bloco %d: escolha na régua como esse item vai ao ar." % (i + 1)
+	return ""
 
 
 func _on_meter_changed(meter_id: String, new_value: int) -> void:
@@ -339,10 +370,14 @@ func _on_item_dropped(item_id: String, block_index: int) -> void:
 	if _is_live():
 		return
 	var already_in := GameState.block_of_item(item_id)
+	var result: int = ProgramRundown.PlaceResult.OK
 	if already_in != -1:
-		GameState.move_block(already_in, block_index)
+		result = GameState.move_block(already_in, block_index)
 	else:
-		GameState.place_item(item_id, block_index)
+		result = GameState.place_item(item_id, block_index)
+	if result != ProgramRundown.PlaceResult.OK:
+		_feedback.text = _PLACE_MESSAGES.get(result, "Esse item não pode ir nesse bloco.")
+		return
 	_on_block_clicked(block_index)
 
 

@@ -320,6 +320,41 @@ func test_going_on_air_needs_the_whole_program() -> void:
 	assert_string_contains(_node("Feedback").text, "quatro blocos")
 
 
+## O botao AO AR fica desabilitado enquanto o programa nao esta pronto, e
+## um botao desabilitado nao fala. Quem tem que dizer o que falta e a
+## mesa: o bloco incompleto e o rodape.
+func test_an_incomplete_program_says_what_is_missing() -> void:
+	assert_true(_node("Header/GoOnAirButton").disabled)
+	assert_string_contains(_node("Feedback").text, "Bloco 1 vazio",
+		"com a mesa vazia, o rodape manda arrastar alguem")
+
+	_drop_on_block(0, "n01_msg_dona_celia")
+	assert_string_contains(_blocks()[0].get_node("Label").text, "escolher",
+		"bloco com item e sem enquadramento nao pode parecer pronto")
+	assert_string_contains(_node("Feedback").text, "Bloco 1: escolha",
+		"o rodape pede o enquadramento do bloco que acabou de receber alguem")
+	assert_true(_node("Header/GoOnAirButton").disabled)
+
+	for row in _framing_rows():
+		if int(row.row_id()) == FramingOption.Kind.AS_RECEIVED:
+			_press(row)
+	assert_false(_blocks()[0].get_node("Label").text.contains("escolher"),
+		"resolvido o enquadramento, a marca sai do bloco")
+	assert_true(_node("Header/GoOnAirButton").disabled, "faltam tres blocos")
+
+	_drop_on_block(1, "n01_msg_toledo")
+	assert_string_contains(_node("Feedback").text, "Bloco 2: escolha",
+		"o rodape acompanha o bloco em que o jogador esta mexendo")
+
+
+## Arrastar para um bloco ocupado nao pode ser silencioso.
+func test_a_refused_drop_explains_itself() -> void:
+	_drop_on_block(0, "n01_msg_dona_celia")
+	_drop_on_block(0, "n01_msg_toledo")
+	assert_string_contains(_node("Feedback").text, "já tem alguém")
+	assert_eq(GameState.block_item(0).id, "n01_msg_dona_celia")
+
+
 func test_going_on_air_clears_the_desk_objects() -> void:
 	_schedule_whole_program()
 	_root._on_go_on_air_pressed()
