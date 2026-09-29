@@ -8,14 +8,11 @@ extends Control
 ## carimbo e número de protocolo.
 
 signal claim_marked(claim_id: String)
-## Índice da resposta escolhida na conversa (ADR 0013).
-signal reply_chosen(index: int)
 signal suspect_toggled()
 signal sibling_selected(item_id: String)
 signal close_requested()
 
 @export var row_scene: PackedScene
-@export var bubble_scene: PackedScene
 @export var phone_surface: Texture2D
 @export var letter_surface: Texture2D
 @export var official_surface: Texture2D
@@ -35,9 +32,6 @@ const _LIGHT := Color(0.91, 0.894, 0.855)
 @onready var _mark: TextureRect = $Mark
 @onready var _bubble: NinePatchRect = $BubbleFrame
 @onready var _body: RichTextLabel = $BubbleFrame/BodyScroll/Body
-@onready var _thread: VBoxContainer = $BubbleFrame/BodyScroll/Thread
-@onready var _scroll: ScrollContainer = $BubbleFrame/BodyScroll
-@onready var _replies_box: VBoxContainer = $Replies
 @onready var _claims_title: Label = $ClaimsTitle
 @onready var _claims_list: HBoxContainer = $ClaimsList
 @onready var _suspect: Button = $SuspectButton
@@ -63,65 +57,10 @@ func show_item(
 	_fill_header(item, sender, scheduled_block)
 	_body.text = item.body
 	_body.visible = true
-	_thread.visible = false
-	_dress_for_conversation(false)
 	_suspect.button_pressed = suspicious
 
 	_rebuild_avatar_row(sibling_chips)
 	_rebuild_claims(item, contradictions)
-
-
-## A conversa no lugar do parágrafo: balões na ordem e, quando é a sua
-## vez, o que você pode responder no fim da thread — como num celular
-## de verdade (ADR 0013). Item sem thread continua em show_item().
-func show_thread(messages: Array, replies: Array, available: Array) -> void:
-	_body.visible = false
-	_thread.visible = true
-	_dress_for_conversation(true)
-	_clear(_thread)
-	_clear(_replies_box)
-
-	var width: float = _scroll.size.x - 4.0
-	for message in messages:
-		var bubble: Control = bubble_scene.instantiate()
-		_thread.add_child(bubble)
-		bubble.setup(message.text, message.from_me, width * 0.86)
-		bubble.size_flags_horizontal = Control.SIZE_SHRINK_END if message.from_me 			else Control.SIZE_SHRINK_BEGIN
-
-	# As respostas ficam fixas embaixo, fora da rolagem: numa janela de
-	# 36 px a opção rolava para fora e nem clique aceitava.
-	for index in replies.size():
-		var row: Button = row_scene.instantiate()
-		_replies_box.add_child(row)
-		var reply: ReplyOption = replies[index]
-		var locked: bool = not bool(available[index])
-		row.setup(str(index), reply.text if not locked else reply.text + " — conferir antes", false)
-		row.disabled = locked
-		row.clip_text = false
-		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		row.alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		row.custom_minimum_size = Vector2(0, 9)
-		row.row_pressed.connect(func(row_id: String) -> void: reply_chosen.emit(int(row_id)))
-
-
-## Conversa usa o painel todo: a thread sobe para onde ficava o handle e
-## a linha de conferir dá lugar às respostas. Item de papel volta ao
-## layout de sempre.
-func _dress_for_conversation(talking: bool) -> void:
-	_sender_handle.visible = not talking
-	_claims_title.visible = not talking
-	_claims_list.visible = not talking
-	_suspect.visible = not talking
-	_replies_box.visible = talking
-	_bubble.offset_top = 36.0 if talking else 46.0
-	_bubble.offset_bottom = 75.0 if talking else 88.0
-
-
-## A thread cresce para baixo: o jogador tem de ver a última fala, não a
-## primeira.
-func scroll_to_end() -> void:
-	await get_tree().process_frame
-	_scroll.scroll_vertical = int(_thread.size.y) + 64
 
 
 func _dress_for(channel: int) -> void:

@@ -26,6 +26,8 @@
 [ext_resource type="Texture2D" uid="uid://bm3xemhsxuolg" path="res://assets/sprites/studio_turntable.png" id="new_studio_turntable"]
 [ext_resource type="Texture2D" uid="uid://bm6qhxgxrbmnj" path="res://assets/sprites/studio_wall.png" id="new_studio_wall"]
 
+[ext_resource type="PackedScene" path="res://scenes/parts/close_phone.tscn" id="21_phone"]
+
 [node name="StudioDesk" type="Control" unique_id=1005823655]
 layout_mode = 3
 anchors_preset = 15
@@ -422,6 +424,14 @@ offset_left = 44.0
 offset_top = 54.0
 offset_right = 276.0
 offset_bottom = 126.0
+
+[node name="ClosePhone" parent="Closes" instance=ExtResource("21_phone")]
+visible = false
+anchors_preset = 0
+offset_left = 146.0
+offset_top = 6.0
+offset_right = 286.0
+offset_bottom = 170.0
 
 [node name="CloseMorning" parent="Closes" unique_id=1764718788 instance=ExtResource("19_morning")]
 visible = false

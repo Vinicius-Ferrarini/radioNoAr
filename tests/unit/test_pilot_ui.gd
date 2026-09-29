@@ -28,25 +28,37 @@ func test_initial_briefing_and_framing_explain_the_work() -> void:
 	assert_string_contains(desk.get_node("Briefing/Body").text, "aniversário")
 	assert_eq(desk.get_node("Header/QuotaLabel").text, "PROGRAMA LIVRE")
 	desk.get_node("Briefing/Start").pressed.emit()
+
+	# O portão de evidência mudou de superfície com o ADR 0013: não é mais
+	# uma linha travada na régua, é uma resposta que você ainda não pode
+	# mandar. A regra por baixo é a mesma.
 	desk._on_item_dropped("p1_placar", 0)
-	var rows: Array = desk.get_node("Closes/FramingStrip/Scroll/List").get_children()
-	var truth: Button = rows[1]
+	var truth := _locked_truth_reply()
+	assert_not_null(truth, "a fala da verdade aparece travada antes de apurar")
 	assert_true(truth.disabled)
-	assert_string_contains(truth.text, "caderno")
+	assert_string_contains(truth.text, "conferir")
+
 	GameState.link_claim("p1_placar", "p1_placar_claim", "p_placar")
-	desk._on_block_clicked(0)
-	rows = desk.get_node("Closes/FramingStrip/Scroll/List").get_children()
-	assert_false(rows[1].disabled)
+	desk._refresh_item()
+	assert_null(_locked_truth_reply(), "cruzada a evidência, a fala destrava")
+
+
+## A resposta travada do item aberto, ou nulo se todas estão liberadas.
+func _locked_truth_reply() -> Button:
+	for row in desk.get_node("Closes/ClosePhone/Replies").get_children():
+		if row.disabled:
+			return row
+	return null
 
 
 ## --- a conversa é a decisão (ADR 0013) ---
 
 func _thread_bubbles() -> Array:
-	return desk.get_node("Closes/CloseItem/BubbleFrame/BodyScroll/Thread").get_children()
+	return desk.get_node("Closes/ClosePhone/ChatScroll/Thread").get_children()
 
 
 func _reply_rows() -> Array:
-	return desk.get_node("Closes/CloseItem/Replies").get_children()
+	return desk.get_node("Closes/ClosePhone/Replies").get_children()
 
 
 func _wait_for_her_to_finish() -> void:
@@ -62,13 +74,65 @@ func test_the_conversation_arrives_one_message_at_a_time() -> void:
 	desk._open_item("p1_celia")
 	assert_eq(_thread_bubbles().size(), 1, "ela ainda está digitando o resto")
 	assert_eq(_reply_rows().size(), 0, "não se responde no meio da frase")
-	assert_false(desk.get_node("Closes/CloseItem/BubbleFrame/BodyScroll/Body").visible,
-		"o parágrafo sai de cena quando há conversa")
+	assert_true(desk.get_node("Closes/ClosePhone").visible,
+		"quem abre é o aparelho, não o close de papel")
+	assert_false(desk.get_node("Closes/CloseItem").visible)
 
 	_wait_for_her_to_finish()
-	assert_eq(_thread_bubbles().size(), 5)
+	assert_eq(_thread_bubbles().size(), 6, "a rajada dela tem seis falas curtas")
 	assert_eq(_reply_rows().size(), 3, "as três respostas ficam fixas embaixo")
 	assert_false(desk.get_node("Closes/FramingStrip").visible, "a régua não entra aqui")
+
+
+## O defeito relatado no playtest do celular: balão em cima do outro e
+## texto cortado. A causa era altura fixa num NinePatchRect, que não cresce
+## com o filho.
+func test_bubbles_never_overlap_nor_run_past_the_screen() -> void:
+	desk.get_node("Briefing/Start").pressed.emit()
+	desk._open_item("p1_celia")
+	_wait_for_her_to_finish()
+	await get_tree().process_frame
+
+	var scroll: ScrollContainer = desk.get_node("Closes/ClosePhone/ChatScroll")
+	var limit: float = scroll.get_global_rect().end.x
+	var bubbles := _thread_bubbles()
+	assert_gt(bubbles.size(), 3, "a rajada da Célia tem mais de três falas")
+	var previous := Rect2()
+	for bubble in bubbles:
+		var rect: Rect2 = bubble.get_global_rect()
+		assert_gt(rect.size.y, 0.0, "balão sem altura não mostra texto")
+		if previous.size.y > 0.0:
+			assert_gte(rect.position.y, previous.end.y - 0.5,
+				"um balão não pode começar antes do fim do anterior")
+		assert_lte(rect.end.x, limit + 1.0, "balão não passa da tela do aparelho")
+		previous = rect
+
+
+## A data de hoje fica à vista, e a hora vem em cada fala.
+func test_the_phone_shows_today_and_the_time_of_each_burst() -> void:
+	desk.get_node("Briefing/Start").pressed.emit()
+	assert_eq(desk.get_node("Closes/ClosePhone/Today").text, "15/07/2008",
+		"noite 1 é 15 de julho de 2008")
+	assert_string_contains(desk.get_node("Briefing/Title").text, "15/07/2008",
+		"a data também abre a noite")
+	desk._open_item("p1_celia")
+	_wait_for_her_to_finish()
+	var stamps: Array[String] = []
+	for bubble in _thread_bubbles():
+		var at: String = bubble.get_node("Lines/At").text
+		if not at.is_empty():
+			stamps.append(at)
+	assert_gt(stamps.size(), 0, "as falas trazem a hora")
+	assert_eq(stamps.size(), _unique(stamps).size(),
+		"a hora repetida é omitida: em balão de celular ela rouba a linha do texto")
+
+
+func _unique(values: Array[String]) -> Array[String]:
+	var seen: Array[String] = []
+	for value in values:
+		if not seen.has(value):
+			seen.append(value)
+	return seen
 
 
 ## O que você responde entra na thread e decide o enquadramento do bloco.
@@ -81,7 +145,7 @@ func test_the_reply_becomes_your_bubble_and_the_block_inherits_it() -> void:
 	rows[0].row_pressed.emit(rows[0].row_id())
 	desk._refresh_item()
 
-	var mine := _thread_bubbles().filter(func(b: Node) -> bool: return b.get_node("Text").text == "Dou os parabéns no ar.")
+	var mine := _thread_bubbles().filter(func(b: Node) -> bool: return b.get_node("Lines/Text").text == "Dou os parabéns no ar.")
 	assert_eq(mine.size(), 1, "a sua fala entra na thread")
 	assert_eq(_reply_rows().size(), 0, "respondido, não há mais o que escolher")
 

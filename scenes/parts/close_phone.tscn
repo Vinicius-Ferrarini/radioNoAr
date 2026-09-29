@@ -1,0 +1,112 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scenes/parts/close_phone.gd" id="1_phone"]
+[ext_resource type="Texture2D" path="res://assets/sprites/phone_body.png" id="2_body"]
+[ext_resource type="PackedScene" path="res://scenes/parts/chat_bubble.tscn" id="3_bubble"]
+[ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="4_row"]
+
+[node name="ClosePhone" type="Control"]
+offset_right = 140.0
+offset_bottom = 164.0
+script = ExtResource("1_phone")
+bubble_scene = ExtResource("3_bubble")
+row_scene = ExtResource("4_row")
+
+[node name="Body" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_body")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="Today" type="Label" parent="."]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 4.0
+offset_right = 131.0
+offset_bottom = 13.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(0.58, 0.72, 0.62, 1)
+text = "15/07/2008"
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 22.0
+offset_top = 15.0
+offset_right = 112.0
+offset_bottom = 25.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 7
+theme_override_colors/font_color = Color(0.91, 0.894, 0.855, 1)
+text = "MENSAGENS"
+clip_text = true
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 14.0
+offset_right = 20.0
+offset_bottom = 26.0
+focus_mode = 0
+text = "<"
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 119.0
+offset_top = 14.0
+offset_right = 131.0
+offset_bottom = 26.0
+focus_mode = 0
+text = "x"
+
+[node name="ListScroll" type="ScrollContainer" parent="."]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 28.0
+offset_right = 131.0
+offset_bottom = 156.0
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="ListScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="ChatScroll" type="ScrollContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 9.0
+offset_top = 28.0
+offset_right = 131.0
+offset_bottom = 96.0
+horizontal_scroll_mode = 0
+
+[node name="Thread" type="VBoxContainer" parent="ChatScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 2
+
+[node name="Claims" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 9.0
+offset_top = 98.0
+offset_right = 131.0
+offset_bottom = 108.0
+theme_override_constants/separation = 2
+
+[node name="Replies" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 9.0
+offset_top = 110.0
+offset_right = 131.0
+offset_bottom = 158.0
+theme_override_constants/separation = 1

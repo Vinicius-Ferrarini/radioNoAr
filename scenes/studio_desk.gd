@@ -13,7 +13,7 @@ extends Control
 ## autoload.
 
 ## Qual objeto está aberto em cima da mesa.
-enum View { DESK, ITEM, NOTEBOOK, BLOCK, IMPROV, MORNING }
+enum View { DESK, ITEM, PHONE, NOTEBOOK, BLOCK, IMPROV, MORNING }
 
 ## Por que o item nao entrou no bloco. Sem isto a recusa e muda e o
 ## jogador acha que colocou.
@@ -43,6 +43,7 @@ const _RESULT_MESSAGES := {
 @onready var _notebook_object: TextureButton = $Notebook
 
 @onready var _close_item: Control = $Closes/CloseItem
+@onready var _close_phone: Control = $Closes/ClosePhone
 @onready var _close_notebook: Control = $Closes/CloseNotebook
 @onready var _framing_strip: Control = $Closes/FramingStrip
 @onready var _improv_strip: Control = $Closes/ImprovStrip
@@ -103,6 +104,7 @@ var _selected_block: int = -1
 ## mesa precisa para respirar (luz, letreiro, telefone tremendo).
 var _clock: float = 0.0
 var _phone_home: Vector2 = Vector2.ZERO
+var _dragging: bool = false
 
 
 func _ready() -> void:
@@ -140,7 +142,11 @@ func _ready() -> void:
 	_close_item.suspect_toggled.connect(_on_suspect_toggled)
 	_close_item.sibling_selected.connect(_open_item)
 	_close_item.close_requested.connect(_show_desk)
-	_close_item.reply_chosen.connect(_on_reply_chosen)
+	_close_phone.thread_opened.connect(_open_item)
+	_close_phone.reply_chosen.connect(_on_reply_chosen)
+	_close_phone.claim_marked.connect(_on_claim_marked)
+	_close_phone.close_requested.connect(_show_desk)
+	_close_phone.back_requested.connect(_open_phone)
 	GameState.conversation_events.connect(_on_conversation_events)
 	_close_notebook.entry_chosen.connect(_on_notebook_entry_chosen)
 	_close_notebook.close_requested.connect(_show_desk)
@@ -182,9 +188,22 @@ func _input(event: InputEvent) -> void:
 func _process(delta: float) -> void:
 	_clock += delta
 	_breathe(delta)
+	_yield_to_drag()
 	if not _is_live():
 		return
 	_refresh_live()
+
+
+## Os blocos são desenhados depois dos closes, então ficam por cima do
+## celular e roubariam o alvo do arrasto. Enquanto o jogador carrega
+## alguém para o programa, o aparelho sai da frente e volta sozinho.
+func _yield_to_drag() -> void:
+	var dragging: bool = get_viewport().gui_is_dragging()
+	if dragging == _dragging:
+		return
+	_dragging = dragging
+	if _view == View.PHONE:
+		_close_phone.visible = not dragging
 
 
 ## A mesa nunca fica parada nem muda: a lâmpada oscila, o letreiro pulsa
@@ -235,7 +254,7 @@ func _on_night_started(night: int, quota: int) -> void:
 	_feedback.text = "Chegou coisa no celular e na porta."
 	_music_player.stop()
 	_sfx.stop()
-	$Briefing/Title.text = "%02d / %s" % [night, GameState.night_title()]
+	$Briefing/Title.text = "%s · %s" % [GameState.today(), GameState.night_title()]
 	$Briefing/Body.text = GameState.opening_message()
 	$Briefing/Reserve.text = "CAIXA $%d / 1 reserva: música ou anúncio" % GameState.station_money()
 	$Briefing.visible = not GameState.opening_message().is_empty()
@@ -349,6 +368,9 @@ func _on_link_evaluated(_item_id: String, _claim_id: String, _entry_id: String, 
 	if result != Validator.Result.UNRELATED:
 		_clear_mark()
 	_refresh_notebook()
+	# Cruzou a evidência: volta para a conversa, onde a fala nova destrava.
+	if GameState.conversation_of(_open_item_id) != null:
+		_open_item(_open_item_id)
 
 
 func _on_suspicion_changed(item_id: String, suspicious: bool) -> void:
@@ -360,12 +382,17 @@ func _on_suspicion_changed(item_id: String, suspicious: bool) -> void:
 
 # --- abrir os objetos da mesa ---
 
+## Pegar o celular mostra a lista de conversas, como em qualquer aparelho:
+## quem escolhe o que ler é o jogador (ADR 0013).
 func _open_phone() -> void:
-	var items := _items_on(_phone_channels())
-	if items.is_empty():
+	var threads := GameState.phone_threads()
+	if threads.is_empty():
 		_feedback.text = "Nada novo no celular."
 		return
-	_open_item(items[0].id if _open_item_id.is_empty() else _open_item_id)
+	_view = View.PHONE
+	_refresh_views()
+	_close_phone.set_today(GameState.today())
+	_close_phone.show_list(threads)
 
 
 func _open_letters() -> void:
@@ -381,7 +408,7 @@ func _open_item(item_id: String) -> void:
 	if item == null:
 		return
 	_open_item_id = item_id
-	_view = View.ITEM
+	_view = View.PHONE if GameState.conversation_of(item_id) != null else View.ITEM
 	_refresh_views()
 	_refresh_item()
 
@@ -389,8 +416,14 @@ func _open_item(item_id: String) -> void:
 ## A pessoa terminou de digitar, ou você respondeu: a thread aberta se
 ## redesenha. Conversa de item fechado só corre por baixo.
 func _on_conversation_events(item_id: String, _events: Array) -> void:
-	if _view == View.ITEM and item_id == _open_item_id:
-		_refresh_item()
+	if _view != View.PHONE:
+		return
+	if _close_phone.showing_chat():
+		if item_id == _open_item_id:
+			_refresh_item()
+		return
+	# Na lista, qualquer conversa que falou muda a hora e as não lidas.
+	_close_phone.show_list(GameState.phone_threads())
 
 
 func _on_reply_chosen(index: int) -> void:
@@ -417,6 +450,7 @@ func _show_desk() -> void:
 
 func _refresh_views() -> void:
 	_close_item.visible = _view == View.ITEM
+	_close_phone.visible = _view == View.PHONE
 	_close_notebook.visible = _view == View.NOTEBOOK
 	_framing_strip.visible = _view == View.BLOCK
 	_improv_strip.visible = _view == View.IMPROV
@@ -720,6 +754,9 @@ func _refresh_item() -> void:
 	var item := GameState.item_by_id(_open_item_id)
 	if item == null:
 		return
+	if GameState.conversation_of(item.id) != null:
+		_refresh_chat(item)
+		return
 	_close_item.show_item(
 		item,
 		GameState.sender_of(item.id),
@@ -729,18 +766,29 @@ func _refresh_item() -> void:
 		GameState.block_of_item(item.id)
 	)
 
-	# Item com conversa mostra a thread no lugar do parágrafo (ADR 0013).
+
+
+
+## A conversa aberta no aparelho. Abrir é ler: o que chegou deixa de ser
+## novidade.
+func _refresh_chat(item: BroadcastItem) -> void:
 	var talk := GameState.conversation_of(item.id)
 	if talk == null:
 		return
+	var sender := GameState.sender_of(item.id)
 	var available: Array[bool] = []
 	for index in talk.replies().size():
 		available.append(GameState.reply_available(item.id, index))
-	_close_item.show_thread(
+	_close_phone.set_today(GameState.today())
+	_close_phone.show_chat(
+		sender.display_name if sender != null else item.sender_id,
 		talk.visible_messages(),
 		talk.replies() if talk.is_waiting_for_reply() else [],
-		available)
-	_close_item.scroll_to_end()
+		available,
+		item.claims,
+		GameState.contradictions_for(item.id))
+	_close_phone.scroll_to_end()
+	GameState.mark_thread_read(item.id)
 
 
 ## Uma foto por conversa, para o jogador trocar de remetente — e para

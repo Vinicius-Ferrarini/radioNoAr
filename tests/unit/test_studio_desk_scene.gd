@@ -149,31 +149,54 @@ func test_the_header_shows_night_and_quota() -> void:
 
 
 # --- o celular ---
+#
+# Desde o ADR 0013 o celular e um aparelho em pe com lista de conversas, e
+# nao o close de papel. Os testes abaixo cobrem a mesma coisa que cobriam
+# — o que o celular lista, quem e a conversa, e arrastar a pessoa para o
+# bloco — na superficie nova.
 
-func test_opening_the_phone_shows_a_conversation() -> void:
+func _phone_rows() -> Array[Node]:
+	return _node("Closes/ClosePhone/ListScroll/List").get_children()
+
+
+func _phone_title() -> String:
+	return _node("Closes/ClosePhone/Title").text
+
+
+func test_opening_the_phone_shows_the_conversation_list() -> void:
 	_root._open_phone()
-	assert_true(_close_item().visible, "o celular abre em close")
-	assert_eq(_node("Closes/CloseItem/SenderName").text, "Dona Célia",
+	assert_true(_node("Closes/ClosePhone").visible, "o celular abre como aparelho")
+	assert_false(_close_item().visible, "papel nao entra aqui")
+	assert_eq(_phone_title(), "MENSAGENS")
+	assert_string_contains(_phone_rows()[0].text, "Dona Célia",
 		"a primeira conversa e a da Dona Celia")
-	assert_eq(_node("Closes/CloseItem/SenderHandle").text, "(fixo) 2-4417")
-	assert_eq(_node("Closes/CloseItem/ReceivedAt").text, "19:42")
+
+
+## A hora da ultima fala e a data de hoje ficam na tela, como em qualquer
+## aparelho.
+func test_the_phone_shows_the_date_and_the_time_of_the_last_message() -> void:
+	_root._open_phone()
+	assert_eq(_node("Closes/ClosePhone/Today").text, GameCalendar.date_of(1))
+	assert_string_contains(_phone_rows()[0].text, "19:42",
+		"a lista mostra a hora da ultima fala")
 
 
 func test_the_phone_lists_only_phone_conversations() -> void:
 	_root._open_phone()
-	assert_eq(_avatar_chips().size(), 3, "3 mensagens de celular na noite 1")
+	assert_eq(_phone_rows().size(), 3, "3 mensagens de celular na noite 1")
 
 
-func test_switching_conversation_by_the_avatar() -> void:
+func test_entering_a_conversation_from_the_list() -> void:
 	_root._open_phone()
-	_press(_avatar_chips()[1])
-	assert_eq(_node("Closes/CloseItem/SenderName").text, "J. Toledo")
+	_press(_phone_rows()[1])
+	assert_eq(_phone_title(), "J. Toledo")
+	assert_true(_node("Closes/ClosePhone/ChatScroll").visible)
 
 
-func test_avatar_chips_are_draggable_and_carry_the_item() -> void:
+func test_phone_rows_are_draggable_and_carry_the_item() -> void:
 	_root._open_phone()
-	var payload: Variant = _avatar_chips()[0].drag_payload()
-	assert_true(payload is Dictionary, "arrasta-se a pessoa para o bloco")
+	var payload: Variant = _phone_rows()[0].drag_payload()
+	assert_true(payload is Dictionary, "arrasta-se a conversa para o bloco")
 	assert_eq(payload["item_id"], "n01_msg_dona_celia")
 
 
@@ -195,21 +218,29 @@ func test_the_official_communique_looks_official() -> void:
 		"comunicado tem carimbo, nao lacre")
 
 
+## Antes era a mesma cena com outra textura; agora sao dois objetos
+## diferentes, o que e ainda mais reconhecivel antes de ler.
 func test_paper_and_phone_do_not_share_a_surface() -> void:
 	_root._open_item("n01_msg_dona_celia")
-	var phone_surface: String = _node("Closes/CloseItem/Surface").texture.resource_path
+	assert_true(_node("Closes/ClosePhone").visible)
+	assert_false(_close_item().visible)
+
 	_root._open_item("n01_carta_a_mendes")
-	var letter_surface: String = _node("Closes/CloseItem/Surface").texture.resource_path
-	assert_ne(phone_surface, letter_surface,
-		"celular e carta precisam ser reconheciveis antes de ler")
+	assert_true(_close_item().visible)
+	assert_false(_node("Closes/ClosePhone").visible)
 
 
 # --- cruzar com o caderno ---
 
+func _phone_claim_rows() -> Array[Node]:
+	return _node("Closes/ClosePhone/Claims").get_children()
+
+
 func test_marking_a_claim_opens_the_notebook() -> void:
 	_root._open_item("n01_msg_toledo")
-	assert_eq(_claim_rows().size(), 2, "a denuncia do Toledo tem 2 trechos conferiveis")
-	_press(_claim_rows()[0])
+	assert_eq(_phone_claim_rows().size(), 2,
+		"a denuncia do Toledo tem 2 trechos conferiveis, agora no aparelho")
+	_press(_phone_claim_rows()[0])
 
 	assert_true(_node("Closes/CloseNotebook").visible, "marcar um trecho abre o caderno")
 	assert_string_contains(_node("Closes/CloseNotebook/Hint").text, "Cruzando")
@@ -217,7 +248,7 @@ func test_marking_a_claim_opens_the_notebook() -> void:
 
 func test_crossing_with_the_notebook_finds_the_contradiction() -> void:
 	_root._open_item("n01_msg_toledo")
-	_press(_claim_rows()[0])
+	_press(_phone_claim_rows()[0])
 
 	var rows := _notebook_rows()
 	assert_eq(rows.size(), 7, "as 7 regras da noite 1")
@@ -231,7 +262,7 @@ func test_crossing_with_the_notebook_finds_the_contradiction() -> void:
 
 func test_crossing_the_wrong_line_finds_nothing() -> void:
 	_root._open_item("n01_msg_toledo")
-	_press(_claim_rows()[0])
+	_press(_phone_claim_rows()[0])
 	for row in _notebook_rows():
 		if row.row_id() == "entry_toque_recolher_centro":
 			_press(row)
@@ -261,9 +292,17 @@ func test_dropping_an_item_schedules_it_and_shows_who() -> void:
 
 
 func test_dropping_opens_the_framing_strip() -> void:
-	_drop_on_block(1, "n01_msg_dona_celia")
+	_drop_on_block(1, "n01_carta_a_mendes")
 	assert_true(_node("Closes/FramingStrip").visible)
-	assert_eq(_framing_rows().size(), 5, "a Dona Celia aceita 5 enquadramentos")
+	assert_eq(_framing_rows().size(), 4, "a carta ao Mendes aceita 4 enquadramentos")
+
+
+## O outro lado da mesma regra: mensagem de celular nao abre regua nenhuma,
+## abre a conversa (ADR 0013).
+func test_dropping_a_phone_message_opens_the_conversation() -> void:
+	_drop_on_block(1, "n01_msg_dona_celia")
+	assert_false(_node("Closes/FramingStrip").visible, "a regua nao entra no celular")
+	assert_true(_node("Closes/ClosePhone").visible, "quem decide agora e a conversa")
 
 
 func test_dropping_an_already_scheduled_item_moves_it() -> void:
@@ -278,8 +317,11 @@ func test_the_quota_label_reacts_to_the_official_item() -> void:
 	assert_eq(_node("Header/QuotaLabel").text, "COTA 1/1")
 
 
+## Carta e nao mensagem: desde o ADR 0013 o celular decide na conversa, e
+## a regua e a superficie do papel. O que este teste cobre — a regua lista
+## os enquadramentos do item e escolher um fixa o bloco — segue igual.
 func test_choosing_a_framing_from_the_strip() -> void:
-	_drop_on_block(1, "n01_msg_dona_celia")
+	_drop_on_block(1, "n01_carta_envelope_azul")
 	for row in _framing_rows():
 		if int(row.row_id()) == FramingOption.Kind.INFLAME:
 			_press(row)
@@ -288,11 +330,11 @@ func test_choosing_a_framing_from_the_strip() -> void:
 
 
 func test_only_the_official_item_offers_irony() -> void:
-	_drop_on_block(1, "n01_msg_dona_celia")
+	_drop_on_block(1, "n01_carta_a_mendes")
 	var kinds: Array[int] = []
 	for row in _framing_rows():
 		kinds.append(int(row.row_id()))
-	assert_false(kinds.has(FramingOption.Kind.IRONY), "ironia nao vale para mensagem de gente")
+	assert_false(kinds.has(FramingOption.Kind.IRONY), "ironia nao vale para carta de gente")
 
 	_drop_on_block(0, "n01_propaganda_normalidade")
 	kinds.clear()
@@ -329,7 +371,7 @@ func test_an_incomplete_program_says_what_is_missing() -> void:
 	assert_string_contains(_node("Feedback").text, "Bloco 1 vazio",
 		"com a mesa vazia, o rodape manda arrastar alguem")
 
-	_drop_on_block(0, "n01_msg_dona_celia")
+	_drop_on_block(0, "n01_carta_envelope_azul")
 	assert_string_contains(_blocks()[0].get_node("Label").text, "escolher",
 		"bloco com item e sem enquadramento nao pode parecer pronto")
 	assert_string_contains(_node("Feedback").text, "Bloco 1: escolha",
@@ -337,13 +379,13 @@ func test_an_incomplete_program_says_what_is_missing() -> void:
 	assert_true(_node("Header/GoOnAirButton").disabled)
 
 	for row in _framing_rows():
-		if int(row.row_id()) == FramingOption.Kind.AS_RECEIVED:
+		if int(row.row_id()) == FramingOption.Kind.TRUTH:
 			_press(row)
 	assert_false(_blocks()[0].get_node("Label").text.contains("escolher"),
 		"resolvido o enquadramento, a marca sai do bloco")
 	assert_true(_node("Header/GoOnAirButton").disabled, "faltam tres blocos")
 
-	_drop_on_block(1, "n01_msg_toledo")
+	_drop_on_block(1, "n01_carta_a_mendes")
 	assert_string_contains(_node("Feedback").text, "Bloco 2: escolha",
 		"o rodape acompanha o bloco em que o jogador esta mexendo")
 
@@ -402,18 +444,20 @@ func test_the_enter_air_button_always_answers() -> void:
 	button.pressed.emit()
 	assert_eq(GameState.current_phase(), NightCycle.Phase.TRIAGE)
 	assert_string_contains(_node("Feedback").text, "Bloco 1 vazio")
-	assert_true(_close_item().visible, "abre o celular, onde estao as pessoas")
+	assert_true(_node("Closes/ClosePhone").visible, "abre o celular, onde estao as pessoas")
 	assert_false(button.disabled)
 
-	# Item sem enquadramento: abre a regua do bloco que falta.
-	_drop_on_block(0, "n01_msg_dona_celia")
+	# Item de papel sem enquadramento: abre a regua do bloco que falta.
+	_drop_on_block(0, "n01_carta_envelope_azul")
 	_root._show_desk()
 	button.pressed.emit()
 	assert_string_contains(_node("Feedback").text, "Bloco 1: escolha")
 	assert_true(_node("Closes/FramingStrip").visible, "abre a regua do bloco 1")
 	assert_false(button.disabled)
 
-	# Programa completo: sobe ao ar de verdade.
+	# Programa completo: sobe ao ar de verdade. Libera o bloco 0 primeiro,
+	# senao a carta ja colocada recusa o item que o programa quer ali.
+	GameState.clear_block(0)
 	_schedule_whole_program()
 	button.pressed.emit()
 	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)

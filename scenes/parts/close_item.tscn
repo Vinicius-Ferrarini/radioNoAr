@@ -1,6 +1,5 @@
 [gd_scene load_steps=10 format=3]
 
-[ext_resource type="PackedScene" path="res://scenes/parts/chat_bubble.tscn" id="20_bubble"]
 [ext_resource type="Script" path="res://scenes/parts/close_item.gd" id="1_close"]
 [ext_resource type="Texture2D" path="res://assets/sprites/phone_body.png" id="2_phone"]
 [ext_resource type="Texture2D" path="res://assets/sprites/letter_sheet.png" id="3_letter"]
@@ -15,7 +14,6 @@ offset_right = 232.0
 offset_bottom = 112.0
 script = ExtResource("1_close")
 row_scene = ExtResource("8_row")
-bubble_scene = ExtResource("20_bubble")
 phone_surface = ExtResource("2_phone")
 letter_surface = ExtResource("3_letter")
 official_surface = ExtResource("4_official")
@@ -121,20 +119,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 fit_content = true
 scroll_active = false
-
-[node name="Thread" type="VBoxContainer" parent="BubbleFrame/BodyScroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 2
-
-[node name="Replies" type="VBoxContainer" parent="."]
-visible = false
-anchors_preset = 0
-offset_left = 8.0
-offset_top = 77.0
-offset_right = 224.0
-offset_bottom = 107.0
-theme_override_constants/separation = 1
 
 [node name="ClaimsTitle" type="Label" parent="."]
 layout_mode = 0

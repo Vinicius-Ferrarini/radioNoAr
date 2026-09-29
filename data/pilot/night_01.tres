@@ -14,49 +14,56 @@
 [sub_resource type="Resource" id="celia_t1"]
 script = ExtResource("m")
 from_me = false
-text = "Boa noite, seu Nilo. É a Célia, da rua de baixo."
+text = "Boa noite, seu Nilo."
 delay_seconds = 0.0
 at = "19:10"
 
 [sub_resource type="Resource" id="celia_t2"]
 script = ExtResource("m")
 from_me = false
-text = "Hoje faz quarenta anos que eu e o Osvaldo casamos."
+text = "É a Célia, da rua de baixo."
 delay_seconds = 1.8
 at = "19:10"
 
 [sub_resource type="Resource" id="celia_t3"]
 script = ExtResource("m")
 from_me = false
-text = "Ele vive dizendo que não dança mais."
+text = "Hoje faz 40 anos de casada."
 delay_seconds = 1.6
 at = "19:11"
 
 [sub_resource type="Resource" id="celia_t4"]
 script = ExtResource("m")
 from_me = false
-text = "Mas já afastou a mesa da sala."
+text = "O Osvaldo diz que não dança."
 delay_seconds = 1.4
 at = "19:11"
 
 [sub_resource type="Resource" id="celia_t5"]
 script = ExtResource("m")
 from_me = false
-text = "Toca a nossa valsa hoje?"
+text = "Mas já afastou a mesa."
 delay_seconds = 1.6
 at = "19:11"
+
+[sub_resource type="Resource" id="celia_t6"]
+script = ExtResource("m")
+from_me = false
+text = "Toca a nossa valsa?"
+delay_seconds = 1.5
+at = "19:12"
 
 [sub_resource type="Resource" id="celia_a1"]
 script = ExtResource("m")
 from_me = false
-text = "Ai, que vergonha boa. Obrigada, meu filho."
+text = "Ai, que vergonha boa."
 delay_seconds = 1.5
 at = "19:12"
 
 [sub_resource type="Resource" id="celia_a2"]
 script = ExtResource("m")
 from_me = false
-text = "Vou mandar ele sentar perto do rádio."
+text = "Ele vai sentar perto do rádio."
 delay_seconds = 1.6
 at = "19:12"
 
@@ -77,7 +84,7 @@ at = "19:12"
 [sub_resource type="Resource" id="celia_c2"]
 script = ExtResource("m")
 from_me = false
-text = "Fica para o ano que vem, então."
+text = "Fica para o ano que vem."
 delay_seconds = 1.8
 at = "19:13"
 
@@ -136,7 +143,7 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p1_celia_0"), SubResource("p1_celia_2"), SubResource("p1_celia_5")])
-thread = Array[ExtResource("m")]([SubResource("celia_t1"), SubResource("celia_t2"), SubResource("celia_t3"), SubResource("celia_t4"), SubResource("celia_t5")])
+thread = Array[ExtResource("m")]([SubResource("celia_t1"), SubResource("celia_t2"), SubResource("celia_t3"), SubResource("celia_t4"), SubResource("celia_t5"), SubResource("celia_t6")])
 replies = Array[ExtResource("rp")]([SubResource("celia_parabens"), SubResource("celia_abraco"), SubResource("celia_guardar")])
 
 [sub_resource type="Resource" id="p1_oficina_0"]
