@@ -35,6 +35,16 @@ const REQUIRED_SPRITES := [
 	"avatar_anonimo",
 	"avatar_valvula",
 	"avatar_ministerio",
+	# Abertura Radio viva (ADR 0011): a mesa mostra a parede, o telefone
+	# de estudio, o toca-discos e os objetos de memoria da campanha.
+	"studio_wall",
+	"studio_telephone",
+	"studio_turntable",
+	"gift_record",
+	"sponsor_plaque",
+	"bridge_note",
+	"avatar_rui",
+	"avatar_nilo",
 ]
 
 var _sprites: Array = []
