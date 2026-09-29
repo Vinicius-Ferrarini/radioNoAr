@@ -114,6 +114,40 @@ func live_console() -> Dictionary:
 	return _cycle.console_snapshot()
 
 
+## A data da noite na ficção: noite 1 é 15/07/2008 (GameCalendar).
+func today() -> String:
+	return GameCalendar.date_of(_run.current_night() if _run != null else 1)
+
+
+## O que a lista do celular mostra: quem falou, o começo da última fala, a
+## hora dela e quantas não lidas.
+func phone_threads() -> Array[Dictionary]:
+	var threads: Array[Dictionary] = []
+	if _cycle == null:
+		return threads
+	for item in _cycle.inbox():
+		var talk := _cycle.conversation(item.id)
+		if talk == null:
+			continue
+		var sender := sender_of(item.id)
+		var last := talk.last_message()
+		threads.append({
+			"item_id": item.id,
+			"name": sender.display_name if sender != null else item.sender_id,
+			"preview": last.text if last != null else "",
+			"at": talk.last_at(),
+			"unread": talk.unread(),
+			"decided": talk.is_decided(),
+		})
+	return threads
+
+
+func mark_thread_read(item_id: String) -> void:
+	var talk := conversation_of(item_id)
+	if talk != null:
+		talk.mark_read()
+
+
 ## A conversa do item, ou nulo se ele não tem thread.
 func conversation_of(item_id: String) -> Conversation:
 	return _cycle.conversation(item_id) if _cycle != null else null

@@ -44,6 +44,7 @@ func _init(definition: NightDefinition, run: RunState) -> void:
 	_run.notebook().add_entries(definition.new_notebook_entries)
 	_validator = Validator.new(_run.notebook())
 	_rundown = ProgramRundown.new(definition.propaganda_quota, ContentLibrary.order_rules(), _validator)
+	_open_the_phone_lines()
 
 
 func phase() -> Phase:
@@ -102,20 +103,51 @@ func station_mementos() -> Dictionary:
 	return {"record": flags.has("celia_music"), "sponsor": flags.has("sponsor_ad"), "bridge": flags.has("rui_aired")}
 
 
-## Nulo para item sem thread: esse continua sendo decidido na régua.
+## Toda conversa da noite nasce com a noite, não quando o jogador abre o
+## celular: quem está do outro lado escreve no horário dele. Papel não
+## vira conversa — carta e ofício continuam sendo papel.
+func _open_the_phone_lines() -> void:
+	for item in inbox():
+		if item.channel != BroadcastItem.Channel.PHONE:
+			continue
+		_conversations[item.id] = Conversation.new(
+			_thread_of(item), _replies_of(item))
+
+
+## Item sem thread escrita ainda é uma conversa: o corpo da mensagem vira
+## uma fala e cada enquadramento vira uma resposta. Assim o celular
+## inteiro funciona no formato novo e converter o texto passa a ser
+## acabamento, não pré-requisito (ADR 0013).
+func _thread_of(item: BroadcastItem) -> Array[ChatMessage]:
+	if not item.thread.is_empty():
+		return item.thread
+	var only := ChatMessage.new()
+	only.text = item.body
+	only.at = item.received_at
+	only.delay_seconds = 0.0
+	return [only] as Array[ChatMessage]
+
+
+func _replies_of(item: BroadcastItem) -> Array[ReplyOption]:
+	if not item.replies.is_empty():
+		return item.replies
+	var built: Array[ReplyOption] = []
+	for framing in item.framings:
+		if framing == null:
+			continue
+		var reply := ReplyOption.new()
+		reply.id = "%s_%d" % [item.id, framing.kind]
+		reply.text = framing.label if not framing.label.is_empty() 			else FramingOption.Kind.keys()[framing.kind]
+		reply.framing_kind = framing.kind
+		built.append(reply)
+	return built
+
+
+## Nulo para papel: esse continua sendo decidido na régua.
 func conversation(item_id: String) -> Conversation:
-	if _conversations.has(item_id):
-		return _conversations[item_id]
-	var item := item_by_id(item_id)
-	if item == null or item.thread.is_empty():
-		return null
-	var talk := Conversation.new(item.thread, item.replies)
-	_conversations[item_id] = talk
-	return talk
+	return _conversations.get(item_id, null)
 
 
-## Só as conversas que o jogador já abriu correm: ninguém digita para uma
-## tela fechada.
 func tick_conversations(delta: float) -> void:
 	for talk in _conversations.values():
 		talk.tick(delta)

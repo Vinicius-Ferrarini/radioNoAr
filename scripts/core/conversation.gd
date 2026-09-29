@@ -32,6 +32,8 @@ var _queue: Array[ChatMessage] = []
 var _wait: float = 0.0
 var _armed: bool = false
 
+## Quantas falas dela chegaram desde a última vez que o jogador abriu.
+var _unread: int = 0
 var _chosen: ReplyOption = null
 var _announced_idle: bool = false
 
@@ -96,6 +98,26 @@ func visible_messages() -> Array[ChatMessage]:
 	return _visible.duplicate()
 
 
+## O que a lista de conversas mostra: a última fala e a hora dela.
+func last_message() -> ChatMessage:
+	return _visible[-1] if not _visible.is_empty() else null
+
+
+func last_at() -> String:
+	var last := last_message()
+	return last.at if last != null else ""
+
+
+## Só conta o que veio do outro lado: o que você mesmo mandou não é
+## novidade para você.
+func unread() -> int:
+	return _unread
+
+
+func mark_read() -> void:
+	_unread = 0
+
+
 ## Só depois que a pessoa terminou a rajada. Responder no meio da frase
 ## não é conversa.
 func is_waiting_for_reply() -> bool:
@@ -144,6 +166,8 @@ func _deliver_due() -> void:
 		_queue.remove_at(0)
 		_visible.append(next)
 		_armed = false
+		if not next.from_me:
+			_unread += 1
 		_push(EventKind.MESSAGE_ARRIVED, {"text": next.text, "from_me": next.from_me})
 
 	if is_waiting_for_reply() and not _announced_idle:
