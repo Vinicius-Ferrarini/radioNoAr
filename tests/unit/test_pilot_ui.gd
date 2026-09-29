@@ -33,6 +33,9 @@ func test_initial_briefing_and_framing_explain_the_work() -> void:
 	# uma linha travada na régua, é uma resposta que você ainda não pode
 	# mandar. A regra por baixo é a mesma.
 	desk._on_item_dropped("p1_placar", 0)
+	# O Toledo manda quatro falas antes de calar: não se responde no meio da
+	# rajada, então a opção travada só aparece quando ele termina.
+	_wait_for_her_to_finish()
 	var truth := _locked_truth_reply()
 	assert_not_null(truth, "a fala da verdade aparece travada antes de apurar")
 	assert_true(truth.disabled)

@@ -135,6 +135,75 @@ framings = Array[ExtResource("f")]([SubResource("p1_celia_0"), SubResource("p1_c
 thread = Array[ExtResource("m")]([SubResource("celia_t1"), SubResource("celia_t2"), SubResource("celia_t3"), SubResource("celia_t4"), SubResource("celia_t5"), SubResource("celia_t6")])
 replies = Array[ExtResource("rp")]([SubResource("celia_parabens"), SubResource("celia_abraco"), SubResource("celia_guardar")])
 
+[sub_resource type="Resource" id="of_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Seu Nilo, é da oficina do Portão Doze."
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="of_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Oito reais pelo intervalo de hoje."
+delay_seconds = 1.6
+
+[sub_resource type="Resource" id="of_t3"]
+script = ExtResource("m")
+from_me = false
+text = "E diga que conserto rádio também."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of_t4"]
+script = ExtResource("m")
+from_me = false
+text = "O do seu técnico não tem mais conserto."
+delay_seconds = 1.6
+
+[sub_resource type="Resource" id="of_t5"]
+script = ExtResource("m")
+from_me = false
+text = "Mas isso não conta para ele."
+delay_seconds = 1.4
+
+[sub_resource type="Resource" id="of_a1"]
+script = ExtResource("m")
+from_me = false
+text = "Combinado. O dinheiro chega amanhã."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of_anuncio"]
+script = ExtResource("rp")
+id = "of_anuncio"
+text = "Fecho: leio o anúncio inteiro."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("of_a1")])
+
+[sub_resource type="Resource" id="of_b1"]
+script = ExtResource("m")
+from_me = false
+text = "Menos do que eu queria, mas serve."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of_endereco"]
+script = ExtResource("rp")
+id = "of_endereco"
+text = "Leio só o endereço."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("of_b1")])
+
+[sub_resource type="Resource" id="of_c1"]
+script = ExtResource("m")
+from_me = false
+text = "Então fica para a semana."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="of_depois"]
+script = ExtResource("rp")
+id = "of_depois"
+text = "Hoje não entra anúncio."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("of_c1")])
+
 [sub_resource type="Resource" id="p1_oficina_0"]
 script = ExtResource("f")
 kind = 0
@@ -169,6 +238,8 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p1_oficina_0"), SubResource("p1_oficina_2"), SubResource("p1_oficina_5")])
+thread = Array[ExtResource("m")]([SubResource("of_t1"), SubResource("of_t2"), SubResource("of_t3"), SubResource("of_t4"), SubResource("of_t5")])
+replies = Array[ExtResource("rp")]([SubResource("of_anuncio"), SubResource("of_endereco"), SubResource("of_depois")])
 
 [sub_resource type="Resource" id="p1_placar_claim"]
 script = ExtResource("c")
@@ -176,6 +247,69 @@ id = "p1_placar_claim"
 key = "placar"
 excerpt = "Bandeira ganhou de quatro a zero!"
 contradicted_by = Array[int]([1])
+
+[sub_resource type="Resource" id="pl_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Seu Nilo! O Bandeira ganhou!"
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="pl_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Bandeira ganhou de quatro a zero!"
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="pl_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Pode anunciar."
+delay_seconds = 1.3
+
+[sub_resource type="Resource" id="pl_t4"]
+script = ExtResource("m")
+from_me = false
+text = "Saí antes do fim, mas meu primo garantiu."
+delay_seconds = 1.6
+
+[sub_resource type="Resource" id="pl_a1"]
+script = ExtResource("m")
+from_me = false
+text = "Pode dizer que fui eu."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="pl_toledo"]
+script = ExtResource("rp")
+id = "pl_toledo"
+text = "Anuncio como sua informação."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("pl_a1")])
+
+[sub_resource type="Resource" id="pl_b1"]
+script = ExtResource("m")
+from_me = false
+text = "Quatro a zero era o que eu queria."
+delay_seconds = 1.6
+
+[sub_resource type="Resource" id="pl_sumula"]
+script = ExtResource("rp")
+id = "pl_sumula"
+text = "A súmula diz 2 a 1. Vou dar isso."
+framing_kind = 1
+answer = Array[ExtResource("m")]([SubResource("pl_b1")])
+
+[sub_resource type="Resource" id="pl_c1"]
+script = ExtResource("m")
+from_me = false
+text = "Confere rápido, o povo quer saber."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="pl_depois"]
+script = ExtResource("rp")
+id = "pl_depois"
+text = "Vou conferir antes de falar."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("pl_c1")])
 
 [sub_resource type="Resource" id="p1_placar_0"]
 script = ExtResource("f")
@@ -213,6 +347,71 @@ required_flag = ""
 excluded_flag = ""
 claims = Array[ExtResource("c")]([SubResource("p1_placar_claim")])
 framings = Array[ExtResource("f")]([SubResource("p1_placar_0"), SubResource("p1_placar_1"), SubResource("p1_placar_5")])
+thread = Array[ExtResource("m")]([SubResource("pl_t1"), SubResource("pl_t2"), SubResource("pl_t3"), SubResource("pl_t4")])
+replies = Array[ExtResource("rp")]([SubResource("pl_toledo"), SubResource("pl_sumula"), SubResource("pl_depois")])
+
+[sub_resource type="Resource" id="ch_t1"]
+script = ExtResource("m")
+from_me = false
+text = "Boa noite. É o Rui, do ônibus."
+delay_seconds = 0.0
+
+[sub_resource type="Resource" id="ch_t2"]
+script = ExtResource("m")
+from_me = false
+text = "Achei uma chave no último banco."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ch_t3"]
+script = ExtResource("m")
+from_me = false
+text = "Tem uma fita amarela amarrada."
+delay_seconds = 1.4
+
+[sub_resource type="Resource" id="ch_t4"]
+script = ExtResource("m")
+from_me = false
+text = "Fico na garagem até as nove."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ch_a1"]
+script = ExtResource("m")
+from_me = false
+text = "Ótimo. Vou ficar de olho."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ch_avisar"]
+script = ExtResource("rp")
+id = "ch_avisar"
+text = "Anuncio a garagem até as nove."
+framing_kind = 0
+answer = Array[ExtResource("m")]([SubResource("ch_a1")])
+
+[sub_resource type="Resource" id="ch_b1"]
+script = ExtResource("m")
+from_me = false
+text = "Melhor assim: quem perdeu sabe."
+delay_seconds = 1.6
+
+[sub_resource type="Resource" id="ch_fita"]
+script = ExtResource("rp")
+id = "ch_fita"
+text = "Digo da chave, sem falar da fita."
+framing_kind = 2
+answer = Array[ExtResource("m")]([SubResource("ch_b1")])
+
+[sub_resource type="Resource" id="ch_c1"]
+script = ExtResource("m")
+from_me = false
+text = "Tudo bem, a chave não foge."
+delay_seconds = 1.5
+
+[sub_resource type="Resource" id="ch_depois"]
+script = ExtResource("rp")
+id = "ch_depois"
+text = "Guardo para amanhã."
+framing_kind = 5
+answer = Array[ExtResource("m")]([SubResource("ch_c1")])
 
 [sub_resource type="Resource" id="p1_chave_0"]
 script = ExtResource("f")
@@ -248,6 +447,8 @@ counts_for_quota = false
 required_flag = ""
 excluded_flag = ""
 framings = Array[ExtResource("f")]([SubResource("p1_chave_0"), SubResource("p1_chave_2"), SubResource("p1_chave_5")])
+thread = Array[ExtResource("m")]([SubResource("ch_t1"), SubResource("ch_t2"), SubResource("ch_t3"), SubResource("ch_t4")])
+replies = Array[ExtResource("rp")]([SubResource("ch_avisar"), SubResource("ch_fita"), SubResource("ch_depois")])
 
 [sub_resource type="Resource" id="p1_nilo_0"]
 script = ExtResource("f")
