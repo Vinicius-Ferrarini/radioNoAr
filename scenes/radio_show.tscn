@@ -1,15 +1,24 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scenes/radio_show.gd" id="1_hjbwv"]
+[ext_resource type="Theme" path="res://theme/theme.tres" id="1_fjowt"]
+[ext_resource type="Script" path="res://scenes/radio_show.gd" id="2_js3mx"]
 
-[node name="RadioShow" type="Control" unique_id=587094427]
+[node name="RadioShow" type="Control" unique_id=1446778859]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_hjbwv")
+theme = ExtResource("1_fjowt")
+script = ExtResource("2_js3mx")
 
-[node name="NightLabel" type="Label" parent="." unique_id=857813215]
+[node name="Background" type="ColorRect" parent="." unique_id=1566724414]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.07058824, 0.0627451, 0.05490196, 1)
+
+[node name="NightLabel" type="Label" parent="." unique_id=1756793173]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 24.0
@@ -17,7 +26,7 @@ offset_right = 332.0
 offset_bottom = 56.0
 text = "Noite 1 de 3"
 
-[node name="PowerBar" type="ProgressBar" parent="." unique_id=12193758]
+[node name="PowerBar" type="ProgressBar" parent="." unique_id=831686258]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 64.0
@@ -25,7 +34,7 @@ offset_right = 432.0
 offset_bottom = 91.0
 value = 50.0
 
-[node name="EventText" type="RichTextLabel" parent="." unique_id=1628430493]
+[node name="EventText" type="RichTextLabel" parent="." unique_id=1587969134]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 110.0
@@ -34,7 +43,7 @@ offset_bottom = 410.0
 bbcode_enabled = true
 fit_content = true
 
-[node name="Choices" type="VBoxContainer" parent="." unique_id=488114101]
+[node name="Choices" type="VBoxContainer" parent="." unique_id=762081066]
 layout_mode = 0
 offset_left = 32.0
 offset_top = 430.0
@@ -42,11 +51,18 @@ offset_right = 1120.0
 offset_bottom = 610.0
 theme_override_constants/separation = 12
 
-[node name="Choice1" type="Button" parent="Choices" unique_id=1047389313]
+[node name="Choice1" type="Button" parent="Choices" unique_id=1230923789]
 layout_mode = 2
 
-[node name="Choice2" type="Button" parent="Choices" unique_id=1937110197]
+[node name="Choice2" type="Button" parent="Choices" unique_id=1677698628]
 layout_mode = 2
 
-[node name="Choice3" type="Button" parent="Choices" unique_id=1908060389]
+[node name="Choice3" type="Button" parent="Choices" unique_id=696868031]
 layout_mode = 2
+
+[node name="FadeOverlay" type="ColorRect" parent="." unique_id=717775784]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

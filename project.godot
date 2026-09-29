@@ -11,8 +11,8 @@ config_version=5
 [application]
 
 config/name="No Ar"
-config/features=PackedStringArray("4.7")
 run/main_scene="res://scenes/radio_show.tscn"
+config/features=PackedStringArray("4.7")
 
 [autoload]
 
@@ -20,8 +20,6 @@ GameState="*res://scripts/game_state.gd"
 
 [display]
 
-window/size/viewport_width=1152
-window/size/viewport_height=648
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 

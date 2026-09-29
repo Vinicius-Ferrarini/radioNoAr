@@ -1,26 +1,43 @@
 [gd_scene format=3]
 
-[ext_resource type="Script" path="res://scenes/ending.gd" id="1_mqjok"]
+[ext_resource type="Theme" path="res://theme/theme.tres" id="1_fyrdv"]
+[ext_resource type="Script" path="res://scenes/ending.gd" id="2_2x1jc"]
 
-[node name="Ending" type="Control" unique_id=1994928447]
+[node name="Ending" type="Control" unique_id=1443223706]
 layout_mode = 3
 anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
-script = ExtResource("1_mqjok")
+theme = ExtResource("1_fyrdv")
+script = ExtResource("2_2x1jc")
 
-[node name="EndingText" type="RichTextLabel" parent="." unique_id=344112216]
+[node name="Background" type="ColorRect" parent="." unique_id=2111645665]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.07058824, 0.0627451, 0.05490196, 1)
+
+[node name="EndingText" type="RichTextLabel" parent="." unique_id=1672158308]
 layout_mode = 0
 offset_left = 60.0
 offset_top = 60.0
 offset_right = 1092.0
 offset_bottom = 460.0
+bbcode_enabled = true
 fit_content = true
 
-[node name="RestartButton" type="Button" parent="." unique_id=1818753708]
+[node name="RestartButton" type="Button" parent="." unique_id=516691705]
 layout_mode = 0
 offset_left = 476.0
 offset_top = 500.0
 offset_right = 676.0
 offset_bottom = 548.0
 text = "Jogar novamente"
+
+[node name="FadeOverlay" type="ColorRect" parent="." unique_id=631836996]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)

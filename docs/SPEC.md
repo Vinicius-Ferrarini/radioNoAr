@@ -79,6 +79,42 @@ para permitir alcançar os 3 finais em testes.
 - test_game_state_flow.gd: aplicar 3 choices avança 3 noites e emite
   game_ended com o ending_id esperado.
 
+## Apresentação (M3) — Theme, fonte, transições, barra animada
+
+A linha do M3 na tabela de Marcos é resumida demais para implementar sem
+ambiguidade (qual fonte? qual paleta? que tipo de transição?). Esta seção
+fixa as decisões antes da implementação:
+
+- **Fonte:** Courier Prime (SIL OFL, já presente em addons/gut/fonts/),
+  copiada para res://assets/fonts/ (com o OFL.txt de atribuição). Regular
+  para corpo de texto, Bold para headline do evento e texto do final.
+  Escolhida pelo tom de "transmissão de rádio sob censura" do design —
+  é uma fonte de telex/máquina de escrever.
+- **Theme (res://theme/theme.tres):** aplicado ao nó raiz de
+  radio_show.tscn e ending.tscn. Define fonte padrão (Courier Prime
+  Regular, tamanho 20) e fonte de destaque (Bold, tamanho 28) para
+  headline/labels de título. Paleta: fundo quase preto (#12100e), texto
+  quase branco (#e8e4da), destaque (preenchimento de barra e botões) em
+  vermelho apagado (#b23a2f). Estilo de Button com StyleBoxFlat de
+  cantos retos (sem arredondamento), reforçando estética de painel de
+  controle.
+- **Barra de Poder animada:** ao receber power_changed, radio_show.gd
+  anima o valor da ProgressBar via Tween (0.35s, TRANS_SINE, EASE_OUT)
+  em vez de saltar instantaneamente. Puramente visual — não afeta
+  GameStateLogic/EndingResolver.
+- **Transições de cena:** um ColorRect "FadeOverlay" preto cobrindo a
+  tela em radio_show.tscn e ending.tscn. Ao trocar de cena (fim de jogo
+  ou "Jogar novamente"), a cena atual anima o overlay de alpha 0 -> 1 em
+  0.3s antes de chamar change_scene_to_file(); a cena carregada começa
+  com o overlay em alpha 1 e anima para 0 em 0.3s no _ready().
+- Nada disso introduz lógica de decisão nova; a lógica de
+  cor/animação/transição vive só nos scripts de cena
+  (scenes/radio_show.gd, scenes/ending.gd), que continuam apenas
+  escutando sinais do GameState e chamando seus métodos. Como não há
+  lógica pura nova em scripts/core/, o M3 não adiciona testes GUT novos;
+  o critério de regressão é os testes existentes (M0-M2) continuarem
+  100% passando headless.
+
 ## Marcos
 
 | Marco | Entrega | Critério de aceite |

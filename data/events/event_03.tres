@@ -6,24 +6,24 @@
 [sub_resource type="Resource" id="Resource_r7333"]
 script = ExtResource("1_vguob")
 id = "event_03_truth"
-label = "Contar a verdade sobre o que está por vir"
-response_text = "Depois de hoje, não sei o que vai sair no ar. Mas enquanto o microfone estiver ligado, vou dizer a verdade."
+label = "Dizer a verdade enquanto ainda dá tempo"
+response_text = "Não sei o que essa frequência vai tocar amanhã. Mas enquanto o microfone estiver ligado esta noite, vou dizer o que vi: gente sendo vigiada por pedir eleição livre. Façam o que quiserem comigo depois disso."
 power_delta = -15
 integrity_delta = 10
 
 [sub_resource type="Resource" id="Resource_w1prl"]
 script = ExtResource("1_vguob")
 id = "event_03_crowd"
-label = "Tocar uma música e evitar o assunto"
-response_text = "Vamos deixar as notícias de lado por um instante e ouvir uma música, o que acham?"
+label = "Encerrar com uma música, sem comentários"
+response_text = "Antes de encerrarmos por hoje, vamos ouvir uma música. Um boa noite a todos, e até a próxima transmissão."
 power_delta = 5
 stance = 1
 
 [sub_resource type="Resource" id="Resource_ufkcm"]
 script = ExtResource("1_vguob")
 id = "event_03_attack"
-label = "Culpar os manifestantes pelo toque de recolher"
-response_text = "Se tivessem ficado em casa, nada disso seria necessário."
+label = "Culpar os manifestantes pela mudança na frequência"
+response_text = "Se a rádio muda de mãos amanhã, alguém vai dizer que foi por causa dessa gente nas ruas causando instabilidade. E não vão estar totalmente errados."
 power_delta = 20
 integrity_delta = -15
 stance = 2
@@ -32,6 +32,6 @@ stance = 2
 script = ExtResource("2_xnlsn")
 id = "event_03"
 night = 3
-headline = "O último apelo antes do toque de recolher"
-body = "Faltam minutos para o novo horário de silêncio obrigatório entrar em vigor. Essa pode ser a última vez que você fala livremente no ar por um bom tempo. O que você faz com esses minutos?"
+headline = "Os últimos minutos antes do toque de recolher"
+body = "Amanhã à noite, por decreto, a frequência da rádio muda de dono às 22h em ponto — \"reorganização do espectro\", segundo o comunicado oficial. Ninguém precisa te explicar o que isso quer dizer. Faltam três minutos de programa. Você não sabe quando — ou se — vai estar aqui amanhã pra terminar a frase."
 choices = Array[ExtResource("1_vguob")]([SubResource("Resource_r7333"), SubResource("Resource_w1prl"), SubResource("Resource_ufkcm")])
