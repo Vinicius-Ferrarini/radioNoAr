@@ -140,6 +140,8 @@ func _ready() -> void:
 	_close_item.suspect_toggled.connect(_on_suspect_toggled)
 	_close_item.sibling_selected.connect(_open_item)
 	_close_item.close_requested.connect(_show_desk)
+	_close_item.reply_chosen.connect(_on_reply_chosen)
+	GameState.conversation_events.connect(_on_conversation_events)
 	_close_notebook.entry_chosen.connect(_on_notebook_entry_chosen)
 	_close_notebook.close_requested.connect(_show_desk)
 	_framing_strip.framing_chosen.connect(_on_framing_chosen)
@@ -294,6 +296,9 @@ func _pending_hint() -> String:
 		if GameState.block_item(i) == null:
 			return "Bloco %d vazio: arraste alguém do celular ou das cartas." % (i + 1)
 		if GameState.block_framing(i) == ProgramRundown.NO_FRAMING:
+			var item := GameState.block_item(i)
+			if item != null and GameState.conversation_of(item.id) != null:
+				return "Bloco %d: responda a conversa no celular." % (i + 1)
 			return "Bloco %d: escolha na régua como esse item vai ao ar." % (i + 1)
 	return ""
 
@@ -381,6 +386,24 @@ func _open_item(item_id: String) -> void:
 	_refresh_item()
 
 
+## A pessoa terminou de digitar, ou você respondeu: a thread aberta se
+## redesenha. Conversa de item fechado só corre por baixo.
+func _on_conversation_events(item_id: String, _events: Array) -> void:
+	if _view == View.ITEM and item_id == _open_item_id:
+		_refresh_item()
+
+
+func _on_reply_chosen(index: int) -> void:
+	if not GameState.send_reply(_open_item_id, index):
+		_feedback.text = "Essa resposta não está disponível."
+		return
+	_refresh_item()
+	var talk := GameState.conversation_of(_open_item_id)
+	if talk != null:
+		_feedback.text = "Você respondeu: %s" % talk.chosen_reply_id()
+	_play_sound(_SWITCH)
+
+
 func _open_notebook() -> void:
 	_view = View.NOTEBOOK
 	_refresh_views()
@@ -443,6 +466,13 @@ func _on_item_dropped(item_id: String, block_index: int) -> void:
 
 func _on_block_clicked(block_index: int) -> void:
 	if _is_live():
+		return
+	# Item com conversa não tem régua: clicar no bloco leva de volta para
+	# onde a decisão é tomada, que é o celular (ADR 0013).
+	var item := GameState.block_item(block_index)
+	if item != null and GameState.conversation_of(item.id) != null:
+		_selected_block = block_index
+		_open_item(item.id)
 		return
 	_selected_block = block_index
 	_view = View.BLOCK
@@ -698,6 +728,19 @@ func _refresh_item() -> void:
 		GameState.contradictions_for(item.id),
 		GameState.block_of_item(item.id)
 	)
+
+	# Item com conversa mostra a thread no lugar do parágrafo (ADR 0013).
+	var talk := GameState.conversation_of(item.id)
+	if talk == null:
+		return
+	var available: Array[bool] = []
+	for index in talk.replies().size():
+		available.append(GameState.reply_available(item.id, index))
+	_close_item.show_thread(
+		talk.visible_messages(),
+		talk.replies() if talk.is_waiting_for_reply() else [],
+		available)
+	_close_item.scroll_to_end()
 
 
 ## Uma foto por conversa, para o jogador trocar de remetente — e para

@@ -154,6 +154,19 @@
 		},
 		{
 			"height": 12,
+			"name": "bubble_me",
+			"nine_patch": 4,
+			"palette": [
+				"desk_dark",
+				"desk_hi",
+				"desk_mid"
+			],
+			"path": "res://assets/sprites/bubble_me.png",
+			"sha256": "8df5ce6723831844d26ac08e94095d00d56df6ac071937d7ff71e97f835f8560",
+			"width": 12
+		},
+		{
+			"height": 12,
 			"name": "bubble_them",
 			"nine_patch": 4,
 			"palette": [
