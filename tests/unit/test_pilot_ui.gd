@@ -117,22 +117,32 @@ func test_the_phone_shows_today_and_the_time_of_each_burst() -> void:
 		"a data também abre a noite")
 	desk._open_item("p1_celia")
 	_wait_for_her_to_finish()
-	var stamps: Array[String] = []
-	for bubble in _thread_bubbles():
+	# Toda fala traz a hora, e as horas ficam em ordem de chegada. Nada de
+	# agrupar: a conversa tem de poder ser lida fora de ordem depois.
+	var bubbles := _thread_bubbles()
+	assert_gt(bubbles.size(), 0)
+	var previous := ""
+	for bubble in bubbles:
 		var at: String = bubble.get_node("Lines/At").text
-		if not at.is_empty():
-			stamps.append(at)
-	assert_gt(stamps.size(), 0, "as falas trazem a hora")
-	assert_eq(stamps.size(), _unique(stamps).size(),
-		"a hora repetida é omitida: em balão de celular ela rouba a linha do texto")
+		assert_false(at.is_empty(), "balão sem hora: '%s'" % bubble.get_node("Lines/Text").text)
+		assert_true(at >= previous, "as horas sobem junto com a conversa")
+		previous = at
+	assert_eq(_thread_bubbles()[0].get_node("Lines/At").text, "19:00",
+		"a primeira fala chega com o relógio no começo da noite")
 
 
-func _unique(values: Array[String]) -> Array[String]:
-	var seen: Array[String] = []
-	for value in values:
-		if not seen.has(value):
-			seen.append(value)
-	return seen
+## O relógio do canto anda sozinho enquanto a noite corre.
+func test_the_phone_clock_walks_with_the_night() -> void:
+	desk.get_node("Briefing/Start").pressed.emit()
+	desk._open_item("p1_celia")
+	assert_eq(desk.get_node("Closes/ClosePhone/Clock").text, "19:00")
+	# Passos exatos: 300 passos de 0,1 s somam 29,99 s e o relógio, que
+	# trunca o minuto em curso, mostraria 19:14.
+	for i in 6:
+		GameState._process(5.0)
+	desk._process(0.0)
+	assert_eq(desk.get_node("Closes/ClosePhone/Clock").text, "19:15",
+		"trinta segundos de jogo são quinze minutos de programa")
 
 
 ## O que você responde entra na thread e decide o enquadramento do bloco.

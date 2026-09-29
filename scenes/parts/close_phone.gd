@@ -18,6 +18,7 @@ signal back_requested()
 @export var row_scene: PackedScene
 
 @onready var _today: Label = $Today
+@onready var _clock: Label = $Clock
 @onready var _title: Label = $Title
 @onready var _back: Button = $BackButton
 @onready var _close: Button = $CloseButton
@@ -36,6 +37,11 @@ func _ready() -> void:
 
 func set_today(date: String) -> void:
 	_today.text = date
+
+
+## A hora do programa, no canto de cima. Anda enquanto a noite anda.
+func set_clock(hour: String) -> void:
+	_clock.text = hour
 
 
 ## A lista de conversas. Cada linha traz quem falou, o começo da última
@@ -89,16 +95,12 @@ func show_chat(
 	_clear(_replies)
 
 	var width: float = _chat_scroll.size.x - 6.0
-	# A hora só aparece quando muda: numa tela de celular, repetir 19:11 em
-	# cinco balões seguidos rouba as linhas que o texto precisa.
-	var last_at := ""
+	# Toda fala mostra a hora em que foi mandada, sem agrupar: é assim que
+	# se lê uma conversa fora de ordem depois.
 	for message in messages:
 		var bubble: Control = bubble_scene.instantiate()
 		_thread.add_child(bubble)
-		var at: String = message.at if message.at != last_at else ""
-		if not message.at.is_empty():
-			last_at = message.at
-		bubble.setup(message.text, message.from_me, at, width * 0.82)
+		bubble.setup(message.text, message.from_me, message.at, width * 0.82)
 
 	for claim in claims:
 		var chip: Button = row_scene.instantiate()

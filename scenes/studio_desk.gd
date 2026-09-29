@@ -189,6 +189,8 @@ func _process(delta: float) -> void:
 	_clock += delta
 	_breathe(delta)
 	_yield_to_drag()
+	if _view == View.PHONE:
+		_close_phone.set_clock(GameState.clock_now())
 	if not _is_live():
 		return
 	_refresh_live()
@@ -392,6 +394,7 @@ func _open_phone() -> void:
 	_view = View.PHONE
 	_refresh_views()
 	_close_phone.set_today(GameState.today())
+	_close_phone.set_clock(GameState.clock_now())
 	_close_phone.show_list(threads)
 
 
@@ -780,6 +783,7 @@ func _refresh_chat(item: BroadcastItem) -> void:
 	for index in talk.replies().size():
 		available.append(GameState.reply_available(item.id, index))
 	_close_phone.set_today(GameState.today())
+	_close_phone.set_clock(GameState.clock_now())
 	_close_phone.show_chat(
 		sender.display_name if sender != null else item.sender_id,
 		talk.visible_messages(),

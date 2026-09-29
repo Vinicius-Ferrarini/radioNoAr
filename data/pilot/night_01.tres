@@ -16,77 +16,66 @@ script = ExtResource("m")
 from_me = false
 text = "Boa noite, seu Nilo."
 delay_seconds = 0.0
-at = "19:10"
 
 [sub_resource type="Resource" id="celia_t2"]
 script = ExtResource("m")
 from_me = false
 text = "É a Célia, da rua de baixo."
 delay_seconds = 1.8
-at = "19:10"
 
 [sub_resource type="Resource" id="celia_t3"]
 script = ExtResource("m")
 from_me = false
 text = "Hoje faz 40 anos de casada."
 delay_seconds = 1.6
-at = "19:11"
 
 [sub_resource type="Resource" id="celia_t4"]
 script = ExtResource("m")
 from_me = false
 text = "O Osvaldo diz que não dança."
 delay_seconds = 1.4
-at = "19:11"
 
 [sub_resource type="Resource" id="celia_t5"]
 script = ExtResource("m")
 from_me = false
 text = "Mas já afastou a mesa."
 delay_seconds = 1.6
-at = "19:11"
 
 [sub_resource type="Resource" id="celia_t6"]
 script = ExtResource("m")
 from_me = false
 text = "Toca a nossa valsa?"
 delay_seconds = 1.5
-at = "19:12"
 
 [sub_resource type="Resource" id="celia_a1"]
 script = ExtResource("m")
 from_me = false
 text = "Ai, que vergonha boa."
 delay_seconds = 1.5
-at = "19:12"
 
 [sub_resource type="Resource" id="celia_a2"]
 script = ExtResource("m")
 from_me = false
 text = "Ele vai sentar perto do rádio."
 delay_seconds = 1.6
-at = "19:12"
 
 [sub_resource type="Resource" id="celia_b1"]
 script = ExtResource("m")
 from_me = false
 text = "Tudo bem. Ele é tímido mesmo."
 delay_seconds = 1.5
-at = "19:12"
 
 [sub_resource type="Resource" id="celia_c1"]
 script = ExtResource("m")
 from_me = false
 text = "Eu entendo, o programa é seu."
 delay_seconds = 1.5
-at = "19:12"
 
 [sub_resource type="Resource" id="celia_c2"]
 script = ExtResource("m")
 from_me = false
 text = "Fica para o ano que vem."
 delay_seconds = 1.8
-at = "19:13"
 
 [sub_resource type="Resource" id="celia_parabens"]
 script = ExtResource("rp")

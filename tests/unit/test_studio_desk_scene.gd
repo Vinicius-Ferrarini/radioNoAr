@@ -177,8 +177,8 @@ func test_opening_the_phone_shows_the_conversation_list() -> void:
 func test_the_phone_shows_the_date_and_the_time_of_the_last_message() -> void:
 	_root._open_phone()
 	assert_eq(_node("Closes/ClosePhone/Today").text, GameCalendar.date_of(1))
-	assert_string_contains(_phone_rows()[0].text, "19:42",
-		"a lista mostra a hora da ultima fala")
+	assert_string_contains(_phone_rows()[0].text, "19:00",
+		"a lista mostra a hora que o relogio marcou na ultima fala")
 
 
 func test_the_phone_lists_only_phone_conversations() -> void:
