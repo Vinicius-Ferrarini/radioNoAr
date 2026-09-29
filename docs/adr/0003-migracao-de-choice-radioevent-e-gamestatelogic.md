@@ -1,6 +1,6 @@
 # 0003 — Migração de `Choice`, `RadioEvent` e `GameStateLogic`
 
-- **Status:** proposto
+- **Status:** aceito e executado (M10, 2026-09-29)
 - **Data:** 2026-09-29
 
 ## Contexto
@@ -78,3 +78,35 @@ o M10: os sinais e métodos v0 (`power_changed`, `apply_choice`,
 `get_current_event`) e os v1 (`phase_changed`, `place_item`,
 `link_claim`…). A remoção da metade v0 continua marcada para o M10, no
 mesmo commit que apaga `Choice`/`RadioEvent`/`GameStateLogic`.
+
+
+## Execução (M10, 2026-09-29)
+
+Removidos: `scripts/core/choice.gd`, `radio_event.gd`,
+`game_state_logic.gd`, `data/events/` (3 arquivos), `scenes/radio_show.*`
+e `scenes/ending.*`, mais a metade v0 do autoload (`power_changed`,
+`night_advanced`, `game_ended`, `apply_choice`, `load_events`,
+`get_current_event`, `get_power`, `reset_run`, `get_last_ending_id`).
+As duas cenas da v0 entraram na lista porque dependiam inteiramente
+dessa API; a cena de final é reconstruída no M12.
+
+Equivalências, como o ADR exigia:
+
+| Teste da v0 | O que garantia | Onde a garantia vive agora |
+|---|---|---|
+| `test_choice_application` | clamp 0–100, delta aplicado, noite avança, histórico cresce | `test_meters`, `test_run_state`, `test_night_cycle` |
+| `test_game_state_flow` | a campanha termina depois de N noites | `test_run_state` (`is_finished`), `test_night_one_run` |
+| `test_events_data` | os arquivos de conteúdo carregam com os campos exigidos | `test_night_definitions` (12 testes) e `test_content_integrity` |
+| `test_full_playthroughs` | uma campanha inteira roda pelo autoload | `test_night_one_run` (11 testes) |
+
+`test_ending_resolver.gd` sobreviveu intacto, como planejado: o
+`EndingResolver` só é substituído no M12.
+
+### Perda consciente
+
+A suíte saiu de 279 testes / 21 839 asserts para **265 / 21 695**. A
+queda é de testes baratos e numerosos da v0, e há **uma** garantia sem
+equivalente hoje: nenhum teste leva uma campanha até um final, porque os
+finais são o M12 e só existe uma noite escrita. Fica registrado aqui em
+vez de ser compensado com asserts de enfeite — a garantia volta no M12,
+junto com `EndingResolver` v2.

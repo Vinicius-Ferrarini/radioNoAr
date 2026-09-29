@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="2_line"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_point.gd" id="4_point"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_option.gd" id="5_option"]
+
+[sub_resource type="Resource" id="line_1"]
+script = ExtResource("2_line")
+text = "Vou contar uma coisa que aconteceu hoje nesta rádio, porque não contar seria participar."
+read_seconds = 6.0
+
+[sub_resource type="Resource" id="opt_2"]
+script = ExtResource("5_option")
+id = "envelope_neutro"
+text = "Não sei de quem veio. Fica o registro."
+framing_kind = 0
+immediate_deltas = {
+"audience_trust": 2,
+"regime_attention": 4
+}
+
+[sub_resource type="Resource" id="opt_3"]
+script = ExtResource("5_option")
+id = "envelope_recusa"
+text = "A resposta é não. E o turno da noite continua na pauta."
+framing_kind = 1
+immediate_deltas = {
+"audience_trust": 8,
+"integrity": 7,
+"regime_attention": 10
+}
+consequence_ids = Array[String](["c_suborno_exposto"])
+
+[sub_resource type="Resource" id="opt_4"]
+script = ExtResource("5_option")
+id = "envelope_provoca"
+text = "Lacre duplo, papel de repartição. Quem mandou isso não estava escondido de mim."
+framing_kind = 3
+immediate_deltas = {
+"audience_trust": 6,
+"integrity": 4,
+"regime_attention": 16,
+"street_heat": 5
+}
+
+[sub_resource type="Resource" id="point_5"]
+script = ExtResource("4_point")
+id = "i_envelope"
+prompt = "Você acabou de dizer que tentaram te comprar."
+time_limit_seconds = 6.0
+options = Array[ExtResource("5_option")]([SubResource("opt_2"), SubResource("opt_3"), SubResource("opt_4")])
+
+[sub_resource type="Resource" id="line_6"]
+script = ExtResource("2_line")
+text = "Chegou um envelope sem remetente oferecendo duzentos litros de combustível. A condição era não mencionar o turno da noite esta semana."
+read_seconds = 7.5
+improv_point = SubResource("point_5")
+
+[sub_resource type="Resource" id="line_7"]
+script = ExtResource("2_line")
+text = "O transmissor aqui anda com o tanque na reserva. Achei que vocês deviam saber disso também."
+read_seconds = 6.0
+
+[resource]
+script = ExtResource("1_script")
+id = "r_envelope_verdade"
+lines = Array[ExtResource("2_line")]([SubResource("line_1"), SubResource("line_6"), SubResource("line_7")])

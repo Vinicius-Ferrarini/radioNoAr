@@ -10,7 +10,7 @@ extends Control
 ## autoload.
 
 ## Qual objeto está aberto em cima da mesa.
-enum View { DESK, ITEM, NOTEBOOK, BLOCK }
+enum View { DESK, ITEM, NOTEBOOK, BLOCK, IMPROV, MORNING }
 
 const _RESULT_MESSAGES := {
 	Validator.Result.CONTRADICTION: "CONTRADIÇÃO: as duas coisas não podem ser verdade.",
@@ -33,7 +33,13 @@ const _RESULT_MESSAGES := {
 @onready var _close_item: Control = $Closes/CloseItem
 @onready var _close_notebook: Control = $Closes/CloseNotebook
 @onready var _framing_strip: Control = $Closes/FramingStrip
+@onready var _improv_strip: Control = $Closes/ImprovStrip
+@onready var _close_morning: Control = $Closes/CloseMorning
 @onready var _prompter: RichTextLabel = $Studio/Teleprompter/ScriptText
+@onready var _line_progress: ProgressBar = $Studio/Teleprompter/LineProgress
+@onready var _block_label: Label = $Studio/BlockLabel
+@onready var _microphone: TextureButton = $Studio/Microphone
+@onready var _on_air_sign: TextureRect = $Studio/OnAirSign
 
 @onready var _blocks: Array[Node] = [
 	$Blocks/Block1,
@@ -61,6 +67,16 @@ func _ready() -> void:
 	GameState.link_evaluated.connect(_on_link_evaluated)
 	GameState.suspicion_changed.connect(_on_suspicion_changed)
 
+	GameState.live_block_started.connect(_on_live_block_started)
+	GameState.live_events.connect(_on_live_events)
+
+	_microphone.button_down.connect(_on_mic_down)
+	_microphone.button_up.connect(_on_mic_up)
+	_improv_strip.option_chosen.connect(_on_improv_chosen)
+	_close_morning.continue_requested.connect(_on_morning_continue)
+	GameState.morning_ready.connect(_on_morning_ready)
+	_prompter.meta_clicked.connect(_on_prompter_meta_clicked)
+
 	_phone.pressed.connect(_open_phone)
 	_letters.pressed.connect(_open_letters)
 	_notebook_object.pressed.connect(_open_notebook)
@@ -85,9 +101,30 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("ui_cancel") and _view != View.DESK:
+	# Segurar ESPAÇO é o mesmo que segurar o microfone: quem está no ar
+	# com uma mão no dial não larga o botão para clicar.
+	if event.is_action_pressed("ui_accept") and _is_live():
+		_on_mic_down()
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_released("ui_accept") and _is_live():
+		_on_mic_up()
+		get_viewport().set_input_as_handled()
+		return
+
+	if event.is_action_pressed("ui_cancel") and _view != View.DESK and _view != View.IMPROV:
 		_show_desk()
 		get_viewport().set_input_as_handled()
+
+
+func _process(_delta: float) -> void:
+	if not _is_live():
+		return
+	_refresh_live()
+
+
+func _is_live() -> bool:
+	return GameState.current_phase() == NightCycle.Phase.LIVE
 
 
 # --- sinais do autoload ---
@@ -146,11 +183,16 @@ func _on_phase_changed(phase: int) -> void:
 	if not before_air:
 		_show_desk()
 
+	_microphone.disabled = phase != NightCycle.Phase.LIVE
+	_line_progress.visible = phase == NightCycle.Phase.LIVE
+	_block_label.visible = phase == NightCycle.Phase.LIVE
+
 	if phase == NightCycle.Phase.LIVE:
-		_prompter.text = "[b]NO AR.[/b]\n\nO microfone está na sua mão."
-		_feedback.text = "O programa começou. (O ao vivo chega no M9.)"
+		_feedback.text = "Segure o microfone (ou ESPAÇO). Soltar é ar morto."
 	else:
 		_prompter.text = "O microfone ainda está desligado."
+		_block_label.text = ""
+		_on_air_sign.modulate = Color(1, 1, 1, 0.35)
 
 	_refresh_audience_label()
 
@@ -212,6 +254,8 @@ func _refresh_views() -> void:
 	_close_item.visible = _view == View.ITEM
 	_close_notebook.visible = _view == View.NOTEBOOK
 	_framing_strip.visible = _view == View.BLOCK
+	_improv_strip.visible = _view == View.IMPROV
+	_close_morning.visible = _view == View.MORNING
 
 
 # --- interação ---
@@ -282,6 +326,116 @@ func _on_go_on_air_pressed() -> void:
 			or GameState.current_phase() == NightCycle.Phase.RUNDOWN:
 		if not GameState.advance_phase():
 			return
+
+
+# --- o ao vivo ---
+
+func _on_live_block_started(position: int, total: int, headline: String) -> void:
+	_block_label.text = "BLOCO %d DE %d — %s" % [position + 1, total, headline]
+	_show_desk()
+	_refresh_live()
+
+
+func _on_mic_down() -> void:
+	if _is_live():
+		GameState.set_mic_held(true)
+
+
+func _on_mic_up() -> void:
+	if _is_live():
+		GameState.set_mic_held(false)
+
+
+## As palavras proibidas vão para o roteiro como link invisível: clicar
+## troca pelo sinônimo aprovado. Quem tem que lembrar da circular é o
+## apresentador, não a interface — por isso nada nelas se destaca.
+func _on_prompter_meta_clicked(meta: Variant) -> void:
+	if not _is_live():
+		return
+	if GameState.replace_word(int(meta)):
+		_feedback.text = "Trocado a tempo."
+
+
+func _on_improv_chosen(option_index: int) -> void:
+	if GameState.choose_improv(option_index):
+		_show_desk()
+
+
+func _on_live_events(events: Array) -> void:
+	for event in events:
+		match int(event["kind"]):
+			LiveBroadcast.EventKind.DEAD_AIR_STARTED:
+				_feedback.text = "AR MORTO. Cada segundo calado custa ouvinte."
+			LiveBroadcast.EventKind.DEAD_AIR_ENDED:
+				_feedback.text = "Voltou."
+			LiveBroadcast.EventKind.FORBIDDEN_WORD_AIRED:
+				_feedback.text = "Você disse \"%s\" no ar. Alguém anotou." % event["word"]
+			LiveBroadcast.EventKind.IMPROV_REQUESTED:
+				_open_improv()
+			LiveBroadcast.EventKind.IMPROV_TIMEOUT:
+				_feedback.text = "O tempo acabou. Saiu o que estava mais à mão."
+				_show_desk()
+			LiveBroadcast.EventKind.IMPROV_RESOLVED:
+				_show_desk()
+			LiveBroadcast.EventKind.BLOCK_FINISHED:
+				if GameState.is_live_done():
+					_feedback.text = "Fim do programa. O resto chega de manhã."
+
+
+func _on_morning_ready(report: Dictionary) -> void:
+	_view = View.MORNING
+	_refresh_views()
+	_close_morning.show_report(
+		GameState.current_night(),
+		report,
+		GameState.visible_meters().get(Meters.AUDIENCE_TRUST, 0)
+	)
+	_close_morning.set_last_night(not GameState.has_next_night())
+	_feedback.text = "A conta de ontem chegou."
+
+
+func _on_morning_continue() -> void:
+	GameState.start_next_night()
+
+
+func _open_improv() -> void:
+	_view = View.IMPROV
+	_refresh_views()
+	_improv_strip.show_improv(GameState.live_improv_prompt(), GameState.live_improv_options())
+
+
+## O teleprompter mostra a linha anterior apagada, a de agora acesa e a
+## próxima esperando — como um teleprompter de verdade.
+func _refresh_live() -> void:
+	var index := GameState.live_line_index()
+	var total := GameState.live_line_count()
+	var parts: Array[String] = []
+
+	if index > 0:
+		parts.append("[color=#8f8877]%s[/color]" % GameState.live_line_text(index - 1))
+	parts.append("[b]%s[/b]" % _with_forbidden_links(index))
+	if index + 1 < total:
+		parts.append("[color=#8f8877]%s[/color]" % GameState.live_line_text(index + 1))
+
+	_prompter.text = "\n\n".join(parts)
+	_line_progress.value = GameState.live_line_progress() * 100.0
+
+	var on_air: bool = GameState.live_state() == LiveBroadcast.State.ON_AIR \
+		or GameState.live_state() == LiveBroadcast.State.IMPROV
+	_on_air_sign.modulate = Color(1, 1, 1, 1.0 if on_air else 0.3)
+
+	if _view == View.IMPROV:
+		_improv_strip.set_seconds_left(GameState.live_improv_seconds_left())
+
+
+func _with_forbidden_links(index: int) -> String:
+	var text := GameState.live_line_text(index)
+	for slot_index in GameState.live_forbidden_slots().size():
+		var slot := GameState.live_forbidden_slots()[slot_index]
+		if slot["line_index"] != index or slot["replaced"] or slot["aired"]:
+			continue
+		text = text.replace(slot["word"], "[url=%d]%s[/url]" % [slot_index, slot["word"]])
+	return text
 
 
 # --- desenho ---

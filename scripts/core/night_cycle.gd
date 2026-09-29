@@ -4,9 +4,11 @@ extends RefCounted
 ## As fases de uma noite. Nao decide conteudo: so move o estado de uma
 ## fase para a outra e cobra as pre-condicoes de cada passagem.
 ##
-## Ate o M9 nao existe LiveBroadcast: a fase LIVE e uma passagem direta e
-## resolve_live() faz tudo menos o que depende do ao vivo (ar morto e
-## infracoes). O portao live().is_finished() entra junto com o modulo.
+## A fase LIVE e uma fila: um LiveBroadcast por bloco que vai ao ar, na
+## ordem do programa. So se sai dela quando o ultimo bloco termina.
+
+## O que uma palavra proibida no ar custa em atencao do regime.
+const REGIME_ATTENTION_PER_INFRACTION := 8
 
 enum Phase {
 	TRIAGE,
@@ -24,6 +26,12 @@ var _rundown: ProgramRundown
 var _phase: Phase = Phase.TRIAGE
 var _live_resolved := false
 var _morning_report: Dictionary = {}
+
+## Um bloco de cada vez vai ao ar. A fila e montada ao entrar em LIVE.
+var _live_queue: Array[Dictionary] = []
+var _live_position: int = -1
+var _live: LiveBroadcast
+var _live_results: Array[Dictionary] = []
 
 
 func _init(definition: NightDefinition, run: RunState) -> void:
@@ -54,6 +62,8 @@ func can_advance() -> bool:
 	match _phase:
 		Phase.RUNDOWN:
 			return _rundown.is_ready()
+		Phase.LIVE:
+			return is_live_done()
 		Phase.DONE:
 			return false
 		_:
@@ -69,6 +79,7 @@ func advance() -> Phase:
 			_phase = Phase.RUNDOWN
 		Phase.RUNDOWN:
 			_phase = Phase.LIVE
+			_open_live()
 		Phase.LIVE:
 			resolve_live()
 			_phase = Phase.MORNING
@@ -81,6 +92,105 @@ func advance() -> Phase:
 			pass
 
 	return _phase
+
+
+# =====================================================================
+# Ao vivo
+# =====================================================================
+
+func live() -> LiveBroadcast:
+	return _live
+
+
+func live_block_index() -> int:
+	if _live_position < 0 or _live_position >= _live_queue.size():
+		return -1
+	return _live_queue[_live_position]["block_index"]
+
+
+func live_block_position() -> int:
+	return _live_position
+
+
+func live_block_count() -> int:
+	return _live_queue.size()
+
+
+func live_item() -> BroadcastItem:
+	if _live_position < 0 or _live_position >= _live_queue.size():
+		return null
+	return _live_queue[_live_position]["item"]
+
+
+## Todos os blocos ja foram ao ar (ou nao havia nenhum para ir).
+func is_live_done() -> bool:
+	if _live_queue.is_empty():
+		return true
+	if _live_position >= _live_queue.size():
+		return true
+	return _live_position == _live_queue.size() - 1 and _live != null and _live.is_finished()
+
+
+## Passa para o proximo bloco do programa. false quando o ultimo acabou.
+func advance_live_block() -> bool:
+	if _live != null and not _live.is_finished():
+		return false
+	_harvest_live()
+	if _live_position + 1 >= _live_queue.size():
+		return false
+	_start_live_block(_live_position + 1)
+	return true
+
+
+func _open_live() -> void:
+	_live_queue.clear()
+	_live_results.clear()
+	_live_position = -1
+
+	for block_index in ProgramRundown.BLOCK_COUNT:
+		var item := _rundown.item_at(block_index)
+		var kind := _rundown.framing_at(block_index)
+		if item == null or kind == ProgramRundown.NO_FRAMING or kind == FramingOption.Kind.DISCARD:
+			continue
+
+		var framing := _find_framing(item, kind)
+		if framing == null or framing.script_id.is_empty():
+			continue
+		var broadcast_script := ContentLibrary.broadcast_script(framing.script_id)
+		if broadcast_script == null:
+			continue
+
+		_live_queue.append({
+			"block_index": block_index,
+			"item": item,
+			"framing": framing,
+			"script": broadcast_script,
+		})
+
+	if not _live_queue.is_empty():
+		_start_live_block(0)
+
+
+func _start_live_block(position: int) -> void:
+	_live_position = position
+	_live = LiveBroadcast.new(_live_queue[position]["script"], _run.rng())
+
+
+## Guarda o que aquele bloco custou antes de trocar de roteiro.
+func _harvest_live() -> void:
+	if _live == null or _live_position < 0:
+		return
+	for result in _live_results:
+		if result["position"] == _live_position:
+			return
+
+	_live_results.append({
+		"position": _live_position,
+		"item": _live_queue[_live_position]["item"],
+		"dead_air_penalty": _live.dead_air_penalty(),
+		"infractions": _live.infractions(),
+		"chosen_options": _live.chosen_improv_options(),
+	})
 
 
 ## Traduz o programa em medidores e em contas para as manhas seguintes.
@@ -114,6 +224,16 @@ func resolve_live() -> void:
 		# Consequencia vale tambem para o que foi descartado: nao falar e
 		# uma resposta, e quem ofereceu o envelope entende como resposta.
 		_schedule_consequences(framing.consequence_ids, item, goes_on_air)
+
+	_harvest_live()
+	for result in _live_results:
+		if result["dead_air_penalty"] != 0:
+			_run.meters().apply(Meters.AUDIENCE_TRUST, result["dead_air_penalty"])
+		for _infraction in result["infractions"]:
+			_run.meters().apply(Meters.REGIME_ATTENTION, REGIME_ATTENTION_PER_INFRACTION)
+		for option in result["chosen_options"]:
+			_run.meters().apply_all(option.immediate_deltas)
+			_schedule_consequences(option.consequence_ids, result["item"], true)
 
 	for rule in _rundown.order_effects():
 		_run.meters().apply_all(rule.meter_deltas)

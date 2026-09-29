@@ -99,6 +99,84 @@ func test_every_item_says_when_it_arrived() -> void:
 				"item %s sem hora de chegada: o close mostra isso" % item.id)
 
 
+func test_every_aired_framing_has_a_script() -> void:
+	# Enquadramento sem roteiro e um bloco que nao vai ao ar: o jogador
+	# escala, aperta AO AR e o bloco some sem explicacao.
+	for path in NIGHT_PATHS:
+		var night: NightDefinition = load(path)
+		for item in night.inbox:
+			for framing in item.framings:
+				if framing.kind == FramingOption.Kind.DISCARD:
+					continue
+				assert_false(framing.script_id.is_empty(),
+					"%s / enquadramento %d sem roteiro" % [item.id, framing.kind])
+				assert_not_null(ContentLibrary.broadcast_script(framing.script_id),
+					"roteiro inexistente: %s (%s)" % [framing.script_id, item.id])
+
+
+func test_every_script_is_well_formed() -> void:
+	var dir := DirAccess.open("res://data/scripts/")
+	assert_not_null(dir, "a pasta de roteiros deveria existir")
+
+	var checked := 0
+	for file_name in dir.get_files():
+		if not file_name.ends_with(".tres"):
+			continue
+		var broadcast_script: BroadcastScript = load("res://data/scripts/" + file_name)
+		assert_not_null(broadcast_script, "roteiro deveria carregar: %s" % file_name)
+		assert_gt(broadcast_script.lines.size(), 0, "%s sem linhas" % file_name)
+
+		for line in broadcast_script.lines:
+			assert_false(line.text.is_empty(), "linha vazia em %s" % file_name)
+			assert_gt(line.read_seconds, 0.0, "linha sem duracao em %s" % file_name)
+
+			for slot in line.forbidden_slots:
+				assert_true(line.text.contains(slot.word),
+					"a palavra proibida '%s' nao esta no texto da linha (%s)" % [slot.word, file_name])
+				assert_eq(line.text.find(slot.word), slot.char_start,
+					"char_start errado para '%s' em %s" % [slot.word, file_name])
+				assert_false(slot.approved_synonym.is_empty(),
+					"'%s' sem sinonimo aprovado em %s" % [slot.word, file_name])
+
+			if line.improv_point != null:
+				assert_gt(line.improv_point.options.size(), 1,
+					"improviso com uma saida so nao e escolha (%s)" % file_name)
+				assert_gt(line.improv_point.time_limit_seconds, 0.0,
+					"improviso sem relogio nao pressiona (%s)" % file_name)
+				assert_false(line.improv_point.prompt.is_empty(), "improviso sem pergunta em %s" % file_name)
+				for option in line.improv_point.options:
+					assert_false(option.text.is_empty(), "opcao sem fala em %s" % file_name)
+					_assert_meter_keys(option.immediate_deltas, file_name)
+					for consequence_id in option.consequence_ids:
+						assert_true(ResourceLoader.exists("res://data/consequences/%s.tres" % consequence_id),
+							"consequencia inexistente: %s (%s)" % [consequence_id, file_name])
+		checked += 1
+
+	assert_gt(checked, 0, "deveria haver roteiros em disco")
+
+
+func test_the_forbidden_words_of_the_night_show_up_in_some_script() -> void:
+	# O caderno avisa quais palavras estao proibidas hoje; se nenhuma
+	# delas aparece em roteiro nenhum, o aviso e decoracao.
+	var night: NightDefinition = load("res://data/nights/night_01.tres")
+	var notebook := Notebook.new()
+	notebook.add_entries(night.new_notebook_entries)
+
+	var used: Dictionary = {}
+	var dir := DirAccess.open("res://data/scripts/")
+	for file_name in dir.get_files():
+		if not file_name.ends_with(".tres"):
+			continue
+		var broadcast_script: BroadcastScript = load("res://data/scripts/" + file_name)
+		for line in broadcast_script.lines:
+			for slot in line.forbidden_slots:
+				used[slot.word] = true
+
+	for word in notebook.forbidden_words():
+		assert_true(used.has(word),
+			"a palavra proibida '%s' nao aparece em roteiro nenhum" % word)
+
+
 func test_order_rules_file_loads() -> void:
 	var rule_set: OrderRuleSet = load(ORDER_RULES)
 	assert_not_null(rule_set, "o arquivo de regras de ordem deveria carregar")

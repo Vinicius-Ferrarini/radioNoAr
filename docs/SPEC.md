@@ -17,53 +17,20 @@ campanha de **21 noites** até o referendo.
 
 ---
 
-## 1. Estado atual (v0, marcos M0–M3 concluídos)
+## 1. O que sobrou da v0
 
-Implementado e verde (19 testes GUT). Continua valendo até o marco que
-explicitamente o substituir (ver ADR 0003).
+O loop da v0 foi removido no M10 (ADR 0003): `Choice`, `RadioEvent`,
+`GameStateLogic`, `data/events/`, `radio_show.tscn` e `ending.tscn` não
+existem mais, e o autoload perdeu a metade v0 da API.
 
-### 1.1 Dados v0
+Sobrevivem do protótipo:
 
-**Choice** (`scripts/core/choice.gd`, extends Resource)
-`id: String` · `label: String` · `response_text: String` ·
-`power_delta: int` · `integrity_delta: int` ·
-`stance: enum { TRUTH, CROWD_PLEASING, ATTACK }`
-
-**RadioEvent** (`scripts/core/radio_event.gd`, extends Resource)
-`id: String` · `night: int` · `headline: String` · `body: String` ·
-`choices: Array[Choice]` (sempre 3)
-
-### 1.2 Lógica v0
-
-**GameStateLogic** (`scripts/core/game_state_logic.gd`, RefCounted)
-Estado: `power = 50`, `integrity = 50`, `inconsistency = 0`,
-`current_night = 1`, `history: Array[Choice]`.
-`apply_choice(choice)` soma os deltas com clamp 0–100, empilha em
-`history`, incrementa `current_night`. `is_finished(total_nights)`.
-`resolve_ending()` delega para `EndingResolver.resolve(power)`.
-
-**EndingResolver** (`scripts/core/ending_resolver.gd`, RefCounted,
-estático) — `resolve(power: int) -> String`: `> 65` → `"repressao"`,
-`< 35` → `"reforma"`, senão `"cinza"`.
-
-### 1.3 Autoload v0
-
-**GameState** (`scripts/game_state.gd`) — sinais `power_changed`,
-`night_advanced`, `game_ended`; métodos `load_events`,
-`get_current_event`, `apply_choice`, `reset_run`, `get_power`,
-`get_current_night`, `get_last_ending_id`. Não decide nada: delega para
-`GameStateLogic`/`EndingResolver` e traduz em sinais.
-
-### 1.4 Apresentação v0 (M3)
-
-Courier Prime (SIL OFL) em `res://assets/fonts/`; Regular 20 para corpo,
-Bold 28 para headline. `res://theme/theme.tres` com fundo `#12100e`,
-texto `#e8e4da`, destaque `#b23a2f`, `StyleBoxFlat` de cantos retos.
-Barra de Poder animada por `Tween` (0.35 s, TRANS_SINE, EASE_OUT).
-Transições por `ColorRect` "FadeOverlay" (0.3 s). Nenhuma lógica de
-decisão nos scripts de cena.
-
----
+- **Courier Prime** (SIL OFL) em `res://assets/fonts/`, e
+  `res://theme/theme.tres` com fundo `#12100e`, texto `#e8e4da`,
+  destaque `#b23a2f` e `StyleBoxFlat` de cantos retos. Os tamanhos foram
+  reescalados no M7 para o espaço de 320×180 (ADR 0005).
+- **`EndingResolver`** com a assinatura v0 `resolve(power: int) -> String`
+  e os seus 5 testes de fronteira, intocados até o M12.
 
 ## 2. Convenções (valem para todo código novo)
 
@@ -340,10 +307,25 @@ func pending_count() -> int
 func clear() -> void
 ```
 
-- Vencimento = `current_night + max(1, effect.delay_nights)`.
+A unidade da fila é a **manhã**, não a noite: a manhã *n* é a que fecha a
+noite *n*.
+
+- Vencimento = `current_night + max(1, effect.delay_nights) - 1`.
+  Com `delay_nights = 1` (o mínimo), a conta chega na manhã que fecha a
+  própria noite — que é exatamente o que o design pede: *nunca na hora,
+  sempre na manhã seguinte*. Com 2, pula uma manhã, e assim por diante.
 - `pop_due(n)` devolve tudo com vencimento `<= n` e remove da fila, na
   ordem de agendamento.
-- **Invariante:** nada agendado na noite *n* aparece em `pop_due(n)`.
+- **Invariante:** nada aparece **durante o programa**. A `ConsequenceQueue`
+  só é lida em `_resolve_morning()`, e a fase `MORNING` vem depois da
+  `LIVE`.
+
+> **Correção registrada no M10.** A versão anterior vencia em
+> `current_night + delay_nights`, o que empurrava a conta para a manhã da
+> noite *seguinte* — uma manhã tarde demais. O sintoma apareceu ao montar
+> a fatia vertical: a manhã da noite 1 vinha vazia, e o jogador terminava
+> o programa sem nunca ver o preço do que tinha feito. O erro era meu na
+> leitura do loop do design, não no conteúdo.
 
 ### 4.6 LiveBroadcast — `live_broadcast.gd`
 
@@ -391,9 +373,14 @@ Regras (cada item é um teste):
 3. `set_mic_held(false)` em `ON_AIR` → `DEAD_AIR` + `DEAD_AIR_STARTED`.
    Em `DEAD_AIR` o roteiro não avança e `dead_air_seconds` acumula.
    `set_mic_held(true)` volta para o estado anterior + `DEAD_AIR_ENDED`.
-4. `audience_delta()` = `-floori(DEAD_AIR_TRUST_PER_SECOND * dead_air_seconds)`
-   somado aos `immediate_deltas[AUDIENCE_TRUST]` dos improvisos
-   escolhidos.
+4. `dead_air_penalty()` = `-floori(DEAD_AIR_TRUST_PER_SECOND * dead_air_seconds)`.
+   É o único efeito que o ao vivo calcula, porque é do ao vivo que ele
+   nasce. As frases de improviso saem inteiras por
+   `chosen_improv_options()`, e quem aplica os `immediate_deltas` e
+   agenda as `consequence_ids` delas é o `NightCycle` — do mesmo jeito
+   que faz com o enquadramento. *(Corrigido durante o M9: a versão
+   anterior somava o efeito do improviso aqui dentro, o que obrigava o
+   módulo a conhecer o id de um medidor e quebrava a regra 10.)*
 5. Ao entrar numa linha com `improv_point` não nulo: estado `IMPROV` +
    `IMPROV_REQUESTED`; o cronômetro do improviso conta por `tick`. O
    teleprompter não avança em `IMPROV`.
@@ -403,8 +390,11 @@ Regras (cada item é um teste):
    índice 0 é registrada.
 7. Soltar o microfone durante `IMPROV` gera `DEAD_AIR` **e o cronômetro
    do improviso continua correndo**: o silêncio não é uma saída.
-8. `replace_word(i)` só vale enquanto a linha que contém o slot ainda não
-   foi ao ar; devolve false caso contrário. Sucesso emite
+8. `replace_word(i)` recebe o índice no **array achatado** de
+   `forbidden_slots()` — o teleprompter mostra várias linhas ao mesmo
+   tempo e precisa endereçar qualquer slot visível. Só vale enquanto a
+   linha que contém o slot ainda não foi ao ar; devolve false caso
+   contrário. Sucesso emite
    `WORD_REPLACED` e o slot não gera infração.
 9. `queue_call(t)` emite `CALL_TRANSCRIPT` na hora e agenda `CALL_AIRED`
    para `CALL_DELAY_SECONDS` de `tick` depois. `cut_call()` antes disso
@@ -500,6 +490,16 @@ func morning_report() -> Dictionary     # {headlines, letters, meter_deltas, new
 func day() -> DayPhase
 ```
 
+- **A fase `LIVE` é uma fila de blocos**, não um estado só: um
+  `LiveBroadcast` por bloco que vai ao ar, na ordem do programa. Bloco
+  sem roteiro (enquadramento sem `script_id`, ou arquivo ausente) fica
+  fora da fila — e há teste de conteúdo cobrando que isso nunca
+  aconteça. `advance_live_block()` emenda no próximo; `is_live_done()` é
+  o portão para a manhã. **O microfone é do apresentador, não do bloco:**
+  quem está segurando quando um bloco emenda no outro continua
+  segurando.
+- Cada palavra proibida que vai ao ar custa
+  `NightCycle.REGIME_ATTENTION_PER_INFRACTION` (8) de atenção do regime.
 - `TRIAGE → RUNDOWN` sempre pode avançar (não conferir é uma escolha).
 - `RUNDOWN → LIVE` exige `rundown().is_ready()`.
 - `LIVE → MORNING` exige `live().is_finished()`; `advance()` chama

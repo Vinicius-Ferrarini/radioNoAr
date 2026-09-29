@@ -35,8 +35,8 @@ conteúdo no formato v0 agora seria trabalho perdido (ADR 0003).
 | M8 | Triagem e escalação: closes, marcar e cruzar, arrastar para os 4 blocos | ✅ ⁵ | M6, M7 |
 | M8B | Remetentes como personagens, closes diegéticos (celular/carta/caderno), luz | ✅ ⁶ | M8 |
 | M8C | Tela de título, opções e transições | ⬜ | M8B |
-| M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ⬜ | M6, M8B |
-| M10 | Manhã + **fatia vertical: noite 1 de ponta a ponta**; remoção da v0 | ⬜ | M8, M9 |
+| M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ✅ ⁷ | M6, M8B |
+| M10 | Manhã + **fatia vertical: noite 1 de ponta a ponta**; remoção da v0 | ✅ ⁸ | M8, M9 |
 | M11 | Fase de dia: transmissor, sinal, equipe, dinheiro | ⬜ | M10 |
 | M12 | Finais país × pessoal (`EndingResolver` v2) | ⬜ | M10 + nº de noites |
 | M13 | Conteúdo das noites até o referendo + corte da internet | ⬜ | M12 |
@@ -86,6 +86,23 @@ caderno, balão, lacre, carimbo); `close_item`, `close_notebook` e
 Suíte **217/217, 19 806 asserts**. Os testes de interface do M8 foram
 reescritos, não apagados.
 
+⁷ M9 concluído em 2026-09-29: `LiveBroadcast` com as 10 regras da SPEC
+§4.6, 5 Resources de roteiro, 16 roteiros de teleprompter da noite 1
+(com palavras proibidas e 6 pontos de improviso), fila de blocos no
+`NightCycle`, `_process` no autoload como único ponto de entrada de
+tempo, teleprompter na cena com microfone de segurar e régua de
+improviso com relógio. Suíte **267/267, 20 630 asserts**.
+Dois bugs que os testes pegaram: o ao vivo lia um id de medidor (quebrava
+a regra 10) e o microfone "caía da mão" ao emendar de um bloco no outro.
+
+⁸ M10 concluído em 2026-09-29: close da manhã com manchetes, cartas e o
+que o caderno aprendeu; `test_night_one_run.gd` roda a noite 1 inteira
+headless com seed fixa; loop v0 removido (ADR 0003, com a perda
+consciente registrada lá). Suíte **265/265, 21 695 asserts**.
+Correção de modelo encontrada ao montar a fatia: a `ConsequenceQueue`
+vencia uma manhã tarde demais, e a manhã da noite 1 vinha vazia. A
+unidade da fila passou a ser a manhã (SPEC §4.5).
+
 M7 não depende tecnicamente de M5/M6 — a pixel art e a lógica não se
 cruzam. Ficou decidido rodar a lógica primeiro (M5 → M6) e só então o M7:
 o custo é ficar dois marcos sem novidade na tela.
@@ -107,7 +124,7 @@ o custo é ficar dois marcos sem novidade na tela.
 | O ao vivo (M9) é a mecânica mais complexa e a mais fácil de ficar chata | Tempo injetado (ADR 0007) permite iterar nos números sem retestar à mão |
 | 320×180 pode não caber os closes de texto | ADR 0005 prevê a troca para 480×270 como substituição de ADR, mudança pequena |
 | Conteúdo de ~30 noites é o maior volume de trabalho do projeto | Teste de sanidade de conteúdo (ADR 0009) evita conteúdo quebrado silencioso |
-| Dois modelos de dados convivendo entre M5 e M9 | Prazo de remoção fixado no ADR 0003 (M10), não indefinido |
+| ~~Dois modelos de dados convivendo entre M5 e M9~~ | Resolvido no M10: a v0 saiu |
 | Interface que funciona mas não é o jogo (aconteceu no M8) | Rodar o jogo e olhar, não só a suíte verde. ADR 0010 |
 
 ## Decisões tomadas (2026-09-29)

@@ -2,12 +2,6 @@ extends Node
 
 ## A ponte entre a lógica e as cenas. Não decide nada: delega para
 ## RunState/NightCycle e traduz o resultado em sinais.
-##
-## Entre o M8 e o M10 este autoload carrega DUAS APIs (ADR 0003): a v1,
-## que a mesa do estúdio usa, e a v0, que mantém radio_show.tscn jogável.
-## A metade v0 sai no M10, no mesmo commit que apaga Choice/RadioEvent.
-
-# --- v1 ---
 
 signal phase_changed(phase: int)
 signal night_started(night: int, quota: int)
@@ -19,27 +13,37 @@ signal rundown_changed()
 signal quota_changed(required: int, filled: int)
 signal meter_changed(meter_id: String, new_value: int)
 signal morning_ready(report: Dictionary)
-
-# --- v0 (sai no M10) ---
-
-signal power_changed(new_value: int)
-signal night_advanced(new_night: int)
-signal game_ended(ending_id: String)
-
-const TOTAL_NIGHTS := 3
-const EVENTS_DIR := "res://data/events/"
+signal live_block_started(position: int, total: int, headline: String)
+signal live_events(events: Array)
 
 var _run: RunState
 var _cycle: NightCycle
 var _meter_snapshot: Dictionary = {}
+## O microfone e do apresentador, nao do bloco: quem esta segurando
+## quando um bloco emenda no outro continua segurando.
+var _mic_held: bool = false
 
-var _logic := GameStateLogic.new()
-var _events: Array[RadioEvent] = []
-var _last_ending_id: String = ""
 
+## O ÚNICO ponto do projeto por onde o tempo entra (ADR 0007). Fora da
+## fase LIVE, não faz nada.
+func _process(delta: float) -> void:
+	if _cycle == null or _cycle.phase() != NightCycle.Phase.LIVE:
+		return
 
-func _ready() -> void:
-	load_events()
+	var live := _cycle.live()
+	if live == null:
+		return
+
+	live.tick(delta)
+	var events := live.drain_events()
+	if not events.is_empty():
+		live_events.emit(events)
+
+	# Bloco terminou e ainda há programa: emenda no próximo.
+	if live.is_finished() and not _cycle.is_live_done():
+		if _cycle.advance_live_block():
+			_cycle.live().set_mic_held(_mic_held)
+			_announce_live_block()
 
 
 # =====================================================================
@@ -77,14 +81,153 @@ func advance_phase() -> bool:
 	_emit_meter_changes()
 	phase_changed.emit(after)
 
+	if after == NightCycle.Phase.LIVE:
+		_mic_held = false
+		_announce_live_block()
+
 	if after == NightCycle.Phase.MORNING:
 		morning_ready.emit(_cycle.morning_report())
 
 	return true
 
 
+# =====================================================================
+# v1 — ao vivo
+# =====================================================================
+
+func set_mic_held(held: bool) -> void:
+	_mic_held = held
+	var live := _live()
+	if live != null:
+		live.set_mic_held(held)
+
+
+func replace_word(slot_index: int) -> bool:
+	var live := _live()
+	return live != null and live.replace_word(slot_index)
+
+
+func choose_improv(option_index: int) -> bool:
+	var live := _live()
+	return live != null and live.choose_improv(option_index)
+
+
+func cut_call() -> bool:
+	var live := _live()
+	return live != null and live.cut_call()
+
+
+func live_state() -> int:
+	var live := _live()
+	return live.state() if live != null else LiveBroadcast.State.READY
+
+
+func live_line_index() -> int:
+	var live := _live()
+	return live.line_index() if live != null else 0
+
+
+func live_line_count() -> int:
+	var live := _live()
+	return live.line_count() if live != null else 0
+
+
+func live_line_text(index: int) -> String:
+	var live := _live()
+	return live.line_text(index) if live != null else ""
+
+
+func live_line_progress() -> float:
+	var live := _live()
+	return live.line_progress() if live != null else 0.0
+
+
+func live_forbidden_slots() -> Array[Dictionary]:
+	var live := _live()
+	return live.forbidden_slots() if live != null else [] as Array[Dictionary]
+
+
+func live_improv_prompt() -> String:
+	var live := _live()
+	return live.improv_prompt() if live != null else ""
+
+
+func live_improv_options() -> Array[ImprovOption]:
+	var live := _live()
+	return live.improv_options() if live != null else [] as Array[ImprovOption]
+
+
+func live_improv_seconds_left() -> float:
+	var live := _live()
+	return live.improv_seconds_left() if live != null else 0.0
+
+
+func live_dead_air_seconds() -> float:
+	var live := _live()
+	return live.dead_air_seconds() if live != null else 0.0
+
+
+func live_block_headline() -> String:
+	if _cycle == null:
+		return ""
+	var item := _cycle.live_item()
+	return item.headline if item != null else ""
+
+
+func live_block_position() -> int:
+	return _cycle.live_block_position() if _cycle != null else -1
+
+
+func live_block_count() -> int:
+	return _cycle.live_block_count() if _cycle != null else 0
+
+
+func is_live_done() -> bool:
+	return _cycle == null or _cycle.is_live_done()
+
+
+func _live() -> LiveBroadcast:
+	if _cycle == null or _cycle.phase() != NightCycle.Phase.LIVE:
+		return null
+	return _cycle.live()
+
+
+func _announce_live_block() -> void:
+	if _cycle == null:
+		return
+	live_block_started.emit(
+		_cycle.live_block_position(),
+		_cycle.live_block_count(),
+		live_block_headline()
+	)
+
+
 func morning_report() -> Dictionary:
 	return _cycle.morning_report() if _cycle != null else {}
+
+
+## Existe conteudo escrito para a proxima noite? Enquanto a campanha nao
+## estiver toda escrita (M13), a fatia vertical termina aqui.
+func has_next_night() -> bool:
+	if _run == null:
+		return false
+	if _run.current_night() >= _run.total_nights():
+		return false
+	return ContentLibrary.night(_run.current_night() + 1) != null
+
+
+## Fecha a noite e abre a proxima. false quando nao ha proxima.
+func start_next_night() -> bool:
+	if not has_next_night():
+		return false
+
+	while _cycle != null and _cycle.phase() != NightCycle.Phase.DONE:
+		if not _cycle.advance():
+			break
+
+	_run.advance_night()
+	_open_night()
+	return true
 
 
 ## Só para reprodutibilidade: confirma que a mesma seed dá a mesma
@@ -225,6 +368,12 @@ func quota_filled() -> int:
 
 ## Só os visíveis. O regime não tem medidor: a UI nunca recebe o valor,
 ## então não tem como vazar (SPEC secao 5).
+## O que ja foi ao ar nesta campanha. A cena usa para mostrar o que o
+## apresentador ja disse sobre quem.
+func aired_history() -> Array[Dictionary]:
+	return _run.aired_history() if _run != null else [] as Array[Dictionary]
+
+
 func visible_meters() -> Dictionary:
 	var visible: Dictionary = {}
 	if _run == null:
@@ -275,62 +424,3 @@ func _emit_meter_changes() -> void:
 		if _meter_snapshot.get(meter_id, null) != current[meter_id]:
 			meter_changed.emit(meter_id, current[meter_id])
 	_meter_snapshot = current
-
-
-# =====================================================================
-# v0 — mantido jogável até o M10 (ADR 0003)
-# =====================================================================
-
-func load_events() -> void:
-	_events.clear()
-	var dir := DirAccess.open(EVENTS_DIR)
-	if dir == null:
-		return
-
-	var file_names: Array[String] = []
-	dir.list_dir_begin()
-	var file_name := dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".tres"):
-			file_names.append(file_name)
-		file_name = dir.get_next()
-	dir.list_dir_end()
-	file_names.sort()
-
-	for name in file_names:
-		var event: RadioEvent = load(EVENTS_DIR + name)
-		_events.append(event)
-
-
-func get_current_event() -> RadioEvent:
-	var index := _logic.current_night - 1
-	if index < 0 or index >= _events.size():
-		return null
-	return _events[index]
-
-
-func apply_choice(choice: Choice) -> void:
-	_logic.apply_choice(choice)
-	power_changed.emit(_logic.power)
-	if _logic.is_finished(TOTAL_NIGHTS):
-		_last_ending_id = _logic.resolve_ending()
-		game_ended.emit(_last_ending_id)
-	else:
-		night_advanced.emit(_logic.current_night)
-
-
-func reset_run() -> void:
-	_logic = GameStateLogic.new()
-	_last_ending_id = ""
-
-
-func get_power() -> int:
-	return _logic.power
-
-
-func get_current_night() -> int:
-	return _logic.current_night
-
-
-func get_last_ending_id() -> String:
-	return _last_ending_id

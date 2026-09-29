@@ -12,6 +12,7 @@ const NIGHTS_DIR := "res://data/nights/"
 const NOTEBOOK_DIR := "res://data/notebook/"
 const CONSEQUENCES_DIR := "res://data/consequences/"
 const SENDERS_DIR := "res://data/senders/"
+const SCRIPTS_DIR := "res://data/scripts/"
 const ORDER_RULES_PATH := "res://data/rules/order_rules.tres"
 
 
@@ -29,6 +30,10 @@ static func consequence(id: String) -> ConsequenceEffect:
 
 static func sender(id: String) -> Sender:
 	return _load(SENDERS_DIR + id + ".tres")
+
+
+static func broadcast_script(id: String) -> BroadcastScript:
+	return _load(SCRIPTS_DIR + id + ".tres")
 
 
 static func order_rules() -> Array[OrderRule]:

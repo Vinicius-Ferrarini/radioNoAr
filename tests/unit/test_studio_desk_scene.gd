@@ -52,8 +52,7 @@ func after_each() -> void:
 
 
 func after_all() -> void:
-	GameState.load_events()
-	GameState.reset_run()
+	GameState.start_run(0)
 
 
 func _node(path: String) -> Node:
@@ -321,13 +320,90 @@ func test_going_on_air_needs_the_whole_program() -> void:
 
 
 func test_going_on_air_clears_the_desk_objects() -> void:
-	var items := GameState.inbox()
-	for i in ProgramRundown.BLOCK_COUNT:
-		_drop_on_block(i, items[i].id)
-		GameState.set_framing(i, FramingOption.Kind.TRUTH)
+	_schedule_whole_program()
 	_root._on_go_on_air_pressed()
 
 	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)
 	assert_false(_node("Phone").visible, "no ar, o celular sai da mesa")
 	assert_false(_close_item().visible)
-	assert_string_contains(_node("Studio/Teleprompter/ScriptText").text, "NO AR")
+	assert_true(_node("Studio/BlockLabel").visible)
+	assert_string_contains(_node("Studio/BlockLabel").text, "BLOCO 1 DE 4")
+
+
+func test_the_teleprompter_shows_the_script_of_the_block() -> void:
+	_schedule_whole_program()
+	_root._on_go_on_air_pressed()
+	_root._refresh_live()
+
+	var prompter: String = _node("Studio/Teleprompter/ScriptText").text
+	assert_string_contains(prompter, "Célia", "a primeira linha do roteiro da Dona Celia")
+	assert_string_contains(prompter, "[b]", "a linha de agora vem em destaque")
+
+
+func test_the_microphone_is_only_usable_on_air() -> void:
+	assert_true(_node("Studio/Microphone").disabled, "antes do ar, o microfone nao responde")
+	_schedule_whole_program()
+	_root._on_go_on_air_pressed()
+	assert_false(_node("Studio/Microphone").disabled)
+
+
+func test_holding_the_microphone_moves_the_script() -> void:
+	_schedule_whole_program()
+	_root._on_go_on_air_pressed()
+
+	_root._on_mic_down()
+	for i in 60:
+		GameState._process(1.0 / 60.0)
+	_root._refresh_live()
+
+	assert_gt(_node("Studio/Teleprompter/LineProgress").value, 0.0)
+
+
+func test_letting_go_warns_about_dead_air() -> void:
+	_schedule_whole_program()
+	_root._on_go_on_air_pressed()
+	_root._on_mic_down()
+	_root._on_mic_up()
+	GameState._process(1.0 / 60.0)
+
+	assert_string_contains(_node("Feedback").text, "AR MORTO")
+
+
+func test_a_forbidden_word_is_a_link_with_no_highlight() -> void:
+	# O roteiro da verdade sobre a fila esconde a palavra "greve" na
+	# segunda linha. Ela vira link clicavel, sem nada que a destaque.
+	GameState.place_item("n01_msg_dona_celia", 0)
+	GameState.set_framing(0, FramingOption.Kind.TRUTH)
+	for i in range(1, ProgramRundown.BLOCK_COUNT):
+		GameState.place_item(GameState.inbox()[i].id, i)
+		GameState.set_framing(i, FramingOption.Kind.DISCARD)
+	_root._on_go_on_air_pressed()
+
+	assert_string_contains(_root._with_forbidden_links(1), "[url=0]greve[/url]")
+
+	_root._on_prompter_meta_clicked("0")
+	assert_string_contains(GameState.live_line_text(1), "paralisação voluntária")
+	assert_string_contains(_node("Feedback").text, "Trocado")
+
+
+func test_the_improv_opens_with_its_own_clock() -> void:
+	_schedule_whole_program()
+	_root._on_go_on_air_pressed()
+	_root._on_mic_down()
+
+	var steps := 0
+	while _node("Closes/ImprovStrip").visible == false and steps < 3000:
+		GameState._process(1.0 / 60.0)
+		steps += 1
+
+	assert_lt(steps, 3000, "algum bloco da noite 1 tem improviso")
+	assert_gt(_node("Closes/ImprovStrip/Scroll/List").get_children().size(), 1,
+		"improviso oferece mais de uma saida")
+	assert_false(_node("Closes/ImprovStrip/Prompt").text.is_empty())
+
+
+func _schedule_whole_program() -> void:
+	var items := GameState.inbox()
+	for i in ProgramRundown.BLOCK_COUNT:
+		_drop_on_block(i, items[i].id)
+		GameState.set_framing(i, FramingOption.Kind.TRUTH)

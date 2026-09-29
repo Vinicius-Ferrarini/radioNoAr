@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="2_line"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_point.gd" id="4_point"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_option.gd" id="5_option"]
+
+[sub_resource type="Resource" id="line_1"]
+script = ExtResource("2_line")
+text = "Recebi hoje uma mensagem da Célia, da Rua Bandeira. Vou ler como chegou."
+read_seconds = 5.0
+
+[sub_resource type="Resource" id="line_2"]
+script = ExtResource("2_line")
+text = "\"A fila do pão hoje dobrou o quarteirão e passou da esquina da farmácia. Tinha gente sentada no meio-fio desde as quatro da manhã.\""
+read_seconds = 7.0
+
+[sub_resource type="Resource" id="line_3"]
+script = ExtResource("2_line")
+text = "Era isso. Ela não pediu nada, só quis que alguém soubesse."
+read_seconds = 4.5
+
+[resource]
+script = ExtResource("1_script")
+id = "r_celia_lido"
+lines = Array[ExtResource("2_line")]([SubResource("line_1"), SubResource("line_2"), SubResource("line_3")])

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=21 format=3]
 
 [ext_resource type="Theme" path="res://theme/theme.tres" id="1_theme"]
 [ext_resource type="Script" path="res://scenes/studio_desk.gd" id="1b_script"]
@@ -17,6 +17,8 @@
 [ext_resource type="PackedScene" path="res://scenes/parts/close_item.tscn" id="15_close_item"]
 [ext_resource type="PackedScene" path="res://scenes/parts/close_notebook.tscn" id="16_close_nb"]
 [ext_resource type="PackedScene" path="res://scenes/parts/framing_strip.tscn" id="17_strip"]
+[ext_resource type="PackedScene" path="res://scenes/parts/improv_strip.tscn" id="18_improv"]
+[ext_resource type="PackedScene" path="res://scenes/parts/close_morning.tscn" id="19_morning"]
 
 [node name="StudioDesk" type="Control"]
 layout_mode = 3
@@ -135,14 +137,31 @@ mouse_filter = 2
 bbcode_enabled = true
 scroll_active = false
 
-[node name="Microphone" type="TextureRect" parent="Studio"]
+[node name="LineProgress" type="ProgressBar" parent="Studio/Teleprompter"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 53.0
+offset_right = 121.0
+offset_bottom = 56.0
+show_percentage = false
+
+[node name="BlockLabel" type="Label" parent="Studio"]
+layout_mode = 0
+offset_left = 112.0
+offset_top = 25.0
+offset_right = 240.0
+offset_bottom = 35.0
+mouse_filter = 2
+horizontal_alignment = 1
+
+[node name="Microphone" type="TextureButton" parent="Studio"]
 layout_mode = 0
 offset_left = 60.0
 offset_top = 76.0
 offset_right = 88.0
 offset_bottom = 124.0
-mouse_filter = 2
-texture = ExtResource("7_mic")
+tooltip_text = "Segure para ficar no ar (ou segure ESPAÇO)"
+texture_normal = ExtResource("7_mic")
 
 [node name="Phone" type="TextureButton" parent="."]
 layout_mode = 0
@@ -257,6 +276,20 @@ offset_bottom = 126.0
 visible = false
 offset_left = 44.0
 offset_top = 80.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="ImprovStrip" parent="Closes" instance=ExtResource("18_improv")]
+visible = false
+offset_left = 44.0
+offset_top = 54.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="CloseMorning" parent="Closes" instance=ExtResource("19_morning")]
+visible = false
+offset_left = 44.0
+offset_top = 14.0
 offset_right = 276.0
 offset_bottom = 126.0
 

@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="2_line"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_point.gd" id="4_point"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_option.gd" id="5_option"]
+
+[sub_resource type="Resource" id="line_1"]
+script = ExtResource("2_line")
+text = "Vou dizer um nome agora, e quero que vocês entendam o que isso significa."
+read_seconds = 5.5
+
+[sub_resource type="Resource" id="slot_2"]
+script = ExtResource("3_slot")
+word = "desaparecido"
+char_start = 15
+approved_synonym = "pessoa ainda não localizada"
+
+[sub_resource type="Resource" id="opt_3"]
+script = ExtResource("5_option")
+id = "mendes_pede"
+text = "Se você viu alguma coisa, a família dele está esperando."
+framing_kind = 1
+immediate_deltas = {
+"audience_trust": 6,
+"integrity": 4,
+"regime_attention": 5
+}
+consequence_ids = Array[String](["c_nome_no_ar"])
+
+[sub_resource type="Resource" id="opt_4"]
+script = ExtResource("5_option")
+id = "mendes_recua"
+text = "Deve haver uma explicação simples. Quase sempre há."
+framing_kind = 2
+immediate_deltas = {
+"audience_trust": -3,
+"integrity": -4
+}
+
+[sub_resource type="Resource" id="opt_5"]
+script = ExtResource("5_option")
+id = "mendes_acusa"
+text = "Não há registro porque alguém decidiu que não haveria registro."
+framing_kind = 3
+immediate_deltas = {
+"audience_trust": 6,
+"integrity": 2,
+"regime_attention": 14,
+"street_heat": 9
+}
+
+[sub_resource type="Resource" id="point_6"]
+script = ExtResource("4_point")
+id = "i_mendes"
+prompt = "O nome está no ar. Não dá para voltar atrás."
+time_limit_seconds = 6.0
+options = Array[ExtResource("5_option")]([SubResource("opt_3"), SubResource("opt_4"), SubResource("opt_5")])
+
+[sub_resource type="Resource" id="line_7"]
+script = ExtResource("2_line")
+text = "A. Mendes está desaparecido desde a quinta-feira. A família procurou na delegacia e no hospital, e não há registro em lugar nenhum."
+read_seconds = 8.0
+forbidden_slots = Array[ExtResource("3_slot")]([SubResource("slot_2")])
+improv_point = SubResource("point_6")
+
+[sub_resource type="Resource" id="line_8"]
+script = ExtResource("2_line")
+text = "A. Mendes. Repitam esse nome para quem não estava ouvindo."
+read_seconds = 4.5
+
+[resource]
+script = ExtResource("1_script")
+id = "r_mendes_verdade"
+lines = Array[ExtResource("2_line")]([SubResource("line_1"), SubResource("line_7"), SubResource("line_8")])

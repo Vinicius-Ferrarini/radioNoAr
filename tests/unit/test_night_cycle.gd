@@ -149,7 +149,27 @@ func test_aired_items_go_into_the_history() -> void:
 
 # --- consequencias ---
 
-func test_consequences_are_scheduled_and_never_land_on_the_same_night() -> void:
+func test_the_bill_never_arrives_during_the_program() -> void:
+	var run := RunState.new()
+	var framings: Array[FramingOption] = [
+		_make_framing(FramingOption.Kind.TRUTH, {}, ["c_nome_no_ar"] as Array[String]),
+		_make_framing(FramingOption.Kind.DISCARD),
+	]
+	var items := _plain_items(6)
+	items[0] = _make_item("com_consequencia", "alguem", framings)
+
+	var cycle := NightCycle.new(_make_night(items), run)
+	cycle.advance()
+	_fill_and_frame(cycle)
+	cycle.advance()
+
+	var before: int = run.meters().get_value(Meters.AUDIENCE_TRUST)
+	assert_eq(cycle.phase(), NightCycle.Phase.LIVE)
+	assert_eq(run.meters().get_value(Meters.AUDIENCE_TRUST), before,
+		"durante o programa nada da noite anterior nem desta noite aparece")
+
+
+func test_the_bill_arrives_in_the_morning_that_closes_the_night() -> void:
 	var run := RunState.new()
 	var framings: Array[FramingOption] = [
 		_make_framing(FramingOption.Kind.TRUTH, {}, ["c_nome_no_ar"] as Array[String]),
@@ -164,9 +184,11 @@ func test_consequences_are_scheduled_and_never_land_on_the_same_night() -> void:
 	cycle.advance()
 	cycle.advance()
 
-	assert_eq(run.queue().pending_count(), 1, "a consequencia foi agendada")
-	assert_eq(run.queue().peek_due(1).size(), 0, "e nao vence nesta noite")
-	assert_eq(run.queue().peek_due(2).size(), 1, "vence na noite seguinte")
+	var report := cycle.morning_report()
+	assert_eq(report["headlines"].size(), 1,
+		"o preco do que foi ao ar chega na manha seguinte ao programa")
+	assert_string_contains(String(report["headlines"][0]), "DELEGACIA")
+	assert_eq(run.queue().pending_count(), 0, "e sai da fila")
 
 
 func test_fraud_aired_condition_is_resolved_when_scheduling() -> void:
@@ -184,8 +206,8 @@ func test_fraud_aired_condition_is_resolved_when_scheduling() -> void:
 	cycle.advance()
 	cycle.advance()
 
-	assert_eq(run.queue().pending_count(), 1,
-		"item falso que foi ao ar aciona a consequencia de FRAUD_AIRED")
+	assert_eq(cycle.morning_report()["headlines"].size(), 1,
+		"item falso que foi ao ar cobra a conta de FRAUD_AIRED")
 
 
 func test_fraud_aired_condition_does_not_fire_for_a_truthful_item() -> void:
@@ -203,7 +225,7 @@ func test_fraud_aired_condition_does_not_fire_for_a_truthful_item() -> void:
 	cycle.advance()
 	cycle.advance()
 
-	assert_eq(run.queue().pending_count(), 0,
+	assert_eq(cycle.morning_report()["headlines"].size(), 0,
 		"a condicao FRAUD_AIRED so vale para item falso")
 
 
@@ -218,8 +240,8 @@ func test_morning_applies_what_is_due_and_reports_it() -> void:
 	effect.morning_letter = "uma carta"
 	effect.flags_set = ["marca"] as Array[String]
 
-	# Agendada como se fosse da noite anterior.
-	run.queue().schedule(effect, 0)
+	# Agendada na noite anterior, para vencer nesta manha.
+	run.queue().schedule(effect, 1)
 
 	var cycle := NightCycle.new(_make_night(_plain_items(6)), run)
 	cycle.advance()
@@ -243,7 +265,7 @@ func test_morning_report_is_stable_when_asked_twice() -> void:
 	effect.delay_nights = 1
 	effect.meter_deltas = {Meters.AUDIENCE_TRUST: -10}
 	effect.morning_headline = "MANCHETE"
-	run.queue().schedule(effect, 0)
+	run.queue().schedule(effect, 1)
 
 	var cycle := NightCycle.new(_make_night(_plain_items(6)), run)
 	cycle.advance()
@@ -263,7 +285,7 @@ func test_morning_adds_notebook_entries_from_the_consequence() -> void:
 	effect.id = "e_manha"
 	effect.delay_nights = 1
 	effect.notebook_entry_ids = ["entry_j_toledo_mentiu"] as Array[String]
-	run.queue().schedule(effect, 0)
+	run.queue().schedule(effect, 1)
 
 	var cycle := NightCycle.new(_make_night(_plain_items(6)), run)
 	cycle.advance()

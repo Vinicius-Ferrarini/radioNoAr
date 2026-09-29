@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="2_line"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_point.gd" id="4_point"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_option.gd" id="5_option"]
+
+[sub_resource type="Resource" id="line_1"]
+script = ExtResource("2_line")
+text = "Me ofereceram uma peça hoje, de graça, em troca de um anúncio no ar."
+read_seconds = 5.5
+
+[sub_resource type="Resource" id="line_2"]
+script = ExtResource("2_line")
+text = "A entrega seria às onze da noite, no Centro. O toque de recolher no Centro é às vinte e duas horas."
+read_seconds = 6.5
+
+[sub_resource type="Resource" id="line_3"]
+script = ExtResource("2_line")
+text = "Quem me ofereceu sabe disso. Não vou mandar ninguém para lá."
+read_seconds = 5.0
+
+[resource]
+script = ExtResource("1_script")
+id = "r_valvula_verdade"
+lines = Array[ExtResource("2_line")]([SubResource("line_1"), SubResource("line_2"), SubResource("line_3")])

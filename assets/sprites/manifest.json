@@ -221,6 +221,21 @@
 			"width": 28
 		},
 		{
+			"height": 32,
+			"name": "newspaper",
+			"nine_patch": 12,
+			"palette": [
+				"desk_dark",
+				"ink",
+				"paper",
+				"paper_dark",
+				"paper_shade"
+			],
+			"path": "res://assets/sprites/newspaper.png",
+			"sha256": "0792c0e4f1dfc1f193b05436093075d291f7f20bd23de36fb5b137fd04c5e570",
+			"width": 32
+		},
+		{
 			"height": 26,
 			"name": "notebook",
 			"palette": [

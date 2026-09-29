@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="2_line"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_point.gd" id="4_point"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_option.gd" id="5_option"]
+
+[sub_resource type="Resource" id="line_1"]
+script = ExtResource("2_line")
+text = "Quatro da manhã. É a que horas uma senhora de setenta anos tem que acordar, nesta cidade, para comprar pão."
+read_seconds = 6.5
+
+[sub_resource type="Resource" id="slot_2"]
+script = ExtResource("3_slot")
+word = "greve"
+char_start = 17
+approved_synonym = "paralisação voluntária"
+
+[sub_resource type="Resource" id="opt_3"]
+script = ExtResource("5_option")
+id = "celia_recua"
+text = "Mas eu não vou dizer a ninguém o que fazer. Só contei o que vi."
+framing_kind = 2
+immediate_deltas = {
+"audience_trust": -2,
+"street_heat": -3
+}
+
+[sub_resource type="Resource" id="opt_4"]
+script = ExtResource("5_option")
+id = "celia_nomeia"
+text = "E eu quero o nome de quem decidiu que a fila começa às quatro."
+framing_kind = 1
+immediate_deltas = {
+"audience_trust": 5,
+"integrity": 3,
+"regime_attention": 6
+}
+
+[sub_resource type="Resource" id="opt_5"]
+script = ExtResource("5_option")
+id = "celia_convoca"
+text = "Amanhã, na mesma hora, na mesma esquina. Não para comprar pão."
+framing_kind = 3
+immediate_deltas = {
+"audience_trust": 8,
+"integrity": -4,
+"regime_attention": 10,
+"street_heat": 12
+}
+consequence_ids = Array[String](["c_fila_inflamada"])
+
+[sub_resource type="Resource" id="point_6"]
+script = ExtResource("4_point")
+id = "i_celia"
+prompt = "O quarteirão está ouvindo. E agora?"
+time_limit_seconds = 7.0
+options = Array[ExtResource("5_option")]([SubResource("opt_3"), SubResource("opt_4"), SubResource("opt_5")])
+
+[sub_resource type="Resource" id="line_7"]
+script = ExtResource("2_line")
+text = "Ninguém falou em greve. Ninguém precisou falar. O quarteirão inteiro estava lá com ela, e está ouvindo agora."
+read_seconds = 5.5
+forbidden_slots = Array[ExtResource("3_slot")]([SubResource("slot_2")])
+improv_point = SubResource("point_6")
+
+[resource]
+script = ExtResource("1_script")
+id = "r_celia_inflamar"
+lines = Array[ExtResource("2_line")]([SubResource("line_1"), SubResource("line_7")])

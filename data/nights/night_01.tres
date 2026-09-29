@@ -29,6 +29,7 @@ contradicted_by = Array[int]([1, 2])
 
 [sub_resource type="Resource" id="fr_a_lido"]
 script = ExtResource("2_framing")
+script_id = "r_celia_lido"
 kind = 0
 immediate_deltas = {
 "audience_trust": 2
@@ -36,6 +37,7 @@ immediate_deltas = {
 
 [sub_resource type="Resource" id="fr_a_verdade"]
 script = ExtResource("2_framing")
+script_id = "r_celia_verdade"
 kind = 1
 immediate_deltas = {
 "audience_trust": 4,
@@ -45,6 +47,7 @@ immediate_deltas = {
 
 [sub_resource type="Resource" id="fr_a_suavizar"]
 script = ExtResource("2_framing")
+script_id = "r_celia_suavizar"
 kind = 2
 immediate_deltas = {
 "audience_trust": -1,
@@ -54,6 +57,7 @@ immediate_deltas = {
 
 [sub_resource type="Resource" id="fr_a_inflamar"]
 script = ExtResource("2_framing")
+script_id = "r_celia_inflamar"
 kind = 3
 immediate_deltas = {
 "audience_trust": 5,
@@ -103,6 +107,7 @@ contradicted_by = Array[int]([6])
 
 [sub_resource type="Resource" id="fr_b_lido"]
 script = ExtResource("2_framing")
+script_id = "r_toledo_lido"
 kind = 0
 immediate_deltas = {
 "audience_trust": 3,
@@ -112,6 +117,7 @@ consequence_ids = Array[String](["c_denuncia_no_ar"])
 
 [sub_resource type="Resource" id="fr_b_verdade"]
 script = ExtResource("2_framing")
+script_id = "r_toledo_verdade"
 kind = 1
 immediate_deltas = {
 "audience_trust": 2,
@@ -121,6 +127,7 @@ consequence_ids = Array[String](["c_denuncia_checada"])
 
 [sub_resource type="Resource" id="fr_b_inflamar"]
 script = ExtResource("2_framing")
+script_id = "r_toledo_inflamar"
 kind = 3
 immediate_deltas = {
 "audience_trust": 6,
@@ -163,6 +170,7 @@ contradicted_by = Array[int]([4, 5])
 
 [sub_resource type="Resource" id="fr_c_lido"]
 script = ExtResource("2_framing")
+script_id = "r_mendes_lido"
 kind = 0
 immediate_deltas = {
 "audience_trust": 4,
@@ -172,6 +180,7 @@ consequence_ids = Array[String](["c_nome_no_ar"])
 
 [sub_resource type="Resource" id="fr_c_verdade"]
 script = ExtResource("2_framing")
+script_id = "r_mendes_verdade"
 kind = 1
 immediate_deltas = {
 "audience_trust": 6,
@@ -182,6 +191,7 @@ consequence_ids = Array[String](["c_nome_no_ar"])
 
 [sub_resource type="Resource" id="fr_c_suavizar"]
 script = ExtResource("2_framing")
+script_id = "r_mendes_suavizar"
 kind = 2
 immediate_deltas = {
 "audience_trust": -1,
@@ -224,6 +234,7 @@ contradicted_by = Array[int]([3])
 
 [sub_resource type="Resource" id="fr_d_verdade"]
 script = ExtResource("2_framing")
+script_id = "r_envelope_verdade"
 kind = 1
 immediate_deltas = {
 "audience_trust": 5,
@@ -233,6 +244,7 @@ consequence_ids = Array[String](["c_suborno_exposto"])
 
 [sub_resource type="Resource" id="fr_d_inflamar"]
 script = ExtResource("2_framing")
+script_id = "r_envelope_inflamar"
 kind = 3
 immediate_deltas = {
 "audience_trust": 7,
@@ -276,6 +288,7 @@ contradicted_by = Array[int]([2])
 
 [sub_resource type="Resource" id="fr_e_lido"]
 script = ExtResource("2_framing")
+script_id = "r_valvula_lido"
 kind = 0
 immediate_deltas = {
 "audience_trust": 1
@@ -284,6 +297,7 @@ consequence_ids = Array[String](["c_valvula_anunciada"])
 
 [sub_resource type="Resource" id="fr_e_verdade"]
 script = ExtResource("2_framing")
+script_id = "r_valvula_verdade"
 kind = 1
 immediate_deltas = {
 "audience_trust": 3,
@@ -324,6 +338,7 @@ contradicted_by = Array[int]([1])
 
 [sub_resource type="Resource" id="fr_f_lido"]
 script = ExtResource("2_framing")
+script_id = "r_comunicado_lido"
 kind = 0
 immediate_deltas = {
 "alignment": 5,
@@ -333,6 +348,7 @@ immediate_deltas = {
 
 [sub_resource type="Resource" id="fr_f_ironia"]
 script = ExtResource("2_framing")
+script_id = "r_comunicado_ironia"
 kind = 4
 immediate_deltas = {
 "audience_trust": 8,

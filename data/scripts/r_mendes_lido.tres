@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="2_line"]
+[ext_resource type="Script" path="res://scripts/core/data/forbidden_word_slot.gd" id="3_slot"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_point.gd" id="4_point"]
+[ext_resource type="Script" path="res://scripts/core/data/improv_option.gd" id="5_option"]
+
+[sub_resource type="Resource" id="line_1"]
+script = ExtResource("2_line")
+text = "Uma carta, escrita à mão, que chegou hoje cedo. Leio como veio."
+read_seconds = 5.0
+
+[sub_resource type="Resource" id="slot_2"]
+script = ExtResource("3_slot")
+word = "desaparecido"
+char_start = 16
+approved_synonym = "pessoa ainda não localizada"
+
+[sub_resource type="Resource" id="line_3"]
+script = ExtResource("2_line")
+text = "\"Meu irmão está desaparecido desde quinta-feira. Na delegacia dizem que não há registro. No hospital dizem a mesma coisa.\""
+read_seconds = 6.5
+forbidden_slots = Array[ExtResource("3_slot")]([SubResource("slot_2")])
+
+[sub_resource type="Resource" id="line_4"]
+script = ExtResource("2_line")
+text = "Ela assina só como a irmã. E pede que eu diga o nome dele: A. Mendes."
+read_seconds = 5.5
+
+[resource]
+script = ExtResource("1_script")
+id = "r_mendes_lido"
+lines = Array[ExtResource("2_line")]([SubResource("line_1"), SubResource("line_3"), SubResource("line_4")])
