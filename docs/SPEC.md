@@ -58,6 +58,38 @@ Prevalece sobre a régua de enquadramento no fluxo do celular. Itens sem
 - A decisão de não levar ao ar é uma resposta como as outras
   (`Kind.DISCARD`): você diz à pessoa que não vai falar disso.
 
+## Fase 2 do redesenho: o ao vivo é um console (ADR 0013)
+
+Prevalece sobre a ligação única por noite. O bloco deixa de ser leitura
+passiva porque passa a ter fila na linha e prazo por palavra.
+
+- `RadioCall` ganha `block_position: int = 1`: em que bloco do programa
+  aquela ligação entra. Posição além do último bloco cai no último.
+- `NightDefinition.calls: Array[RadioCall]` **substitui** `call` e
+  `call_block_position`. Uma noite pode ter várias ligações, inclusive
+  duas no mesmo bloco.
+- `LiveBroadcast.new(script, rng, calls: Array[RadioCall])`. Cada ligação
+  é acionada pelo seu `trigger_seconds`, contado no tempo ativo do bloco.
+  **A linha atende uma por vez:** quem chega com a linha ocupada espera na
+  fila e entra na prévia quando ela vagar, seja por corte ou por ir ao ar.
+  Eventos: `CALL_WAITING` ao entrar na fila, `CALL_TRANSCRIPT` ao entrar na
+  prévia, `CALL_AIRED` e `CALL_CUT` como hoje.
+- `calls_waiting()` diz quantas esperam; `call_results()` devolve
+  `{call, outcome}` por ligação resolvida, na ordem. `call_outcome()` e
+  `reaction()` passam a falar da última resolvida.
+- O bloco não termina com ligação na prévia, na fila ou ainda por acionar:
+  nenhuma ligação se perde na virada de bloco.
+- `NightCycle` dá a cada bloco as ligações daquele bloco e, na resolução,
+  agenda as consequências **de cada** ligação pelo que aconteceu com ela.
+- **Prazo por palavra:** a palavra proibida vai ao ar quando a leitura
+  passa do seu `char_start`, não mais no fim da linha. Trocar depois disso
+  não evita a infração. É o que dá sentido à varredura: a palavra se
+  aproxima da antena e o jogador tem até ali para agir.
+- UI: o console mostra três lâmpadas — linha livre, prévia com prazo, no
+  ar — mais quantas esperam na fila. O teleprompter ganha uma varredura
+  que escurece o que já saiu, na mesma caixa de texto, sem tirar o clique
+  da palavra proibida.
+
 ## Revisão Rádio viva (2026-09-29, ADR 0011)
 
 Esta revisão prevalece sobre regras antigas conflitantes abaixo. Plano:

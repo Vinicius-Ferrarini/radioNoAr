@@ -1,8 +1,8 @@
 # 0013 — A conversa é a decisão; a cidade é o medidor
 
-- Status: **aceito** — confirmado pelo dono em 2026-09-29, com execução
-  autorizada a começar pela Fase 1. As fases 2 a 4 seguem propostas e
-  dependem do playtest de cada anterior.
+- Status: **aceito** — confirmado pelo dono em 2026-09-29. Fase 1
+  executada; **Fase 2 autorizada** na mesma data, depois do playtest da
+  anterior. As fases 3 e 4 seguem propostas.
 
 ## Contexto
 
