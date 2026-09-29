@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="RadioEvent" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/choice.gd" id="1_xj3dh"]
+[ext_resource type="Script" path="res://scripts/core/radio_event.gd" id="2_o5e7v"]
+
+[sub_resource type="Resource" id="Resource_7bdrr"]
+script = ExtResource("1_xj3dh")
+id = "event_02_truth"
+label = "Confirmar a existência da lista no ar"
+response_text = "Recebemos confirmação: a lista existe. Se seu nome está nela, você tem o direito de saber."
+power_delta = -15
+integrity_delta = 10
+
+[sub_resource type="Resource" id="Resource_2pdhk"]
+script = ExtResource("1_xj3dh")
+id = "event_02_crowd"
+label = "Dizer que é só boato, sem checar"
+response_text = "Não vamos alimentar pânico com rumores não confirmados. Sigamos com a programação normal."
+power_delta = 5
+stance = 1
+
+[sub_resource type="Resource" id="Resource_aq1qc"]
+script = ExtResource("1_xj3dh")
+id = "event_02_attack"
+label = "Usar a lista para ameaçar críticos no ar"
+response_text = "Quem está incomodado com essa lista talvez devesse se perguntar por quê."
+power_delta = 20
+integrity_delta = -15
+stance = 2
+
+[resource]
+script = ExtResource("2_o5e7v")
+id = "event_02"
+night = 2
+headline = "A lista que ninguém quer confirmar"
+body = "Rumores de uma lista de \"agitadores\" circulam entre os ouvintes. Um contato dentro do governo liga fora do expediente, oferecendo confirmar — ou desmentir — dependendo do que você perguntar."
+choices = Array[ExtResource("1_xj3dh")]([SubResource("Resource_7bdrr"), SubResource("Resource_2pdhk"), SubResource("Resource_aq1qc")])

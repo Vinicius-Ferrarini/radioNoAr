@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/ending.gd" id="1_mqjok"]
+
+[node name="Ending" type="Control" unique_id=1994928447]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_mqjok")
+
+[node name="EndingText" type="RichTextLabel" parent="." unique_id=344112216]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 60.0
+offset_right = 1092.0
+offset_bottom = 460.0
+fit_content = true
+
+[node name="RestartButton" type="Button" parent="." unique_id=1818753708]
+layout_mode = 0
+offset_left = 476.0
+offset_top = 500.0
+offset_right = 676.0
+offset_bottom = 548.0
+text = "Jogar novamente"

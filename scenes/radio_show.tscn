@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/radio_show.gd" id="1_hjbwv"]
+
+[node name="RadioShow" type="Control" unique_id=587094427]
+layout_mode = 3
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_hjbwv")
+
+[node name="NightLabel" type="Label" parent="." unique_id=857813215]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 24.0
+offset_right = 332.0
+offset_bottom = 56.0
+text = "Noite 1 de 3"
+
+[node name="PowerBar" type="ProgressBar" parent="." unique_id=12193758]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 64.0
+offset_right = 432.0
+offset_bottom = 91.0
+value = 50.0
+
+[node name="EventText" type="RichTextLabel" parent="." unique_id=1628430493]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 110.0
+offset_right = 1120.0
+offset_bottom = 410.0
+bbcode_enabled = true
+fit_content = true
+
+[node name="Choices" type="VBoxContainer" parent="." unique_id=488114101]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 430.0
+offset_right = 1120.0
+offset_bottom = 610.0
+theme_override_constants/separation = 12
+
+[node name="Choice1" type="Button" parent="Choices" unique_id=1047389313]
+layout_mode = 2
+
+[node name="Choice2" type="Button" parent="Choices" unique_id=1937110197]
+layout_mode = 2
+
+[node name="Choice3" type="Button" parent="Choices" unique_id=1908060389]
+layout_mode = 2

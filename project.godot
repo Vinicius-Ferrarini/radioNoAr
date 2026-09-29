@@ -12,6 +12,11 @@ config_version=5
 
 config/name="No Ar"
 config/features=PackedStringArray("4.7")
+run/main_scene="res://scenes/radio_show.tscn"
+
+[autoload]
+
+GameState="*res://scripts/game_state.gd"
 
 [display]
 

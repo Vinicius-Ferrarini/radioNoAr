@@ -1,0 +1,37 @@
+[gd_resource type="Resource" script_class="RadioEvent" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/choice.gd" id="1_7ahsg"]
+[ext_resource type="Script" path="res://scripts/core/radio_event.gd" id="2_by72b"]
+
+[sub_resource type="Resource" id="Resource_yd868"]
+script = ExtResource("1_7ahsg")
+id = "event_01_truth"
+label = "Dizer que não foi manutenção"
+response_text = "Não foi manutenção de rotina. Vocês sabem disso, eu sei disso, e agora todo mundo vai saber."
+power_delta = -15
+integrity_delta = 10
+
+[sub_resource type="Resource" id="Resource_k2icd"]
+script = ExtResource("1_7ahsg")
+id = "event_01_crowd"
+label = "Repetir a nota oficial sem comentar"
+response_text = "A prefeitura informou que houve manutenção programada na rede elétrica. Seguimos aguardando mais detalhes."
+power_delta = 5
+stance = 1
+
+[sub_resource type="Resource" id="Resource_seidi"]
+script = ExtResource("1_7ahsg")
+id = "event_01_attack"
+label = "Acusar os manifestantes pelo apagão"
+response_text = "Não é coincidência que as luzes caiam justo quando essa gente decide bagunçar a cidade."
+power_delta = 20
+integrity_delta = -15
+stance = 2
+
+[resource]
+script = ExtResource("2_by72b")
+id = "event_01"
+night = 1
+headline = "Um blecaute questionável"
+body = "A energia cai na cidade bem na hora em que a manifestação na praça central ganhava força. O governo diz que foi \"manutenção de rotina\". Testemunhas dizem outra coisa. O telefone da rádio não para de tocar."
+choices = Array[ExtResource("1_7ahsg")]([SubResource("Resource_yd868"), SubResource("Resource_k2icd"), SubResource("Resource_seidi")])

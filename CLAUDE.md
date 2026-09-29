@@ -39,6 +39,11 @@ testabilidade por atalhos "só para rodar".
   reporta "Nothing was run". Se der erro de flag, confira addons/gut/README.md
   ou rode com -gh).
 - Um marco só é "concluído" com os testes daquele marco passando headless.
+- Sempre que um script novo (ou editado) com `class_name` for criado fora do
+  editor do Godot, rode `godot-4 --headless --import` antes de rodar os
+  testes. O cache `.godot/global_script_class_cache.cfg` só é atualizado
+  nesse rescan; sem ele, o GUT falha com erros do tipo "Identifier not
+  declared in the current scope" mesmo com o código correto.
 
 ## Regras gerais
 - Siga os marcos de docs/SPEC.md um de cada vez; não adiante marcos
