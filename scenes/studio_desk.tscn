@@ -19,14 +19,13 @@
 [ext_resource type="PackedScene" path="res://scenes/parts/framing_strip.tscn" id="17_strip"]
 [ext_resource type="PackedScene" path="res://scenes/parts/improv_strip.tscn" id="18_improv"]
 [ext_resource type="PackedScene" path="res://scenes/parts/close_morning.tscn" id="19_morning"]
+[ext_resource type="PackedScene" path="res://scenes/parts/close_phone.tscn" id="21_phone"]
 [ext_resource type="Texture2D" uid="uid://bsj7v362kd307" path="res://assets/sprites/bridge_note.png" id="new_bridge_note"]
 [ext_resource type="Texture2D" uid="uid://bubup0in0bkao" path="res://assets/sprites/gift_record.png" id="new_gift_record"]
 [ext_resource type="Texture2D" uid="uid://b8xqjmhrkgbuc" path="res://assets/sprites/sponsor_plaque.png" id="new_sponsor_plaque"]
 [ext_resource type="Texture2D" uid="uid://b3h8jn6t4ypvm" path="res://assets/sprites/studio_telephone.png" id="new_studio_telephone"]
 [ext_resource type="Texture2D" uid="uid://bm3xemhsxuolg" path="res://assets/sprites/studio_turntable.png" id="new_studio_turntable"]
 [ext_resource type="Texture2D" uid="uid://bm6qhxgxrbmnj" path="res://assets/sprites/studio_wall.png" id="new_studio_wall"]
-
-[ext_resource type="PackedScene" path="res://scenes/parts/close_phone.tscn" id="21_phone"]
 
 [node name="StudioDesk" type="Control" unique_id=1005823655]
 layout_mode = 3
@@ -384,63 +383,6 @@ tooltip_text = "Usa a única reserva de 6 segundos, pausa a prévia e rende $8 d
 focus_mode = 0
 text = "ANÚNCIO / $8"
 
-[node name="Closes" type="Control" parent="." unique_id=831321142]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-
-[node name="CloseItem" parent="Closes" unique_id=920406088 instance=ExtResource("15_close_item")]
-visible = false
-anchors_preset = 0
-offset_left = 44.0
-offset_top = 14.0
-offset_right = 276.0
-offset_bottom = 126.0
-
-[node name="CloseNotebook" parent="Closes" unique_id=157047540 instance=ExtResource("16_close_nb")]
-visible = false
-anchors_preset = 0
-offset_left = 44.0
-offset_top = 14.0
-offset_right = 276.0
-offset_bottom = 126.0
-
-[node name="FramingStrip" parent="Closes" unique_id=1189538661 instance=ExtResource("17_strip")]
-visible = false
-anchors_preset = 0
-offset_left = 44.0
-offset_top = 40.0
-offset_right = 276.0
-offset_bottom = 126.0
-
-[node name="ImprovStrip" parent="Closes" unique_id=1494213545 instance=ExtResource("18_improv")]
-visible = false
-anchors_preset = 0
-offset_left = 44.0
-offset_top = 54.0
-offset_right = 276.0
-offset_bottom = 126.0
-
-[node name="ClosePhone" parent="Closes" instance=ExtResource("21_phone")]
-visible = false
-anchors_preset = 0
-offset_left = 146.0
-offset_top = 6.0
-offset_right = 286.0
-offset_bottom = 170.0
-
-[node name="CloseMorning" parent="Closes" unique_id=1764718788 instance=ExtResource("19_morning")]
-visible = false
-anchors_preset = 0
-offset_left = 44.0
-offset_top = 14.0
-offset_right = 276.0
-offset_bottom = 126.0
-
 [node name="Feedback" type="Label" parent="." unique_id=1955681156]
 layout_mode = 0
 offset_left = 44.0
@@ -488,6 +430,62 @@ offset_top = 14.0
 offset_right = 209.0
 offset_bottom = 44.0
 block_index = 3
+
+[node name="Closes" type="Control" parent="." unique_id=831321142]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CloseItem" parent="Closes" unique_id=920406088 instance=ExtResource("15_close_item")]
+visible = false
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 14.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="CloseNotebook" parent="Closes" unique_id=157047540 instance=ExtResource("16_close_nb")]
+visible = false
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 14.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="FramingStrip" parent="Closes" unique_id=1189538661 instance=ExtResource("17_strip")]
+visible = false
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 40.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="ImprovStrip" parent="Closes" unique_id=1494213545 instance=ExtResource("18_improv")]
+visible = false
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 54.0
+offset_right = 276.0
+offset_bottom = 126.0
+
+[node name="ClosePhone" parent="Closes" unique_id=204711527 instance=ExtResource("21_phone")]
+anchors_preset = 0
+offset_left = 1.0
+offset_top = 1.0
+offset_right = 152.0
+offset_bottom = 180.0
+
+[node name="CloseMorning" parent="Closes" unique_id=1764718788 instance=ExtResource("19_morning")]
+visible = false
+anchors_preset = 0
+offset_left = 44.0
+offset_top = 14.0
+offset_right = 276.0
+offset_bottom = 126.0
 
 [node name="Lighting" type="CanvasModulate" parent="." unique_id=1911660913]
 color = Color(1, 0.964706, 0.905882, 1)
@@ -542,18 +540,18 @@ volume_db = -8.0
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="." unique_id=1460940602]
 volume_db = -10.0
 
-[node name="EnterAirButton" type="Button" parent="."]
-anchors_preset = 0
+[node name="EnterAirButton" type="Button" parent="." unique_id=1928592442]
+layout_mode = 0
 offset_left = 214.0
 offset_top = 166.0
 offset_right = 314.0
 offset_bottom = 178.0
 focus_mode = 0
-text = "ENTRAR NO AR"
 theme_override_colors/font_color = Color(1, 0.847059, 0.447059, 1)
+text = "ENTRAR NO AR"
 
-[node name="Ambience" type="AudioStreamPlayer" parent="."]
+[node name="Ambience" type="AudioStreamPlayer" parent="." unique_id=1298621553]
 volume_db = -22.0
 
-[node name="Static" type="AudioStreamPlayer" parent="."]
+[node name="Static" type="AudioStreamPlayer" parent="." unique_id=1808828353]
 volume_db = -40.0
