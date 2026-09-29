@@ -104,9 +104,11 @@ func test_all_pilot_references_and_conditional_inboxes_are_valid() -> void:
 	for number in range(1, 4):
 		var night := ContentLibrary.night(number, ContentLibrary.PILOT_DIR)
 		assert_not_null(night)
-		assert_not_null(night.call)
-		for id in night.call.aired_consequence_ids + night.call.cut_consequence_ids:
-			assert_not_null(ContentLibrary.consequence(id), id)
+		assert_gt(night.calls.size(), 0, "noite sem ligação nenhuma")
+		for call in night.calls:
+			assert_not_null(call)
+			for id in call.aired_consequence_ids + call.cut_consequence_ids:
+				assert_not_null(ContentLibrary.consequence(id), id)
 		for item in night.inbox:
 			var sender := ContentLibrary.sender(item.sender_id)
 			assert_not_null(sender, item.sender_id)

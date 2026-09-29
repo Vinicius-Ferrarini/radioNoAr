@@ -80,6 +80,7 @@ func console_snapshot() -> Dictionary:
 		"outcome": _live.call_outcome(), "reaction": _live.reaction()}
 	if current["outcome"].is_empty() and not current["pending"] and not _last_call.is_empty():
 		current = _last_call.duplicate()
+	current["waiting"] = _live.calls_waiting()
 	current["break_seconds"] = _live.break_seconds_left()
 	current["break_kind"] = _live.break_kind()
 	return current
@@ -300,10 +301,19 @@ func _open_live() -> void:
 
 func _start_live_block(position: int) -> void:
 	_live_position = position
-	var call: RadioCall = null
-	if position == mini(_definition.call_block_position, _live_queue.size() - 1):
-		call = _definition.call
-	_live = LiveBroadcast.new(_live_queue[position]["script"], _run.rng(), call)
+	_live = LiveBroadcast.new(_live_queue[position]["script"], _run.rng(),
+		_calls_for(position))
+
+
+## As ligações daquele bloco. Posição além do último bloco cai no último:
+## conteúdo escrito para quatro blocos não se perde num programa menor.
+func _calls_for(position: int) -> Array[RadioCall]:
+	var mine: Array[RadioCall] = []
+	var last := maxi(_live_queue.size() - 1, 0)
+	for call in _definition.calls:
+		if call != null and mini(call.block_position, last) == position:
+			mine.append(call)
+	return mine
 
 
 ## Guarda o que aquele bloco custou antes de trocar de roteiro.
@@ -322,7 +332,7 @@ func _harvest_live() -> void:
 		"dead_air_penalty": _live.dead_air_penalty(),
 		"infractions": _live.infractions(),
 		"chosen_options": _live.chosen_improv_options(),
-		"call_outcome": _live.call_outcome(),
+		"calls": _live.call_results(),
 		"break_kind": _live.break_kind(),
 	})
 
@@ -361,11 +371,13 @@ func resolve_live() -> void:
 
 	_harvest_live()
 	for result in _live_results:
-		if _definition.call != null:
-			if result["call_outcome"] == "aired":
-				_schedule_consequences(_definition.call.aired_consequence_ids, result["item"], true)
-			elif result["call_outcome"] == "cut":
-				_schedule_consequences(_definition.call.cut_consequence_ids, result["item"], true)
+		# Cada ligação cobra a sua própria conta, pelo que houve com ela.
+		for atendida in result["calls"]:
+			var call: RadioCall = atendida["call"]
+			if atendida["outcome"] == "aired":
+				_schedule_consequences(call.aired_consequence_ids, result["item"], true)
+			elif atendida["outcome"] == "cut":
+				_schedule_consequences(call.cut_consequence_ids, result["item"], true)
 		if result["break_kind"] == "music":
 			_schedule_consequences(["p_music"], null, true)
 		elif result["break_kind"] == "ad":

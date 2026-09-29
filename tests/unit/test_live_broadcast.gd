@@ -57,11 +57,15 @@ func _script(lines: Array[ScriptLine]) -> BroadcastScript:
 	return script
 
 
-func _plain(line_count: int, seconds := 2.0) -> LiveBroadcast:
+func _plain_lines(line_count: int, seconds := 2.0) -> Array[ScriptLine]:
 	var lines: Array[ScriptLine] = []
 	for i in line_count:
 		lines.append(_line("linha %d" % i, seconds))
-	return LiveBroadcast.new(_script(lines), _rng())
+	return lines
+
+
+func _plain(line_count: int, seconds := 2.0) -> LiveBroadcast:
+	return LiveBroadcast.new(_script(_plain_lines(line_count, seconds)), _rng())
 
 
 func _run_for(live: LiveBroadcast, seconds: float) -> void:
@@ -356,11 +360,28 @@ func test_forbidden_slots_are_listed_flat_for_the_teleprompter() -> void:
 
 
 # --- regra 9: a ligacao com delay de 7 segundos ---
+#
+# Desde a Fase 2 (ADR 0013) nao se injeta ligacao a mao: ela e agendada e
+# toca no gatilho. O helper abaixo faz o telefone tocar sem gastar prévia,
+# porque o tick para exatamente no gatilho.
+
+func _ringing(transcript: String, lines := 3, seconds := 10.0) -> LiveBroadcast:
+	var call := RadioCall.new()
+	call.caller = "Ouvinte"
+	call.transcript = transcript
+	call.trigger_seconds = 0.5
+	call.aired_reaction = "Foi ao ar."
+	call.cut_reaction = "Cortado."
+	var live := LiveBroadcast.new(_script(_plain_lines(lines, seconds)), _rng(),
+		[call] as Array[RadioCall])
+	live.set_mic_held(true)
+	live.tick(0.5)
+	return live
+
+
 
 func test_the_transcript_arrives_before_the_audience_hears_it() -> void:
-	var live := _plain(3, 10.0)
-	live.set_mic_held(true)
-	live.queue_call("meu filho saiu e nao voltou")
+	var live := _ringing("meu filho saiu e nao voltou")
 
 	assert_true(_kinds(live.drain_events()).has(LiveBroadcast.EventKind.CALL_TRANSCRIPT))
 	assert_almost_eq(live.call_seconds_left(), LiveBroadcast.CALL_DELAY_SECONDS, 0.01)
@@ -374,9 +395,7 @@ func test_the_transcript_arrives_before_the_audience_hears_it() -> void:
 
 
 func test_cutting_the_call_in_time_stops_it() -> void:
-	var live := _plain(3, 10.0)
-	live.set_mic_held(true)
-	live.queue_call("o nome que nao pode ser dito")
+	var live := _ringing("o nome que nao pode ser dito")
 	_run_for(live, 2.0)
 	live.drain_events()
 
@@ -388,9 +407,7 @@ func test_cutting_the_call_in_time_stops_it() -> void:
 
 
 func test_cutting_after_it_aired_is_too_late() -> void:
-	var live := _plain(3, 20.0)
-	live.set_mic_held(true)
-	live.queue_call("ja foi")
+	var live := _ringing("ja foi", 3, 20.0)
 	_run_for(live, LiveBroadcast.CALL_DELAY_SECONDS + 0.5)
 
 	assert_false(live.cut_call(), "o que foi ao ar foi")

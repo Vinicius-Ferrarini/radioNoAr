@@ -14,8 +14,8 @@ enum Era {
 @export var night: int
 @export var title: String
 @export_multiline var intro: String
-@export var call: RadioCall
-@export var call_block_position: int = 1
+## Várias por noite, cada uma com seu bloco e seu gatilho (ADR 0013).
+@export var calls: Array[RadioCall]
 @export var allow_breaks: bool = false
 @export var opening_flag: String
 @export_multiline var opening_if_set: String

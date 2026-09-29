@@ -31,6 +31,8 @@ enum EventKind {
 	IMPROV_REQUESTED,
 	IMPROV_RESOLVED,
 	IMPROV_TIMEOUT,
+	## Tocou com a linha ocupada: entrou na fila.
+	CALL_WAITING,
 	CALL_TRANSCRIPT,
 	CALL_AIRED,
 	CALL_CUT,
@@ -64,11 +66,13 @@ var _improv_left: float = 0.0
 var _chosen_improvs: Array[String] = []
 var _chosen_options: Array[ImprovOption] = []
 
-var _call_transcript: String = ""
+## A linha atende uma por vez: as agendadas esperam o gatilho, as
+## acionadas esperam a linha vagar, e só uma fica na prévia (ADR 0013).
+var _scheduled: Array[RadioCall] = []
+var _waiting: Array[RadioCall] = []
+var _on_line: RadioCall = null
 var _call_left: float = 0.0
-var _call_pending: bool = false
-var _scheduled_call: RadioCall
-var _call_triggered := false
+var _results: Array[Dictionary] = []
 var _elapsed := 0.0
 var _call_outcome := ""
 var _reaction := ""
@@ -78,10 +82,13 @@ var _break_left := 0.0
 var _events: Array[Dictionary] = []
 
 
-func _init(broadcast_script: BroadcastScript, rng: RandomNumberGenerator, scheduled_call: RadioCall = null) -> void:
+func _init(broadcast_script: BroadcastScript, rng: RandomNumberGenerator,
+		calls: Array[RadioCall] = [] as Array[RadioCall]) -> void:
 	_script = broadcast_script
 	_rng = rng
-	_scheduled_call = scheduled_call
+	for call in calls:
+		if call != null:
+			_scheduled.append(call)
 	_flatten_slots()
 
 
@@ -139,26 +146,37 @@ func choose_improv(option_index: int) -> bool:
 	return true
 
 
-## A ligação entra na transcrição agora e no ar em CALL_DELAY_SECONDS.
-func queue_call(transcript: String) -> void:
-	if _state == State.FINISHED:
-		return
-
-	_call_transcript = transcript
-	_call_left = CALL_DELAY_SECONDS
-	_call_pending = true
-	_push(EventKind.CALL_TRANSCRIPT, {"transcript": transcript, "delay": CALL_DELAY_SECONDS})
-
-
+## Corta quem está na prévia. A linha vaga na hora e quem esperava entra.
 func cut_call() -> bool:
-	if not _call_pending:
+	if _on_line == null:
 		return false
 
-	_call_pending = false
-	_call_outcome = "cut"
-	_reaction = _scheduled_call.cut_reaction if _scheduled_call != null else "Ligação cortada antes da transmissão."
-	_push(EventKind.CALL_CUT, {"transcript": _call_transcript})
+	_resolve_call("cut", _on_line.cut_reaction, EventKind.CALL_CUT)
+	_take_the_line()
 	return true
+
+
+## Fecha a ligação da prévia e guarda o que aconteceu com ela.
+func _resolve_call(outcome: String, reaction: String, kind: EventKind) -> void:
+	_results.append({"call": _on_line, "outcome": outcome})
+	_call_outcome = outcome
+	_reaction = reaction
+	_push(kind, {"transcript": _on_line.transcript, "caller": _on_line.caller})
+	_on_line = null
+	_call_left = 0.0
+
+
+## Passa a linha para quem está esperando, se houver.
+func _take_the_line() -> void:
+	if _on_line != null or _waiting.is_empty():
+		return
+	_on_line = _waiting.pop_front()
+	_call_left = CALL_DELAY_SECONDS
+	_push(EventKind.CALL_TRANSCRIPT, {
+		"transcript": _on_line.transcript,
+		"caller": _on_line.caller,
+		"delay": CALL_DELAY_SECONDS,
+	})
 
 
 # =====================================================================
@@ -177,13 +195,14 @@ func tick(delta: float) -> void:
 		if delta <= 0.0:
 			return
 
+	# Quem chegou neste quadro não gasta a prévia com o tempo de antes de
+	# chegar: o relógio da prévia só conta o que sobrou depois do gatilho.
 	var call_delta := delta
-	var until_call := maxf(_scheduled_call.trigger_seconds - _elapsed, 0.0) if _scheduled_call != null else 0.0
+	var earliest := _seconds_until_next_trigger()
 	_elapsed += delta
-	if _scheduled_call != null and not _call_triggered and _elapsed >= _scheduled_call.trigger_seconds:
-		_call_triggered = true
-		queue_call(_scheduled_call.transcript)
-		call_delta = maxf(delta - until_call, 0.0)
+	if _ring_whoever_arrived():
+		call_delta = maxf(delta - earliest, 0.0)
+	_take_the_line()
 	_tick_call(call_delta)
 
 	# O relógio do improviso corre mesmo no silêncio: ficar calado não é
@@ -199,18 +218,42 @@ func tick(delta: float) -> void:
 	_tick_script(delta)
 
 
+## Quanto falta para o próximo gatilho, para não cobrar da prévia o tempo
+## anterior à chegada.
+func _seconds_until_next_trigger() -> float:
+	var soonest := INF
+	for call in _scheduled:
+		soonest = minf(soonest, maxf(call.trigger_seconds - _elapsed, 0.0))
+	return 0.0 if soonest == INF else soonest
+
+
+## Toca o telefone de quem venceu o gatilho. Quem chega com a linha
+## ocupada vai para a fila e avisa que tocou.
+func _ring_whoever_arrived() -> bool:
+	var rang := false
+	var still: Array[RadioCall] = []
+	for call in _scheduled:
+		if _elapsed < call.trigger_seconds:
+			still.append(call)
+			continue
+		_waiting.append(call)
+		rang = true
+		if _on_line != null:
+			_push(EventKind.CALL_WAITING, {"caller": call.caller, "queued": _waiting.size()})
+	_scheduled = still
+	return rang
+
+
 func _tick_call(delta: float) -> void:
-	if not _call_pending:
+	if _on_line == null:
 		return
 
 	_call_left -= delta
 	if _call_left > 0.0:
 		return
 
-	_call_pending = false
-	_call_outcome = "aired"
-	_reaction = _scheduled_call.aired_reaction if _scheduled_call != null else "O trecho foi transmitido."
-	_push(EventKind.CALL_AIRED, {"transcript": _call_transcript})
+	_resolve_call("aired", _on_line.aired_reaction, EventKind.CALL_AIRED)
+	_take_the_line()
 
 
 func _tick_improv(delta: float) -> void:
@@ -231,10 +274,14 @@ func _tick_script(delta: float) -> void:
 		return
 
 	_line_elapsed += delta
+	# A palavra vai ao ar quando a leitura passa por ela, não no fim da
+	# linha: é o prazo que dá sentido à varredura do teleprompter.
+	_air_words_read_so_far(line)
 	if _line_elapsed < line.read_seconds:
 		return
-	# Não perder a prévia quando o roteiro é mais curto que a ligação.
-	if _line_index + 1 >= _script.lines.size() and (_call_pending or (_scheduled_call != null and not _call_triggered)):
+	# Nenhuma ligação se perde na virada: o bloco espera a prévia, a fila e
+	# quem ainda não foi acionada.
+	if _line_index + 1 >= _script.lines.size() and _line_has_calls_pending():
 		return
 
 	_air_line(_line_index)
@@ -282,7 +329,19 @@ func reaction() -> String:
 
 
 func caller() -> String:
-	return _scheduled_call.caller if _scheduled_call != null else "Ouvinte"
+	if _on_line != null:
+		return _on_line.caller
+	return _results[-1]["call"].caller if not _results.is_empty() else "Ouvinte"
+
+
+## Quantas tocaram e esperam a linha vagar.
+func calls_waiting() -> int:
+	return _waiting.size()
+
+
+## O que aconteceu com cada ligação resolvida, na ordem: {call, outcome}.
+func call_results() -> Array[Dictionary]:
+	return _results.duplicate()
 
 
 func is_finished() -> bool:
@@ -365,15 +424,15 @@ func improv_seconds_left() -> float:
 
 
 func call_transcript() -> String:
-	return _call_transcript
+	return _on_line.transcript if _on_line != null else ""
 
 
 func call_seconds_left() -> float:
-	return maxf(_call_left, 0.0) if _call_pending else 0.0
+	return maxf(_call_left, 0.0) if _on_line != null else 0.0
 
 
 func has_pending_call() -> bool:
-	return _call_pending
+	return _on_line != null
 
 
 func drain_events() -> Array[Dictionary]:
@@ -464,17 +523,39 @@ func _resume_from_improv() -> void:
 		_state_before_silence = State.ON_AIR
 
 
+func _line_has_calls_pending() -> bool:
+	return _on_line != null or not _waiting.is_empty() or not _scheduled.is_empty()
+
+
+## Tudo o que a leitura já passou sai pela antena. A fração lida vale pelo
+## texto original: trocar a palavra não muda o prazo dela.
+func _air_words_read_so_far(line: ScriptLine) -> void:
+	var length: int = maxi(line.text.length(), 1)
+	var read: float = clampf(_line_elapsed / maxf(line.read_seconds, 0.001), 0.0, 1.0) * float(length)
+	for slot in _slots:
+		if slot["line_index"] != _line_index or slot["aired"]:
+			continue
+		if float(slot["char_start"]) + float(String(slot["word"]).length()) > read:
+			continue
+		_air_slot(slot)
+
+
+func _air_slot(slot: Dictionary) -> void:
+	slot["aired"] = true
+	if slot["replaced"]:
+		return
+	_infractions.append(slot["word"])
+	_push(EventKind.FORBIDDEN_WORD_AIRED, {
+		"word": slot["word"], "line_index": slot["line_index"]})
+
+
 ## O que sobe na tela também sai pela antena: o que não foi trocado a
 ## tempo vira infração anotada.
 func _air_line(index: int) -> void:
 	for slot in _slots:
 		if slot["line_index"] != index or slot["aired"]:
 			continue
-		slot["aired"] = true
-		if slot["replaced"]:
-			continue
-		_infractions.append(slot["word"])
-		_push(EventKind.FORBIDDEN_WORD_AIRED, {"word": slot["word"], "line_index": index})
+		_air_slot(slot)
 
 
 func _push(kind: EventKind, data: Dictionary) -> void:

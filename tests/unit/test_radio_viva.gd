@@ -47,7 +47,7 @@ func test_truth_requires_related_evidence_not_a_suspicion_mark() -> void:
 
 
 func test_scheduled_call_can_be_cut_and_never_airs_after_cut() -> void:
-	var live = LiveBroadcast.new(_script(), RandomNumberGenerator.new(), _call())
+	var live = LiveBroadcast.new(_script(), RandomNumberGenerator.new(), [_call()] as Array[RadioCall])
 	live.set_mic_held(true)
 	live.tick(1.0)
 	assert_true(live.has_pending_call())
@@ -59,7 +59,7 @@ func test_scheduled_call_can_be_cut_and_never_airs_after_cut() -> void:
 
 
 func test_call_deadline_is_irreversible_and_block_waits_for_it() -> void:
-	var live = LiveBroadcast.new(_script(1.0), RandomNumberGenerator.new(), _call())
+	var live = LiveBroadcast.new(_script(1.0), RandomNumberGenerator.new(), [_call()] as Array[RadioCall])
 	live.set_mic_held(true)
 	live.tick(1.0)
 	assert_false(live.is_finished())
@@ -71,7 +71,7 @@ func test_call_deadline_is_irreversible_and_block_waits_for_it() -> void:
 
 
 func test_break_holds_preview_has_a_limit_and_does_not_cost_dead_air() -> void:
-	var live = LiveBroadcast.new(_script(), RandomNumberGenerator.new(), _call())
+	var live = LiveBroadcast.new(_script(), RandomNumberGenerator.new(), [_call()] as Array[RadioCall])
 	live.set_mic_held(true)
 	live.tick(1.0)
 	var left: float = live.call_seconds_left()
@@ -87,7 +87,7 @@ func test_break_holds_preview_has_a_limit_and_does_not_cost_dead_air() -> void:
 
 
 func test_negative_delta_does_not_extend_call() -> void:
-	var live = LiveBroadcast.new(_script(), RandomNumberGenerator.new(), _call())
+	var live = LiveBroadcast.new(_script(), RandomNumberGenerator.new(), [_call()] as Array[RadioCall])
 	live.set_mic_held(true)
 	live.tick(1.0)
 	var left: float = live.call_seconds_left()
@@ -96,14 +96,14 @@ func test_negative_delta_does_not_extend_call() -> void:
 
 
 func test_call_trigger_counts_only_time_after_arrival() -> void:
-	var live := LiveBroadcast.new(_script(), RandomNumberGenerator.new(), _call())
+	var live := LiveBroadcast.new(_script(), RandomNumberGenerator.new(), [_call()] as Array[RadioCall])
 	live.set_mic_held(true)
 	live.tick(4.0)
 	assert_eq(live.call_seconds_left(), 4.0, "três segundos transcorreram depois da chegada")
 
 
 func test_break_excess_delta_resumes_the_call_clock() -> void:
-	var live := LiveBroadcast.new(_script(), RandomNumberGenerator.new(), _call())
+	var live := LiveBroadcast.new(_script(), RandomNumberGenerator.new(), [_call()] as Array[RadioCall])
 	live.set_mic_held(true)
 	live.tick(1.0)
 	live.start_break("ad")
