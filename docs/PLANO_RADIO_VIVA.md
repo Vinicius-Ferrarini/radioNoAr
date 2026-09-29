@@ -66,10 +66,11 @@ Só expandir o volume da campanha após avaliar essas respostas.
 
 ## Resultado da execução
 
-Etapas 1–8 implementadas. Validação final: 282/282 testes, 83.870 asserts,
-7,739 s. A suíte original de 265 testes foi preservada, com o catálogo
-antigo explicitado e a expectativa de ferramentas acessíveis ao vivo
-atualizada no teste de UI. Novos testes cobrem regras e dois percursos.
+Etapas 1–8 implementadas. Validação final: 282/282 testes, 83.878 asserts
+(o tempo varia com a máquina: de 8 s a 14 s nas execuções registradas).
+A suíte original de 265 testes foi preservada, com o catálogo antigo
+explicitado e a expectativa de ferramentas acessíveis ao vivo atualizada
+no teste de UI. Novos testes cobrem regras e dois percursos.
 
 Foram gerados 8 sprites novos e 6 WAVs sintetizados. A verificação
 renderizada percorreu triagem, apuração, ligação, intervalo, manhã e

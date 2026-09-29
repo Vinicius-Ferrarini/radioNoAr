@@ -28,7 +28,7 @@ Assets: 35 sprites no manifesto (8 novos), 6 WAVs originais sintetizados
 em `assets/audio/`. Fontes em `tools/pixelart/sprite_defs/` e
 `tools/audio/generate.gd`. Sem dublagem: as falas ainda são legendadas.
 
-Validação: **282 testes passando**, 83.870 asserts, 7,739 s. Inclui os
+Validação: **282 testes passando**, 83.878 asserts. Inclui os
 dois caminhos das três noites, investigação, reserva limitada, corte e
 controles da mesa. `tools/qa/capture_radio.gd` percorre a UI com renderer
 e grava sete capturas em `.godot/radio-qa/`. O modo Dummy desse roteiro
@@ -37,6 +37,26 @@ não avalia som por audição. Diversão e ritmo precisam de playtest humano.
 Plano e decisões: `PLANO_RADIO_VIVA.md`, SPEC (revisão inicial) e ADR 0011.
 Fase de dia completa, campanha longa, finais, opções e salvamento seguem
 pendentes. Não interpretar as três noites como a campanha final pronta.
+
+### Pontas conhecidas da abertura
+
+Coisas que parecem esquecimento e são decisão. Quem for mexer, leia antes.
+
+- **`data/nights/night_01.tres` continua sem `label` e sem
+  `required_claim_id`.** É o cenário de regressão do estado anterior
+  (ADR 0011): a fala "Contar a verdade" ali ainda vai ao ar sem apuração.
+  Não usar esse arquivo como referência de conteúdo novo; o formato atual
+  é o de `data/pilot/`.
+- **A noite 3 não tem apuração — nem claim, nem item fraudulento, nem
+  enquadramento TRUTH.** É de propósito: as noites 1 e 2 ensinam a cruzar
+  o caderno, e a 3 cobra a decisão sobre o que já se sabe. Se um item
+  investigável entrar ali depois, ele precisa de `required_claim_id`.
+- **Os roteiros Python que geraram `data/pilot/`, os `sprite_defs/` novos
+  e os nós da mesa foram andaimes de uso único** e ficaram em `.godot/`,
+  que não é versionado. As saídas são a fonte de verdade e estão
+  versionadas. **Não reexecutar** `build_radio_scene.py`: ele aplica um
+  patch não idempotente e duplicaria nós em `scenes/studio_desk.tscn`.
+  Dali para frente a mesa se edita no editor do Godot ou à mão.
 
 ---
 

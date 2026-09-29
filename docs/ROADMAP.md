@@ -13,7 +13,7 @@ da expansão do M13. Plano: [PLANO_RADIO_VIVA.md](PLANO_RADIO_VIVA.md).
 | Microfone alternável e intervalo único de 6 s | implementado; música cria vínculo, anúncio rende $8 |
 | Resposta imediata e objetos de memória na mesa | implementado |
 | 8 novos sprites e 6 sons originais | gerados e integrados |
-| GUT | 282/282; 83.870 asserts; 7,739 s |
+| GUT | 282/282; 83.878 asserts |
 | Verificação renderizada | sete capturas e navegação até a terceira noite |
 | Playtest humano de diversão e ritmo | pendente |
 
