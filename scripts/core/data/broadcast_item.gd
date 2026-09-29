@@ -33,6 +33,10 @@ enum Channel {
 @export var body: String
 @export var claims: Array[ItemClaim]
 @export var framings: Array[FramingOption]
+## Conversa do celular (ADR 0013). Item com thread não usa a régua de
+## enquadramento: a resposta escolhida aqui é que decide.
+@export var thread: Array[ChatMessage]
+@export var replies: Array[ReplyOption]
 ## Conta para a cota de propaganda do programa.
 @export var counts_for_quota: bool
 ## Verdade de bastidor: nunca exibida ao jogador, nunca lida pelo
