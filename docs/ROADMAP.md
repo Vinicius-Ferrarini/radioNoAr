@@ -15,7 +15,8 @@ da expansão do M13. Plano: [PLANO_RADIO_VIVA.md](PLANO_RADIO_VIVA.md).
 | 8 novos sprites e 6 sons originais | gerados e integrados |
 | GUT | 282/282; 83.878 asserts |
 | Verificação renderizada | sete capturas e navegação até a terceira noite |
-| Playtest humano de diversão e ritmo | pendente |
+| Playtest humano de diversão e ritmo | 1º feito: veredito de monotonia |
+| Atmosfera (leito de som, mesa em movimento) | implementado — ADR 0012 |
 
 A noite antiga permanece em `data/nights/` para regressão. A mesa inicia
 a nova abertura por padrão. A campanha completa de 21 noites, finais,

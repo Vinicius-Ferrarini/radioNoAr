@@ -78,6 +78,22 @@ abertura das noites seguintes. Detectou e corrigiu texto sobreposto no
 briefing, contraste do jornal e desaparecimento precoce da reação ao
 trocar de bloco. Capturas em `.godot/radio-qa/` (geradas, não versionadas).
 
-Limites: não houve playtest humano; áudio ainda não tem dublagem e a
-captura usa saída Dummy. O alvo entregue é a abertura de três noites;
+### Primeiro playtest humano (2026-09-29)
+
+O dono jogou a noite 1 de ponta a ponta. Dois achados:
+
+1. **Não havia como entrar no ar.** Bloco com item e sem enquadramento
+   ficava idêntico a um pronto, e o botão AO AR ficava desabilitado e
+   mudo. Corrigido, e criado um botão ENTRAR NO AR dedicado que nunca
+   desabilita e abre o que falta resolver.
+2. **"Ainda parece chato e monótono, com somente texto e escolhas."**
+   Endereçado pela passada de atmosfera do ADR 0012: leito de som
+   contínuo, ar morto audível, mesa em movimento.
+
+Segue pendente o que nenhum dos dois resolve: o ritmo da leitura em si e
+a diversão. Próximo playtest deve olhar os blocos de ~16 s em que o
+jogador só segura o microfone.
+
+Limites: áudio ainda não tem dublagem e a captura usa saída Dummy.
+O alvo entregue é a abertura de três noites;
 não foram implementados a campanha de 21 noites nem seus finais.

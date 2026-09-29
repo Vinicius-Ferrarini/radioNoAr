@@ -38,6 +38,23 @@ Plano e decisões: `PLANO_RADIO_VIVA.md`, SPEC (revisão inicial) e ADR 0011.
 Fase de dia completa, campanha longa, finais, opções e salvamento seguem
 pendentes. Não interpretar as três noites como a campanha final pronta.
 
+### Atmosfera (ADR 0012)
+
+O estúdio tem leito de som contínuo: zumbido sempre presente e estática
+que sobe no ar morto (−11 dB) e recua no ar (−34 dB). A mesa se move —
+letreiro AO AR pulsando conforme o que está saindo pela antena, lâmpada
+oscilando, telefone tremendo enquanto a ligação espera no atraso de sete
+segundos. Tudo em `_breathe()`, só apresentação, sem `_draw`.
+
+Dois WAVs novos em loop (`room_tone`, `radio_static`), gerados por
+`tools/audio/generate.gd` com semente fixa. O loop vem de
+`edit/loop_mode=2` no `.import` e tem teste próprio: leito sem loop toca
+uma vez e emudece a mesa sem ninguém notar.
+
+Entrar no ar: o botão **ENTRAR NO AR** (embaixo à direita) nunca fica
+desabilitado e nunca fica calado — se o programa não está pronto, diz o
+que falta e abre o celular ou a régua de enquadramento do bloco pendente.
+
 ### Pontas conhecidas da abertura
 
 Coisas que parecem esquecimento e são decisão. Quem for mexer, leia antes.
