@@ -15,6 +15,8 @@ signal meter_changed(meter_id: String, new_value: int)
 signal morning_ready(report: Dictionary)
 signal live_block_started(position: int, total: int, headline: String)
 signal live_events(events: Array)
+## Mensagens chegando na conversa de um item (ADR 0013).
+signal conversation_events(item_id: String, events: Array)
 
 var _run: RunState
 var _cycle: NightCycle
@@ -28,7 +30,17 @@ var _campaign_directory: String = ContentLibrary.PILOT_DIR
 ## O ÚNICO ponto do projeto por onde o tempo entra (ADR 0007). Fora da
 ## fase LIVE, não faz nada.
 func _process(delta: float) -> void:
-	if _cycle == null or _cycle.phase() != NightCycle.Phase.LIVE:
+	if _cycle == null:
+		return
+
+	# A conversa corre em qualquer fase: a pessoa do outro lado digita
+	# enquanto você faz outra coisa, inclusive no ar.
+	_cycle.tick_conversations(delta)
+	var talked := _cycle.drain_conversation_events()
+	for item_id in talked:
+		conversation_events.emit(item_id, talked[item_id])
+
+	if _cycle.phase() != NightCycle.Phase.LIVE:
 		return
 
 	var live := _cycle.live()
@@ -100,6 +112,41 @@ func live_console() -> Dictionary:
 	if _live() == null:
 		return {}
 	return _cycle.console_snapshot()
+
+
+## A conversa do item, ou nulo se ele não tem thread.
+func conversation_of(item_id: String) -> Conversation:
+	return _cycle.conversation(item_id) if _cycle != null else null
+
+
+## Resposta que exige apuração não aparece como opção: a regra é a mesma
+## do enquadramento, porque a resposta É o enquadramento.
+func reply_available(item_id: String, index: int) -> bool:
+	var talk := conversation_of(item_id)
+	if talk == null or index < 0 or index >= talk.replies().size():
+		return false
+	var item := item_by_id(item_id)
+	return framing_available(item, talk.replies()[index].framing_kind)
+
+
+func send_reply(item_id: String, index: int) -> bool:
+	var talk := conversation_of(item_id)
+	if talk == null or not reply_available(item_id, index) or not talk.send(index):
+		return false
+	# Se o item já está escalado, o bloco passa a valer o que você disse.
+	var block := block_of_item(item_id)
+	if block != -1:
+		_inherit_framing(item_id, block)
+	_announce_rundown()
+	return true
+
+
+## O bloco herda o enquadramento decidido na conversa (SPEC, ADR 0013).
+func _inherit_framing(item_id: String, block_index: int) -> void:
+	var talk := conversation_of(item_id)
+	if talk == null or not talk.is_decided():
+		return
+	_cycle.rundown().set_framing(block_index, talk.chosen_framing_kind())
 
 
 func framing_available(item: BroadcastItem, kind: int) -> bool:
@@ -368,6 +415,7 @@ func place_item(item_id: String, block_index: int) -> int:
 
 	var result := _cycle.rundown().place(item, block_index)
 	if result == ProgramRundown.PlaceResult.OK:
+		_inherit_framing(item_id, block_index)
 		_announce_rundown()
 	return result
 

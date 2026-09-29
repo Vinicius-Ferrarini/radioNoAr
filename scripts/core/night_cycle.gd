@@ -33,6 +33,8 @@ var _live_position: int = -1
 var _live: LiveBroadcast
 var _live_results: Array[Dictionary] = []
 var _break_used := false
+## Uma conversa por item, criada na primeira vez que o jogador abre.
+var _conversations: Dictionary = {}
 var _last_call: Dictionary = {}
 
 
@@ -98,6 +100,41 @@ func start_break(kind: String) -> bool:
 func station_mementos() -> Dictionary:
 	var flags := _run.flags()
 	return {"record": flags.has("celia_music"), "sponsor": flags.has("sponsor_ad"), "bridge": flags.has("rui_aired")}
+
+
+## Nulo para item sem thread: esse continua sendo decidido na régua.
+func conversation(item_id: String) -> Conversation:
+	if _conversations.has(item_id):
+		return _conversations[item_id]
+	var item := item_by_id(item_id)
+	if item == null or item.thread.is_empty():
+		return null
+	var talk := Conversation.new(item.thread, item.replies)
+	_conversations[item_id] = talk
+	return talk
+
+
+## Só as conversas que o jogador já abriu correm: ninguém digita para uma
+## tela fechada.
+func tick_conversations(delta: float) -> void:
+	for talk in _conversations.values():
+		talk.tick(delta)
+
+
+func drain_conversation_events() -> Dictionary:
+	var by_item: Dictionary = {}
+	for item_id in _conversations:
+		var events: Array[Dictionary] = _conversations[item_id].drain_events()
+		if not events.is_empty():
+			by_item[item_id] = events
+	return by_item
+
+
+func item_by_id(item_id: String) -> BroadcastItem:
+	for item in _definition.inbox:
+		if item.id == item_id:
+			return item
+	return null
 
 
 func validator() -> Validator:
