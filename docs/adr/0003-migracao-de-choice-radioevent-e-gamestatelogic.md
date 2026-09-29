@@ -64,6 +64,17 @@ material de conteúdo para o M13 (o texto é bom, o formato não serve).
   "v0, até o M10".
 - O commit do M10 é grande em linhas removidas e pequeno em risco, porque
   cada teste reescrito nasce verde antes da remoção.
-- `GameState` muda de assinatura pública no M10 (sinais novos, `power_changed`
-  sai). `radio_show.tscn` é reconstruído no M8, então não há cena
-  dependendo da API velha nesse momento.
+- `GameState` muda de assinatura pública no M10 (sinais novos,
+  `power_changed` sai).
+
+**Correção registrada em 2026-09-29 (durante o M8):** este ADR previa que
+`radio_show.tscn` seria reconstruído no M8, "então não há cena dependendo
+da API velha nesse momento". Errado. O M8 constrói a triagem e a
+escalação **na cena da mesa** (`studio_desk.tscn`), e `radio_show.tscn`
+continua vivo e jogável com a API v0 até o M10 — inclusive com os offsets
+reescalados no M7 para o viewport novo. Na prática isso significa que o
+autoload `GameState` carrega **as duas APIs ao mesmo tempo** entre o M8 e
+o M10: os sinais e métodos v0 (`power_changed`, `apply_choice`,
+`get_current_event`) e os v1 (`phase_changed`, `place_item`,
+`link_claim`…). A remoção da metade v0 continua marcada para o M10, no
+mesmo commit que apaga `Choice`/`RadioEvent`/`GameStateLogic`.

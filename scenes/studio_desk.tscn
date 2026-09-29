@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Theme" path="res://theme/theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://scenes/studio_desk.gd" id="1b_script"]
 [ext_resource type="Texture2D" path="res://assets/sprites/desk_surface.png" id="2_desk"]
 [ext_resource type="Texture2D" path="res://assets/sprites/window_night.png" id="3_window"]
 [ext_resource type="Texture2D" path="res://assets/sprites/on_air_sign.png" id="4_onair"]
@@ -11,8 +12,9 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/phone.png" id="9_phone"]
 [ext_resource type="Texture2D" path="res://assets/sprites/letter_stack.png" id="10_letters"]
 [ext_resource type="Texture2D" path="res://assets/sprites/notebook.png" id="11_notebook"]
-[ext_resource type="Texture2D" path="res://assets/sprites/block_slot.png" id="12_slot"]
 [ext_resource type="Texture2D" path="res://assets/sprites/block_slot_quota.png" id="13_slot_quota"]
+[ext_resource type="PackedScene" path="res://scenes/parts/program_block.tscn" id="14_block"]
+[ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="15_row"]
 
 [node name="StudioDesk" type="Control"]
 layout_mode = 3
@@ -22,6 +24,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_theme")
+script = ExtResource("1b_script")
+row_scene = ExtResource("15_row")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -30,92 +34,92 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 color = Color(0.070588, 0.062745, 0.054902, 1)
 
 [node name="DeskBand" type="NinePatchRect" parent="."]
 layout_mode = 0
-offset_top = 62.0
+offset_top = 126.0
 offset_right = 320.0
 offset_bottom = 180.0
+mouse_filter = 2
 texture = ExtResource("2_desk")
 patch_margin_left = 6
 patch_margin_top = 6
 patch_margin_right = 6
 patch_margin_bottom = 6
 
-[node name="Window" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 6.0
-offset_right = 106.0
-offset_bottom = 62.0
-texture = ExtResource("3_window")
-
-[node name="OnAirSign" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 122.0
-offset_top = 10.0
-offset_right = 162.0
-offset_bottom = 24.0
-texture = ExtResource("4_onair")
-
-[node name="OnAirLabel" type="Label" parent="OnAirSign"]
+[node name="Studio" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+
+[node name="Window" type="TextureRect" parent="Studio"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 16.0
+offset_right = 104.0
+offset_bottom = 72.0
+mouse_filter = 2
+texture = ExtResource("3_window")
+
+[node name="OnAirSign" type="TextureRect" parent="Studio"]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 16.0
+offset_right = 150.0
+offset_bottom = 30.0
+mouse_filter = 2
+texture = ExtResource("4_onair")
+
+[node name="OnAirLabel" type="Label" parent="Studio/OnAirSign"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 text = "NO AR"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DeskLamp" type="TextureRect" parent="."]
+[node name="DeskLamp" type="TextureRect" parent="Studio"]
 layout_mode = 0
-offset_left = 214.0
-offset_top = 8.0
-offset_right = 234.0
-offset_bottom = 34.0
+offset_left = 216.0
+offset_top = 16.0
+offset_right = 236.0
+offset_bottom = 42.0
+mouse_filter = 2
 texture = ExtResource("5_lamp")
 
-[node name="ListenersDial" type="TextureRect" parent="."]
+[node name="ListenersDial" type="TextureRect" parent="Studio"]
 layout_mode = 0
 offset_left = 250.0
-offset_top = 8.0
+offset_top = 16.0
 offset_right = 306.0
-offset_bottom = 30.0
+offset_bottom = 38.0
+mouse_filter = 2
 texture = ExtResource("6_dial")
 
-[node name="ListenersLabel" type="Label" parent="."]
+[node name="Teleprompter" type="NinePatchRect" parent="Studio"]
 layout_mode = 0
-offset_left = 250.0
-offset_top = 32.0
-offset_right = 306.0
-offset_bottom = 42.0
-text = "OUVINTES"
-horizontal_alignment = 1
-
-[node name="Microphone" type="TextureRect" parent="."]
-layout_mode = 0
-offset_left = 34.0
-offset_top = 76.0
-offset_right = 62.0
-offset_bottom = 124.0
-texture = ExtResource("7_mic")
-
-[node name="Teleprompter" type="NinePatchRect" parent="."]
-layout_mode = 0
-offset_left = 76.0
-offset_top = 66.0
+offset_left = 110.0
+offset_top = 40.0
 offset_right = 240.0
-offset_bottom = 126.0
+offset_bottom = 100.0
+mouse_filter = 2
 texture = ExtResource("8_prompter")
 patch_margin_left = 8
 patch_margin_top = 8
 patch_margin_right = 8
 patch_margin_bottom = 8
 
-[node name="ScriptText" type="RichTextLabel" parent="Teleprompter"]
+[node name="ScriptText" type="RichTextLabel" parent="Studio/Teleprompter"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,134 +130,289 @@ offset_right = -6.0
 offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 bbcode_enabled = true
-text = "Boa noite. Aqui é a sua frequência de
-sempre, e eu ainda estou aqui.
+text = "O microfone ainda está desligado.
 
-Antes de qualquer coisa, o comunicado
-oficial número cento e quatorze."
+O programa começa quando os quatro
+blocos estiverem escalados."
 scroll_active = false
+
+[node name="Microphone" type="TextureRect" parent="Studio"]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 76.0
+offset_right = 88.0
+offset_bottom = 124.0
+mouse_filter = 2
+texture = ExtResource("7_mic")
 
 [node name="Phone" type="TextureRect" parent="."]
 layout_mode = 0
 offset_left = 6.0
-offset_top = 130.0
+offset_top = 132.0
 offset_right = 32.0
-offset_bottom = 174.0
+offset_bottom = 176.0
 texture = ExtResource("9_phone")
 
 [node name="LetterStack" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 250.0
-offset_top = 110.0
-offset_right = 294.0
-offset_bottom = 136.0
+offset_left = 214.0
+offset_top = 140.0
+offset_right = 258.0
+offset_bottom = 166.0
 texture = ExtResource("10_letters")
 
 [node name="Notebook" type="TextureRect" parent="."]
 layout_mode = 0
-offset_left = 252.0
-offset_top = 142.0
-offset_right = 286.0
-offset_bottom = 168.0
+offset_left = 264.0
+offset_top = 140.0
+offset_right = 298.0
+offset_bottom = 166.0
 texture = ExtResource("11_notebook")
 
-[node name="ProgramLabel" type="Label" parent="."]
+[node name="Header" type="Control" parent="."]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 128.0
-offset_right = 140.0
-offset_bottom = 138.0
-text = "PROGRAMA"
+offset_right = 320.0
+offset_bottom = 14.0
+mouse_filter = 2
 
-[node name="Block1" type="NinePatchRect" parent="."]
+[node name="NightLabel" type="Label" parent="Header"]
 layout_mode = 0
-offset_left = 56.0
-offset_top = 140.0
-offset_right = 100.0
-offset_bottom = 170.0
+offset_left = 6.0
+offset_top = 2.0
+offset_right = 70.0
+offset_bottom = 12.0
+mouse_filter = 2
+text = "NOITE -"
+
+[node name="QuotaLabel" type="Label" parent="Header"]
+layout_mode = 0
+offset_left = 74.0
+offset_top = 2.0
+offset_right = 142.0
+offset_bottom = 12.0
+mouse_filter = 2
+text = "COTA -/-"
+
+[node name="AudienceLabel" type="Label" parent="Header"]
+layout_mode = 0
+offset_left = 146.0
+offset_top = 2.0
+offset_right = 232.0
+offset_bottom = 12.0
+mouse_filter = 2
+text = "OUVINTES -"
+
+[node name="GoOnAirButton" type="Button" parent="Header"]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 1.0
+offset_right = 314.0
+offset_bottom = 13.0
+text = "AO AR"
+
+[node name="WorkPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 16.0
+offset_right = 316.0
+offset_bottom = 124.0
+
+[node name="InboxTitle" type="Label" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 2.0
+offset_right = 118.0
+offset_bottom = 12.0
+mouse_filter = 2
+text = "CHEGOU HOJE"
+
+[node name="InboxScroll" type="ScrollContainer" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 14.0
+offset_right = 118.0
+offset_bottom = 104.0
+horizontal_scroll_mode = 0
+
+[node name="InboxList" type="VBoxContainer" parent="WorkPanel/InboxScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="TabItem" type="Button" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 122.0
+offset_top = 2.0
+offset_right = 172.0
+offset_bottom = 14.0
+toggle_mode = true
+text = "ITEM"
+
+[node name="TabNotebook" type="Button" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 174.0
+offset_top = 2.0
+offset_right = 234.0
+offset_bottom = 14.0
+toggle_mode = true
+text = "CADERNO"
+
+[node name="TabBlock" type="Button" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 236.0
+offset_top = 2.0
+offset_right = 286.0
+offset_bottom = 14.0
+toggle_mode = true
+text = "BLOCO"
+
+[node name="ItemView" type="Control" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 122.0
+offset_top = 16.0
+offset_right = 308.0
+offset_bottom = 92.0
+mouse_filter = 2
+
+[node name="Headline" type="Label" parent="WorkPanel/ItemView"]
+layout_mode = 0
+offset_right = 186.0
+offset_bottom = 10.0
+mouse_filter = 2
+text = "Escolha um item à esquerda"
+clip_text = true
+
+[node name="BodyScroll" type="ScrollContainer" parent="WorkPanel/ItemView"]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 186.0
+offset_bottom = 46.0
+horizontal_scroll_mode = 0
+
+[node name="Body" type="RichTextLabel" parent="WorkPanel/ItemView/BodyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+fit_content = true
+scroll_active = false
+
+[node name="ClaimsTitle" type="Label" parent="WorkPanel/ItemView"]
+layout_mode = 0
+offset_top = 48.0
+offset_right = 130.0
+offset_bottom = 58.0
+mouse_filter = 2
+text = "CONFERIR:"
+
+[node name="ClaimsList" type="HBoxContainer" parent="WorkPanel/ItemView"]
+layout_mode = 0
+offset_top = 60.0
+offset_right = 130.0
+offset_bottom = 74.0
+theme_override_constants/separation = 2
+
+[node name="SuspectButton" type="Button" parent="WorkPanel/ItemView"]
+layout_mode = 0
+offset_left = 134.0
+offset_top = 60.0
+offset_right = 186.0
+offset_bottom = 74.0
+toggle_mode = true
+text = "SUSPEITO"
+
+[node name="NotebookView" type="ScrollContainer" parent="WorkPanel"]
+visible = false
+layout_mode = 0
+offset_left = 122.0
+offset_top = 16.0
+offset_right = 308.0
+offset_bottom = 92.0
+horizontal_scroll_mode = 0
+
+[node name="NotebookList" type="VBoxContainer" parent="WorkPanel/NotebookView"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="BlockView" type="Control" parent="WorkPanel"]
+visible = false
+layout_mode = 0
+offset_left = 122.0
+offset_top = 16.0
+offset_right = 308.0
+offset_bottom = 92.0
+mouse_filter = 2
+
+[node name="BlockTitle" type="Label" parent="WorkPanel/BlockView"]
+layout_mode = 0
+offset_right = 186.0
+offset_bottom = 10.0
+mouse_filter = 2
+text = "Bloco -"
+clip_text = true
+
+[node name="FramingScroll" type="ScrollContainer" parent="WorkPanel/BlockView"]
+layout_mode = 0
+offset_top = 12.0
+offset_right = 122.0
+offset_bottom = 76.0
+horizontal_scroll_mode = 0
+
+[node name="FramingList" type="VBoxContainer" parent="WorkPanel/BlockView/FramingScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="ClearBlockButton" type="Button" parent="WorkPanel/BlockView"]
+layout_mode = 0
+offset_left = 126.0
+offset_top = 12.0
+offset_right = 186.0
+offset_bottom = 26.0
+text = "TIRAR"
+
+[node name="Feedback" type="Label" parent="WorkPanel"]
+layout_mode = 0
+offset_left = 122.0
+offset_top = 94.0
+offset_right = 308.0
+offset_bottom = 104.0
+mouse_filter = 2
+clip_text = true
+
+[node name="Blocks" type="Control" parent="."]
+layout_mode = 0
+offset_top = 126.0
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+
+[node name="Block1" parent="Blocks" instance=ExtResource("14_block")]
+offset_left = 40.0
+offset_top = 14.0
+offset_right = 80.0
+offset_bottom = 44.0
 texture = ExtResource("13_slot_quota")
-patch_margin_left = 5
-patch_margin_top = 5
-patch_margin_right = 5
-patch_margin_bottom = 5
+block_index = 0
 
-[node name="Label" type="Label" parent="Block1"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "COTA"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Block2" parent="Blocks" instance=ExtResource("14_block")]
+offset_left = 83.0
+offset_top = 14.0
+offset_right = 123.0
+offset_bottom = 44.0
+block_index = 1
 
-[node name="Block2" type="NinePatchRect" parent="."]
-layout_mode = 0
-offset_left = 104.0
-offset_top = 140.0
-offset_right = 148.0
-offset_bottom = 170.0
-texture = ExtResource("12_slot")
-patch_margin_left = 5
-patch_margin_top = 5
-patch_margin_right = 5
-patch_margin_bottom = 5
+[node name="Block3" parent="Blocks" instance=ExtResource("14_block")]
+offset_left = 126.0
+offset_top = 14.0
+offset_right = 166.0
+offset_bottom = 44.0
+block_index = 2
 
-[node name="Label" type="Label" parent="Block2"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "2"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Block3" type="NinePatchRect" parent="."]
-layout_mode = 0
-offset_left = 152.0
-offset_top = 140.0
-offset_right = 196.0
-offset_bottom = 170.0
-texture = ExtResource("12_slot")
-patch_margin_left = 5
-patch_margin_top = 5
-patch_margin_right = 5
-patch_margin_bottom = 5
-
-[node name="Label" type="Label" parent="Block3"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "3"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="Block4" type="NinePatchRect" parent="."]
-layout_mode = 0
-offset_left = 200.0
-offset_top = 140.0
-offset_right = 244.0
-offset_bottom = 170.0
-texture = ExtResource("12_slot")
-patch_margin_left = 5
-patch_margin_top = 5
-patch_margin_right = 5
-patch_margin_bottom = 5
-
-[node name="Label" type="Label" parent="Block4"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-text = "4"
-horizontal_alignment = 1
-vertical_alignment = 1
+[node name="Block4" parent="Blocks" instance=ExtResource("14_block")]
+offset_left = 169.0
+offset_top = 14.0
+offset_right = 209.0
+offset_bottom = 44.0
+block_index = 3

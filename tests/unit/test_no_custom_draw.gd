@@ -9,15 +9,24 @@ const SCENES_DIR := "res://scenes/"
 
 func _scene_scripts() -> PackedStringArray:
 	var paths := PackedStringArray()
-	var dir := DirAccess.open(SCENES_DIR)
+	_collect_scripts(SCENES_DIR, paths)
+	return paths
+
+
+## Desce para as subpastas: scenes/parts/ tambem e apresentacao.
+func _collect_scripts(directory: String, into: PackedStringArray) -> void:
+	var dir := DirAccess.open(directory)
 	if dir == null:
-		return paths
+		return
 	var file_names := dir.get_files()
 	file_names.sort()
 	for file_name in file_names:
 		if file_name.ends_with(".gd"):
-			paths.append(SCENES_DIR + file_name)
-	return paths
+			into.append(directory + file_name)
+	var sub_dirs := dir.get_directories()
+	sub_dirs.sort()
+	for sub_dir in sub_dirs:
+		_collect_scripts(directory + sub_dir + "/", into)
 
 
 func test_no_scene_script_defines_custom_draw() -> void:

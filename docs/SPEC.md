@@ -628,6 +628,32 @@ func reset_run() -> void
 `LIVE` chama `live().tick(delta)`, depois `drain_events()` e emite
 `live_events`. Fora de `LIVE`, `_process` não faz nada.
 
+### Convivência v0 × v1 (M8 a M10)
+
+Entre o M8 e o M10 este autoload carrega **as duas APIs**: a v1 acima e a
+v0 da §1.3, que mantém `radio_show.tscn` jogável. A metade v0 sai no M10
+(ADR 0003, com a correção registrada lá).
+
+### A mesa como tela única (M8)
+
+`TRIAGE` e `RUNDOWN` são uma tela só para o jogador: o close (`WorkPanel`)
+cobre as duas, e o botão "AO AR" atravessa as duas fases de uma vez — do
+contrário o primeiro clique trocaria de fase sem nada visível acontecer.
+Como o `ProgramRundown` existe desde o `_init` do `NightCycle`, escalar
+item já durante a triagem é permitido e desejado: conferir e escalar são a
+mesma sessão de trabalho.
+
+Listas de tamanho variável (inbox, caderno, afirmações, enquadramentos)
+são instâncias de `scenes/parts/list_row.tscn` colocadas em
+`VBoxContainer`/`HBoxContainer` definidos na cena — a linha continua
+editável visualmente no editor, que é o que a regra do `CLAUDE.md` quer.
+Os blocos do programa são instâncias de `scenes/parts/program_block.tscn`,
+e é nelas que vivem `_can_drop_data`/`_drop_data`.
+
+O payload de arrasto mora em `list_row.drag_payload()`, separado de
+`_get_drag_data`, porque `set_drag_preview()` só pode ser chamado durante
+um arrasto real — com o payload lá dentro não haveria como testá-lo.
+
 ---
 
 ## 6. Pipeline de pixel art (`tools/pixelart/`)

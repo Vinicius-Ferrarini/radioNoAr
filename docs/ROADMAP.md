@@ -32,7 +32,7 @@ conteúdo no formato v0 agora seria trabalho perdido (ADR 0003).
 | M5 | Dados v1 + `Notebook` + `Validator` (TDD) | ✅ ² | M4 |
 | M6 | `Meters`, `ProgramRundown`, `ConsequenceQueue`, `RunState`, `NightCycle` | ✅ ³ | M5 |
 | M7 | Pipeline de pixel art + manifesto + mesa estática + resolução/escala | ✅ ⁴ | M4 |
-| M8 | Triagem e escalação: closes, marcar e cruzar, arrastar para os 4 blocos | ⬜ | M6, M7 |
+| M8 | Triagem e escalação: closes, marcar e cruzar, arrastar para os 4 blocos | ✅ ⁵ | M6, M7 |
 | M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ⬜ | M6 |
 | M10 | Manhã + **fatia vertical: noite 1 de ponta a ponta**; remoção da v0 | ⬜ | M8, M9 |
 | M11 | Fase de dia: transmissor, sinal, equipe, dinheiro | ⬜ | M10 |
@@ -69,6 +69,12 @@ Duas decorrências registradas: a **cena principal passou a ser a mesa**
 (`studio_desk.tscn`), e as cenas da v0 tiveram seus offsets reescalados
 por 320/1152 para continuarem jogáveis até o M10, como o ADR 0003
 prometeu.
+
+⁵ M8 concluído em 2026-09-29: autoload `GameState` v1 (10 sinais, 25
+métodos) ao lado da API v0; `scenes/parts/list_row.tscn` e
+`program_block.tscn`; triagem, cruzamento com o caderno, marcação de
+suspeita, arrastar para os 4 blocos e escolha de enquadramento, tudo pela
+interface. Suíte **205/205, 13 322 asserts, 0 órfãos**.
 
 M7 não depende tecnicamente de M5/M6 — a pixel art e a lógica não se
 cruzam. Ficou decidido rodar a lógica primeiro (M5 → M6) e só então o M7:

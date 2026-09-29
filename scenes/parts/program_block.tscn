@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scenes/parts/program_block.gd" id="1_block"]
+[ext_resource type="Texture2D" path="res://assets/sprites/block_slot.png" id="2_slot"]
+
+[node name="ProgramBlock" type="NinePatchRect"]
+offset_right = 40.0
+offset_bottom = 30.0
+mouse_filter = 0
+texture = ExtResource("2_slot")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+script = ExtResource("1_block")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 3.0
+offset_top = 2.0
+offset_right = -3.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+clip_text = true
