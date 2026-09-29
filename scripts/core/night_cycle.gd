@@ -35,6 +35,8 @@ var _live_results: Array[Dictionary] = []
 var _break_used := false
 ## Uma conversa por item, criada na primeira vez que o jogador abre.
 var _conversations: Dictionary = {}
+## O relógio da noite: começa às 19:00 e marca a hora de cada mensagem.
+var _clock := GameClock.new()
 var _last_call: Dictionary = {}
 
 
@@ -111,7 +113,7 @@ func _open_the_phone_lines() -> void:
 		if item.channel != BroadcastItem.Channel.PHONE:
 			continue
 		_conversations[item.id] = Conversation.new(
-			_thread_of(item), _replies_of(item))
+			_thread_of(item), _replies_of(item), _clock)
 
 
 ## Item sem thread escrita ainda é uma conversa: o corpo da mensagem vira
@@ -123,7 +125,6 @@ func _thread_of(item: BroadcastItem) -> Array[ChatMessage]:
 		return item.thread
 	var only := ChatMessage.new()
 	only.text = item.body
-	only.at = item.received_at
 	only.delay_seconds = 0.0
 	return [only] as Array[ChatMessage]
 
@@ -148,7 +149,14 @@ func conversation(item_id: String) -> Conversation:
 	return _conversations.get(item_id, null)
 
 
-func tick_conversations(delta: float) -> void:
+func clock() -> GameClock:
+	return _clock
+
+
+## O relógio anda antes das conversas: quem chegar neste quadro leva a
+## hora deste quadro.
+func tick_time(delta: float) -> void:
+	_clock.tick(delta)
 	for talk in _conversations.values():
 		talk.tick(delta)
 

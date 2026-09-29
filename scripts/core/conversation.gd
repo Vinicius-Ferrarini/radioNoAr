@@ -39,10 +39,16 @@ var _announced_idle: bool = false
 
 var _events: Array[Dictionary] = []
 
+## O relógio da noite, injetado. É ele que marca a hora de cada fala: o
+## conteúdo diz o que se fala e em quanto tempo, nunca a que horas.
+var _clock: GameClock
 
-func _init(thread: Array[ChatMessage], replies: Array[ReplyOption]) -> void:
+
+func _init(thread: Array[ChatMessage], replies: Array[ReplyOption],
+		clock: GameClock = null) -> void:
 	_replies = replies.duplicate()
 	_queue = thread.duplicate()
+	_clock = clock
 	_deliver_due()
 
 
@@ -77,6 +83,8 @@ func send(index: int) -> bool:
 	var said := ChatMessage.new()
 	said.from_me = true
 	said.text = reply.text
+	if _clock != null:
+		said.at = _clock.now()
 	_visible.append(said)
 
 	for message in reply.answer:
@@ -164,11 +172,16 @@ func _deliver_due() -> void:
 
 		var next: ChatMessage = _queue[0]
 		_queue.remove_at(0)
-		_visible.append(next)
+		# Cópia marcada, nunca o recurso do conteúdo: ele é compartilhado e
+		# a hora de hoje sobreviveria para a noite seguinte.
+		var arrived: ChatMessage = next.duplicate()
+		if _clock != null:
+			arrived.at = _clock.now()
+		_visible.append(arrived)
 		_armed = false
-		if not next.from_me:
+		if not arrived.from_me:
 			_unread += 1
-		_push(EventKind.MESSAGE_ARRIVED, {"text": next.text, "from_me": next.from_me})
+		_push(EventKind.MESSAGE_ARRIVED, {"text": arrived.text, "from_me": arrived.from_me})
 
 	if is_waiting_for_reply() and not _announced_idle:
 		_announced_idle = true

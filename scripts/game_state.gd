@@ -35,7 +35,7 @@ func _process(delta: float) -> void:
 
 	# A conversa corre em qualquer fase: a pessoa do outro lado digita
 	# enquanto você faz outra coisa, inclusive no ar.
-	_cycle.tick_conversations(delta)
+	_cycle.tick_time(delta)
 	var talked := _cycle.drain_conversation_events()
 	for item_id in talked:
 		conversation_events.emit(item_id, talked[item_id])
@@ -112,6 +112,11 @@ func live_console() -> Dictionary:
 	if _live() == null:
 		return {}
 	return _cycle.console_snapshot()
+
+
+## A hora do programa. Começa às 19:00 em toda noite.
+func clock_now() -> String:
+	return _cycle.clock().now() if _cycle != null else "19:00"
 
 
 ## A data da noite na ficção: noite 1 é 15/07/2008 (GameCalendar).

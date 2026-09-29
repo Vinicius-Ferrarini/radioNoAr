@@ -24,7 +24,16 @@ Prevalece sobre a régua de enquadramento no fluxo do celular. Itens sem
 
 - `ChatMessage` (Resource): `from_me: bool`, `text: String`,
   `delay_seconds: float = 1.2`, `at: String`. Uma fala curta; o `delay` é
-  contado a partir da mensagem anterior da mesma rajada.
+  contado a partir da mensagem anterior da mesma rajada. **`at` não é
+  escrito no conteúdo:** quem preenche é o `GameClock`, na entrega, numa
+  cópia do recurso — o original é compartilhado e a hora de hoje
+  sobreviveria para a noite seguinte. Toda fala entregue tem hora, e a
+  ordem das horas é a ordem de chegada.
+- `GameClock` (RefCounted, `scripts/core/`): começa às 19:00 em toda
+  noite, anda por `tick(delta)` a meio minuto por segundo e não anda para
+  trás. `now()` dá "19:07"; vira para 00:00 depois da meia-noite.
+  `NightCycle` tem um, ticado por `tick_time(delta)` antes das conversas,
+  e o expõe em `clock()`. `GameState.clock_now()` leva para a cena.
 - `ReplyOption` (Resource): `id: String`, `text: String` (o que você
   manda), `framing_kind: FramingOption.Kind`, `answer: Array[ChatMessage]`
   (a réplica da pessoa). A resposta é a superfície diegética de um
