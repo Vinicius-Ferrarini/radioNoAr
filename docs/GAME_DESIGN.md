@@ -5,7 +5,27 @@
 > Fonte de verdade técnica: `docs/SPEC.md`. Decisões de arquitetura:
 > `docs/adr/`.
 
-## 1. Premissa
+## Revisão da abertura — Rádio viva
+
+Decisão autorizada em 2026-09-29 (ADR 0011). Esta revisão prevalece nas
+três noites iniciais sobre a descrição anterior abaixo. O protagonista
+começa como apresentador de uma rádio de bairro, com música, classificados,
+aniversários e um patrocinador. Tornar-se a última rádio livre é uma
+possibilidade da escalada, não sua identidade inicial.
+
+A reação ocorre no ar; o alcance da consequência aparece depois.
+Investigar revela falas apoiadas em evidências. Os botões descrevem o
+que será dito, sem um botão universal que saiba a verdade pelo jogador.
+O microfone é alternável. Uma reserva de seis segundos por noite pode
+ser usada para música ou anúncio, segurando o programa e a ligação em
+prévia. Música cria vínculo; anúncio remunera a rádio e traz cobrança.
+
+A abertura executável tem três noites: rotina, ponte interditada e
+repercussão. Ligações, bilhetes e objetos na mesa mostram quem está
+ouvindo e quem ficou devendo um favor. Não há barra de facção na mesa.
+Plano, critérios e limites: `PLANO_RADIO_VIVA.md`.
+
+## 1. Premissa (visão anterior da campanha completa)
 
 Um país fictício com um governo apertando o cerco (censura, "medidas de
 emergência") enquanto as ruas pedem eleições livres. O jogador é o último

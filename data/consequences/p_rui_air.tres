@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_rui_air"
+morning_headline = "MOTORISTAS OUVEM RUI E EVITAM A PONTE"
+morning_letter = "Rui: \"Me tiraram da escala. Eu queria avisar o pessoal, mas agora sabem quem contou.\""
+flags_set = Array[String](["rui_aired"])
+meter_deltas = {"audience_trust": 4, "regime_attention": 5}
+resource_deltas = {}

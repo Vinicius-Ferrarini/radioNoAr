@@ -12,6 +12,15 @@ enum Era {
 }
 
 @export var night: int
+@export var title: String
+@export_multiline var intro: String
+@export var call: RadioCall
+@export var call_block_position: int = 1
+@export var allow_breaks: bool = false
+@export var opening_flag: String
+@export_multiline var opening_if_set: String
+@export_multiline var opening_if_unset: String
+@export_multiline var baseline_headline: String
 @export var era: Era
 ## Sempre mais itens do que cabem nos 4 blocos do programa.
 @export var inbox: Array[BroadcastItem]

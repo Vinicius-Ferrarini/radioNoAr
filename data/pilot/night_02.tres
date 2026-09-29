@@ -1,0 +1,219 @@
+[gd_resource type="Resource" script_class="NightDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/night_definition.gd" id="n"]
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_item.gd" id="i"]
+[ext_resource type="Script" path="res://scripts/core/data/framing_option.gd" id="f"]
+[ext_resource type="Script" path="res://scripts/core/data/item_claim.gd" id="c"]
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="e"]
+[ext_resource type="Script" path="res://scripts/core/data/radio_call.gd" id="r"]
+
+[ext_resource type="Resource" path="res://data/notebook/p_ponte.tres" id="entry"]
+
+[sub_resource type="Resource" id="p2_boletim_claim"]
+script = ExtResource("c")
+id = "p2_boletim_claim"
+key = "ponte"
+excerpt = "Ponte Velha aberta ao tráfego."
+contradicted_by = Array[int]([1])
+
+[sub_resource type="Resource" id="p2_boletim_0"]
+script = ExtResource("f")
+kind = 0
+label = "Ler o boletim oficial"
+script_id = "p2_boletim_0"
+consequence_ids = Array[String](["p_official"])
+
+[sub_resource type="Resource" id="p2_boletim_1"]
+script = ExtResource("f")
+kind = 1
+label = "Citar a vistoria contrária"
+script_id = "p2_boletim_1"
+consequence_ids = Array[String](["p_bridge_checked"])
+required_claim_id = "p2_boletim_claim"
+
+[sub_resource type="Resource" id="p2_boletim_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_boletim"]
+script = ExtResource("i")
+id = "p2_boletim"
+sender_id = "ministerio_das_comunicacoes"
+headline = "Ponte liberada, diz boletim"
+body = "Boletim das 20h: Ponte Velha aberta ao tráfego. Repetir sem alteração. A rádio recebeu uma vistoria anterior que pode ser conferida."
+channel = 3
+type = 5
+received_at = "19:10"
+is_fraudulent = true
+counts_for_quota = true
+required_flag = ""
+excluded_flag = ""
+claims = Array[ExtResource("c")]([SubResource("p2_boletim_claim")])
+framings = Array[ExtResource("f")]([SubResource("p2_boletim_0"), SubResource("p2_boletim_1"), SubResource("p2_boletim_5")])
+
+[sub_resource type="Resource" id="p2_rui_0"]
+script = ExtResource("f")
+kind = 0
+label = "Avisar sem identificar"
+script_id = "p2_rui_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_rui_2"]
+script = ExtResource("f")
+kind = 2
+label = "Pedir confirmação primeiro"
+script_id = "p2_rui_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_rui_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_rui"]
+script = ExtResource("i")
+id = "p2_rui"
+sender_id = "rui"
+headline = "Tem barreira no caminho"
+body = "Passei pela ponte. Não está aberta. Vou ligar no segundo bloco; não fala meu nome antes de eu terminar."
+channel = 0
+type = 3
+received_at = "19:17"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p2_rui_0"), SubResource("p2_rui_2"), SubResource("p2_rui_5")])
+
+[sub_resource type="Resource" id="p2_celia_0"]
+script = ExtResource("f")
+kind = 0
+label = "Dar o aviso do bairro"
+script_id = "p2_celia_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_celia_2"]
+script = ExtResource("f")
+kind = 2
+label = "Acalmar sem prometer"
+script_id = "p2_celia_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_celia_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_celia"]
+script = ExtResource("i")
+id = "p2_celia"
+sender_id = "dona_celia"
+headline = "Cadê o ônibus?"
+body = "O Antônio está no ponto há meia hora. Se souber do ônibus, avisa. A sopa já engrossou duas vezes."
+channel = 0
+type = 3
+received_at = "19:24"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p2_celia_0"), SubResource("p2_celia_2"), SubResource("p2_celia_5")])
+
+[sub_resource type="Resource" id="p2_oficina_0"]
+script = ExtResource("f")
+kind = 0
+label = "Aceitar o apoio"
+script_id = "p2_oficina_0"
+consequence_ids = Array[String](["p_sponsor_deal"])
+
+[sub_resource type="Resource" id="p2_oficina_2"]
+script = ExtResource("f")
+kind = 2
+label = "Recusar a condição"
+script_id = "p2_oficina_2"
+consequence_ids = Array[String](["p_decline_deal"])
+
+[sub_resource type="Resource" id="p2_oficina_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_oficina"]
+script = ExtResource("i")
+id = "p2_oficina"
+sender_id = "oficina_portao_doze"
+headline = "Uma peça em troca de silêncio"
+body = "Tenho uma válvula para vocês. Só evita falar da ponte: meu maior cliente trabalha na administração."
+channel = 0
+type = 0
+received_at = "19:31"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p2_oficina_0"), SubResource("p2_oficina_2"), SubResource("p2_oficina_5")])
+
+[sub_resource type="Resource" id="p2_nilo_0"]
+script = ExtResource("f")
+kind = 0
+label = "Reconhecer a equipe"
+script_id = "p2_nilo_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_nilo_2"]
+script = ExtResource("f")
+kind = 2
+label = "Manter a programação"
+script_id = "p2_nilo_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_nilo_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p2_nilo"]
+script = ExtResource("i")
+id = "p2_nilo"
+sender_id = "tecnico"
+headline = "Uma reserva, duas escolhas"
+body = "Música deixa a Célia feliz. Anúncio paga oito. Os dois seguram a ligação em prévia por seis segundos. Só temos uma reserva."
+channel = 1
+type = 3
+received_at = "19:38"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p2_nilo_0"), SubResource("p2_nilo_2"), SubResource("p2_nilo_5")])
+
+[sub_resource type="Resource" id="call"]
+script = ExtResource("r")
+caller = "Rui / linha 2"
+transcript = "A ponte está bloqueada. Mandaram dizer que não. Sou o Rui da linha dois; podem perguntar por mim."
+trigger_seconds = 3.0
+aired_reaction = "Rui: \"Pronto, falei. Agora eles sabem que fui eu.\" O telefone da rádio volta a tocar."
+cut_reaction = "Nilo: \"O nome não saiu.\" Rui continua na prévia: \"Mas como aviso o pessoal?\""
+aired_consequence_ids = Array[String](["p_rui_air"])
+cut_consequence_ids = Array[String](["p_rui_cut"])
+
+[resource]
+script = ExtResource("n")
+night = 2
+title = "A ponte"
+intro = "Ponte aberta, diz o boletim. Rui discorda. Confira o trecho no caderno antes de afirmar. Ele vai ligar durante o programa."
+allow_breaks = true
+propaganda_quota = 1
+call = SubResource("call")
+baseline_headline = "A PONTE CONTINUA FECHADA; O BAIRRO PROCURA UM CAMINHO"
+inbox = Array[ExtResource("i")]([SubResource("p2_boletim"), SubResource("p2_rui"), SubResource("p2_celia"), SubResource("p2_oficina"), SubResource("p2_nilo")])
+new_notebook_entries = Array[ExtResource("e")]([ExtResource("entry")])
+opening_flag = "celia_music"
+opening_if_set = "O disco que Célia deixou já está na mesa."
+opening_if_unset = "Célia pergunta se hoje ainda cabe a valsa."

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_placar"
+key = "placar"
+text = "Súmula assinada pelo árbitro: Bandeira 2 × 1 União. Jogo encerrado às 18h."
+category = 1
+night_added = 1

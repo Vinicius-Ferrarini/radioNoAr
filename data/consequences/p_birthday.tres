@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_birthday"
+morning_headline = ""
+morning_letter = "Célia: \"O bairro inteiro lembrou do aniversário. Até quem devia dinheiro para ele ligou.\""
+flags_set = Array[String]([])
+meter_deltas = {"audience_trust": 2}
+resource_deltas = {}

@@ -1,0 +1,216 @@
+[gd_resource type="Resource" script_class="NightDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/night_definition.gd" id="n"]
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_item.gd" id="i"]
+[ext_resource type="Script" path="res://scripts/core/data/framing_option.gd" id="f"]
+[ext_resource type="Script" path="res://scripts/core/data/item_claim.gd" id="c"]
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="e"]
+[ext_resource type="Script" path="res://scripts/core/data/radio_call.gd" id="r"]
+
+[ext_resource type="Resource" path="res://data/notebook/p_placar.tres" id="entry"]
+
+[sub_resource type="Resource" id="p1_celia_0"]
+script = ExtResource("f")
+kind = 0
+label = "Dar os parabéns"
+script_id = "p1_celia_0"
+consequence_ids = Array[String](["p_birthday"])
+
+[sub_resource type="Resource" id="p1_celia_2"]
+script = ExtResource("f")
+kind = 2
+label = "Mandar um abraço curto"
+script_id = "p1_celia_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_celia_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_celia"]
+script = ExtResource("i")
+id = "p1_celia"
+sender_id = "dona_celia"
+headline = "Quarenta anos, a mesma valsa"
+body = "Hoje fazemos quarenta anos de casados. Toca nossa valsa? Ele diz que não dança, mas já afastou a mesa."
+channel = 0
+type = 3
+received_at = "19:10"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p1_celia_0"), SubResource("p1_celia_2"), SubResource("p1_celia_5")])
+
+[sub_resource type="Resource" id="p1_oficina_0"]
+script = ExtResource("f")
+kind = 0
+label = "Apresentar a oficina"
+script_id = "p1_oficina_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_oficina_2"]
+script = ExtResource("f")
+kind = 2
+label = "Só informar o endereço"
+script_id = "p1_oficina_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_oficina_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_oficina"]
+script = ExtResource("i")
+id = "p1_oficina"
+sender_id = "oficina_portao_doze"
+headline = "Um anúncio paga o café"
+body = "Oito reais pelo intervalo da oficina. Diz que conserto rádio também. O do seu técnico não tem mais conserto, mas não conta para ele."
+channel = 0
+type = 1
+received_at = "19:17"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p1_oficina_0"), SubResource("p1_oficina_2"), SubResource("p1_oficina_5")])
+
+[sub_resource type="Resource" id="p1_placar_claim"]
+script = ExtResource("c")
+id = "p1_placar_claim"
+key = "placar"
+excerpt = "Bandeira ganhou de quatro a zero!"
+contradicted_by = Array[int]([1])
+
+[sub_resource type="Resource" id="p1_placar_0"]
+script = ExtResource("f")
+kind = 0
+label = "Atribuir o placar ao Toledo"
+script_id = "p1_placar_0"
+consequence_ids = Array[String](["p_rumor"])
+
+[sub_resource type="Resource" id="p1_placar_1"]
+script = ExtResource("f")
+kind = 1
+label = "Citar a súmula: 2 a 1"
+script_id = "p1_placar_1"
+consequence_ids = Array[String](["p_score"])
+required_claim_id = "p1_placar_claim"
+
+[sub_resource type="Resource" id="p1_placar_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_placar"]
+script = ExtResource("i")
+id = "p1_placar"
+sender_id = "j_toledo"
+headline = "Ganhamos de goleada?"
+body = "Bandeira ganhou de quatro a zero! Pode anunciar. Saí antes do fim, mas meu primo garantiu."
+channel = 0
+type = 3
+received_at = "19:24"
+is_fraudulent = true
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+claims = Array[ExtResource("c")]([SubResource("p1_placar_claim")])
+framings = Array[ExtResource("f")]([SubResource("p1_placar_0"), SubResource("p1_placar_1"), SubResource("p1_placar_5")])
+
+[sub_resource type="Resource" id="p1_chave_0"]
+script = ExtResource("f")
+kind = 0
+label = "Avisar onde retirar"
+script_id = "p1_chave_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_chave_2"]
+script = ExtResource("f")
+kind = 2
+label = "Preservar o detalhe da fita"
+script_id = "p1_chave_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_chave_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_chave"]
+script = ExtResource("i")
+id = "p1_chave"
+sender_id = "rui"
+headline = "Chave perdida na linha 2"
+body = "Achei uma chave com fita amarela no último banco. Está comigo na garagem até as nove."
+channel = 0
+type = 3
+received_at = "19:31"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p1_chave_0"), SubResource("p1_chave_2"), SubResource("p1_chave_5")])
+
+[sub_resource type="Resource" id="p1_nilo_0"]
+script = ExtResource("f")
+kind = 0
+label = "Brincar com Nilo"
+script_id = "p1_nilo_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_nilo_2"]
+script = ExtResource("f")
+kind = 2
+label = "Apresentar a equipe"
+script_id = "p1_nilo_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_nilo_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p1_nilo"]
+script = ExtResource("i")
+id = "p1_nilo"
+sender_id = "tecnico"
+headline = "O botão vermelho"
+body = "Não precisa segurar o microfone. Liga e desliga. O telefone dá sete segundos para cortar. Música ou anúncio segura a prévia por seis segundos, uma vez."
+channel = 1
+type = 3
+received_at = "19:38"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p1_nilo_0"), SubResource("p1_nilo_2"), SubResource("p1_nilo_5")])
+
+[sub_resource type="Resource" id="call"]
+script = ExtResource("r")
+caller = "Toledo / ouvinte de sempre"
+transcript = "O bolo da minha mulher parece um tijolo. Não põe isso no ar, ela está ouvindo!"
+trigger_seconds = 3.0
+aired_reaction = "Nilo ri do outro lado do vidro. Toledo: \"Você deixou passar mesmo?\""
+cut_reaction = "Nilo faz sinal de positivo. Toledo: \"Essa eu te devo.\""
+aired_consequence_ids = Array[String](["p_n1_air"])
+cut_consequence_ids = Array[String](["p_n1_cut"])
+
+[resource]
+script = ExtResource("n")
+night = 1
+title = "A nossa frequência"
+intro = "19h55. Cheiro de café, transmissor quente. Hoje tem aniversário, futebol e recados.\nAbra o celular ou as cartas. Arraste quatro pessoas para os blocos e escolha o que dizer. O caderno ajuda a conferir."
+allow_breaks = true
+propaganda_quota = 0
+call = SubResource("call")
+baseline_headline = "A RÁDIO TERMINA MAIS UMA NOITE JUNTO DO BAIRRO"
+inbox = Array[ExtResource("i")]([SubResource("p1_celia"), SubResource("p1_oficina"), SubResource("p1_placar"), SubResource("p1_chave"), SubResource("p1_nilo")])
+new_notebook_entries = Array[ExtResource("e")]([ExtResource("entry")])

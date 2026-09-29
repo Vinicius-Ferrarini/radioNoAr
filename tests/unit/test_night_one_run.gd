@@ -13,11 +13,11 @@ const SEED := 4242
 
 
 func before_each() -> void:
-	GameState.start_run(SEED)
+	GameState.start_run(SEED, ContentLibrary.NIGHTS_DIR)
 
 
 func after_all() -> void:
-	GameState.start_run(SEED)
+	GameState.start_run(SEED, ContentLibrary.NIGHTS_DIR)
 
 
 ## Segura o microfone do comeco ao fim. Improviso que estoura o prazo
@@ -85,7 +85,7 @@ func test_the_whole_night_runs_from_triage_to_morning() -> void:
 
 func test_the_same_seed_gives_the_same_night() -> void:
 	var first := _run_night(_honest_program())
-	GameState.start_run(SEED)
+	GameState.start_run(SEED, ContentLibrary.NIGHTS_DIR)
 	var second := _run_night(_honest_program())
 
 	assert_eq(first["headlines"], second["headlines"], "mesma seed, mesma noite")

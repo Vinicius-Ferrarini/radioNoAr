@@ -5,12 +5,12 @@ extends GutTest
 
 
 func before_each() -> void:
-	GameState.start_run(1234)
+	GameState.start_run(1234, ContentLibrary.NIGHTS_DIR)
 
 
 func after_all() -> void:
 	# Deixa o autoload numa campanha limpa para o proximo arquivo.
-	GameState.start_run(1234)
+	GameState.start_run(1234, ContentLibrary.NIGHTS_DIR)
 
 
 ## Faz o programa inteiro ir ao ar: segura o microfone e deixa o tempo
@@ -43,7 +43,7 @@ func test_start_run_opens_night_one_in_triage() -> void:
 
 func test_start_run_announces_the_night() -> void:
 	watch_signals(GameState)
-	GameState.start_run(1234)
+	GameState.start_run(1234, ContentLibrary.NIGHTS_DIR)
 	assert_signal_emitted(GameState, "night_started")
 	assert_signal_emitted(GameState, "inbox_ready")
 	assert_signal_emitted(GameState, "notebook_updated")
@@ -61,9 +61,9 @@ func test_item_by_id_finds_and_misses_cleanly() -> void:
 
 
 func test_same_seed_gives_the_same_run() -> void:
-	GameState.start_run(99)
+	GameState.start_run(99, ContentLibrary.NIGHTS_DIR)
 	var first: int = GameState.rng_sample()
-	GameState.start_run(99)
+	GameState.start_run(99, ContentLibrary.NIGHTS_DIR)
 	assert_eq(GameState.rng_sample(), first, "mesma seed, mesma campanha")
 
 
@@ -251,7 +251,7 @@ func test_letting_go_of_the_mic_costs_listeners() -> void:
 
 
 func _run_one_night(silent_seconds: float) -> int:
-	GameState.start_run(1234)
+	GameState.start_run(1234, ContentLibrary.NIGHTS_DIR)
 	GameState.advance_phase()
 	_fill_program()
 	GameState.advance_phase()

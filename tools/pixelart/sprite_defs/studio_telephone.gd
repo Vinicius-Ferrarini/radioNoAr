@@ -1,0 +1,41 @@
+extends RefCounted
+
+## Asset original da abertura; gerado pelo pipeline de pixel art.
+static func definition() -> Dictionary:
+	return {
+		"name": "studio_telephone",
+		"size": Vector2i(48, 32),
+		"primitives": [
+			{"op": "rect", "x": 3, "y": 25, "w": 42, "h": 5, "color": "ink"},
+			{"op": "rect", "x": 5, "y": 15, "w": 37, "h": 12, "color": "desk_hi"},
+			{"op": "rect", "x": 6, "y": 14, "w": 35, "h": 2, "color": "paper_dark"},
+			{"op": "rect", "x": 7, "y": 17, "w": 31, "h": 8, "color": "desk_mid"},
+			{"op": "rect", "x": 8, "y": 4, "w": 32, "h": 6, "color": "shadow"},
+			{"op": "rect", "x": 6, "y": 6, "w": 9, "h": 10, "color": "ink"},
+			{"op": "rect", "x": 33, "y": 6, "w": 9, "h": 10, "color": "ink"},
+			{"op": "rect", "x": 10, "y": 3, "w": 27, "h": 3, "color": "paper_dark"},
+			{"op": "rect", "x": 14, "y": 6, "w": 18, "h": 2, "color": "desk_hi"},
+			{"op": "rect", "x": 39, "y": 18, "w": 3, "h": 4, "color": "red_hi"},
+			{"op": "rect", "x": 18, "y": 16, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 23, "y": 16, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 28, "y": 16, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 18, "y": 19, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 23, "y": 19, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 28, "y": 19, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 18, "y": 22, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 23, "y": 22, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 28, "y": 22, "w": 3, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 1, "y": 10, "w": 3, "h": 1, "color": "paper_dark"},
+			{"op": "rect", "x": 0, "y": 11, "w": 1, "h": 2, "color": "shadow"},
+			{"op": "rect", "x": 1, "y": 13, "w": 3, "h": 1, "color": "paper_dark"},
+			{"op": "rect", "x": 0, "y": 14, "w": 1, "h": 2, "color": "shadow"},
+			{"op": "rect", "x": 1, "y": 16, "w": 3, "h": 1, "color": "paper_dark"},
+			{"op": "rect", "x": 0, "y": 17, "w": 1, "h": 2, "color": "shadow"},
+			{"op": "rect", "x": 1, "y": 19, "w": 3, "h": 1, "color": "paper_dark"},
+			{"op": "rect", "x": 0, "y": 20, "w": 1, "h": 2, "color": "shadow"},
+			{"op": "rect", "x": 1, "y": 22, "w": 3, "h": 1, "color": "paper_dark"},
+			{"op": "rect", "x": 0, "y": 23, "w": 1, "h": 2, "color": "shadow"},
+			{"op": "rect", "x": 1, "y": 25, "w": 3, "h": 1, "color": "paper_dark"},
+			{"op": "rect", "x": 0, "y": 26, "w": 1, "h": 2, "color": "shadow"},
+		],
+	}

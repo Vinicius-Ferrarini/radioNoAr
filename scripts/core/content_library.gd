@@ -9,6 +9,7 @@ extends RefCounted
 ## de conteudo, nao o tempo de execucao.
 
 const NIGHTS_DIR := "res://data/nights/"
+const PILOT_DIR := "res://data/pilot/"
 const NOTEBOOK_DIR := "res://data/notebook/"
 const CONSEQUENCES_DIR := "res://data/consequences/"
 const SENDERS_DIR := "res://data/senders/"
@@ -16,8 +17,8 @@ const SCRIPTS_DIR := "res://data/scripts/"
 const ORDER_RULES_PATH := "res://data/rules/order_rules.tres"
 
 
-static func night(number: int) -> NightDefinition:
-	return _load(NIGHTS_DIR + "night_%02d.tres" % number)
+static func night(number: int, directory: String = NIGHTS_DIR) -> NightDefinition:
+	return _load(directory.path_join("night_%02d.tres" % number))
 
 
 static func notebook_entry(id: String) -> NotebookEntry:

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="NotebookEntry" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_ponte"
+key = "ponte"
+text = "Vistoria das 18h: Ponte Velha INTERDITADA. Desvio pela Rua do Porto."
+category = 1
+night_added = 2

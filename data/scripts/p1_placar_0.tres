@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+
+[sub_resource type="Resource" id="l0"]
+script = ExtResource("l")
+text = "Toledo manda dizer que foi quatro a zero. Estamos repassando o recado dele."
+read_seconds = 5.4
+
+[resource]
+script = ExtResource("s")
+id = "p1_placar_0"
+lines = Array[ExtResource("l")]([SubResource("l0")])

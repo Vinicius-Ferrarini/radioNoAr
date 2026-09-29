@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_bridge_checked"
+morning_headline = "VISTORIA CONFIRMA BLOQUEIO DA PONTE"
+morning_letter = "Rui: \"Levei sua informação para os motoristas. Agora temos um desvio.\""
+flags_set = Array[String](["bridge_checked"])
+meter_deltas = {"audience_trust": 4}
+resource_deltas = {}

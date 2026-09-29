@@ -22,6 +22,7 @@ var _meter_snapshot: Dictionary = {}
 ## O microfone e do apresentador, nao do bloco: quem esta segurando
 ## quando um bloco emenda no outro continua segurando.
 var _mic_held: bool = false
+var _campaign_directory: String = ContentLibrary.PILOT_DIR
 
 
 ## O ÚNICO ponto do projeto por onde o tempo entra (ADR 0007). Fora da
@@ -50,9 +51,71 @@ func _process(delta: float) -> void:
 # v1 — campanha
 # =====================================================================
 
-func start_run(seed_value: int = 0) -> void:
+func start_run(seed_value: int = 0, campaign_directory: String = ContentLibrary.PILOT_DIR) -> void:
+	_campaign_directory = campaign_directory
+	if _campaign_directory.is_empty():
+		_campaign_directory = ContentLibrary.PILOT_DIR
+	_mic_held = false
 	_run = RunState.new(RunState.DEFAULT_TOTAL_NIGHTS, seed_value)
 	_open_night()
+
+
+func restart_run() -> void:
+	start_run(0, _campaign_directory)
+
+
+func opening_message() -> String:
+	return _cycle.opening_message() if _cycle != null else ""
+
+
+func night_title() -> String:
+	return _cycle.title() if _cycle != null else ""
+
+
+func station_mementos() -> Dictionary:
+	return _cycle.station_mementos() if _cycle != null else {}
+
+
+func station_money() -> int:
+	return _run.resources().get_value(RadioResources.MONEY) if _run != null else 0
+
+
+func toggle_microphone() -> void:
+	set_mic_held(not _mic_held)
+
+
+func microphone_open() -> bool:
+	return _mic_held
+
+
+func start_break(kind: String) -> bool:
+	return _cycle != null and _cycle.start_break(kind)
+
+
+func can_take_break() -> bool:
+	return _cycle != null and _cycle.can_take_break()
+
+
+func live_console() -> Dictionary:
+	if _live() == null:
+		return {}
+	return _cycle.console_snapshot()
+
+
+func framing_available(item: BroadcastItem, kind: int) -> bool:
+	return _cycle != null and _cycle.rundown().framing_available(item, kind)
+
+
+func framing_label(item: BroadcastItem, kind: int) -> String:
+	if item != null:
+		for framing in item.framings:
+			if framing.kind == kind and not framing.label.is_empty():
+				return framing.label
+	return ""
+
+
+func _can_edit_program() -> bool:
+	return _cycle != null and _cycle.phase() in [NightCycle.Phase.TRIAGE, NightCycle.Phase.RUNDOWN]
 
 
 func has_run() -> bool:
@@ -213,12 +276,12 @@ func has_next_night() -> bool:
 		return false
 	if _run.current_night() >= _run.total_nights():
 		return false
-	return ContentLibrary.night(_run.current_night() + 1) != null
+	return ContentLibrary.night(_run.current_night() + 1, _campaign_directory) != null
 
 
 ## Fecha a noite e abre a proxima. false quando nao ha proxima.
 func start_next_night() -> bool:
-	if not has_next_night():
+	if not has_next_night() or _cycle.phase() != NightCycle.Phase.MORNING:
 		return false
 
 	while _cycle != null and _cycle.phase() != NightCycle.Phase.DONE:
@@ -297,6 +360,8 @@ func is_suspicious(item_id: String) -> bool:
 # =====================================================================
 
 func place_item(item_id: String, block_index: int) -> int:
+	if not _can_edit_program():
+		return ProgramRundown.PlaceResult.FRAMING_NOT_ALLOWED
 	var item := item_by_id(item_id)
 	if item == null or _cycle == null:
 		return ProgramRundown.PlaceResult.INVALID_BLOCK
@@ -308,7 +373,7 @@ func place_item(item_id: String, block_index: int) -> int:
 
 
 func move_block(from_index: int, to_index: int) -> int:
-	if _cycle == null:
+	if not _can_edit_program():
 		return ProgramRundown.PlaceResult.INVALID_BLOCK
 	var result := _cycle.rundown().move(from_index, to_index)
 	if result == ProgramRundown.PlaceResult.OK:
@@ -317,14 +382,14 @@ func move_block(from_index: int, to_index: int) -> int:
 
 
 func clear_block(block_index: int) -> void:
-	if _cycle == null:
+	if not _can_edit_program():
 		return
 	_cycle.rundown().clear_block(block_index)
 	_announce_rundown()
 
 
 func set_framing(block_index: int, kind: int) -> int:
-	if _cycle == null:
+	if not _can_edit_program():
 		return ProgramRundown.PlaceResult.INVALID_BLOCK
 	var result := _cycle.rundown().set_framing(block_index, kind)
 	if result == ProgramRundown.PlaceResult.OK:
@@ -385,7 +450,7 @@ func visible_meters() -> Dictionary:
 
 
 func _open_night() -> void:
-	var definition := ContentLibrary.night(_run.current_night())
+	var definition := ContentLibrary.night(_run.current_night(), _campaign_directory)
 	if definition == null:
 		push_error("noite %d não tem conteúdo em data/nights/" % _run.current_night())
 		return

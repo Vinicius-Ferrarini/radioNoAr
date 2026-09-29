@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_n1_air"
+morning_headline = ""
+morning_letter = "Toledo: \"Minha mulher ouviu a reclamação do bolo. Vou dormir no sofá. Amanhã mando o placar certo.\""
+flags_set = Array[String](["toledo_joke"])
+meter_deltas = {}
+resource_deltas = {}

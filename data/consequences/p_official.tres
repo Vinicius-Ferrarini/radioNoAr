@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_official"
+morning_headline = "BOLETIM OFICIAL É RETRANSMITIDO SEM RESSALVA"
+morning_letter = "Comunicações: \"Agradecemos a colaboração. Podemos facilitar sua próxima renovação.\""
+flags_set = Array[String](["official_help"])
+meter_deltas = {"alignment": 4}
+resource_deltas = {}

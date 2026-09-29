@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+
+[sub_resource type="Resource" id="l0"]
+script = ExtResource("l")
+text = "Está na súmula assinada: Bandeira dois, União um. Vitória sem goleada."
+read_seconds = 4.6
+
+[sub_resource type="Resource" id="l1"]
+script = ExtResource("l")
+text = "Toledo, avisa seu primo que nosso caderno também torce, mas confere."
+read_seconds = 4.6
+
+[resource]
+script = ExtResource("s")
+id = "p1_placar_1"
+lines = Array[ExtResource("l")]([SubResource("l0"), SubResource("l1")])

@@ -17,6 +17,55 @@ campanha de **21 noites** até o referendo.
 
 ---
 
+## Revisão Rádio viva (2026-09-29, ADR 0011)
+
+Esta revisão prevalece sobre regras antigas conflitantes abaixo. Plano:
+`PLANO_RADIO_VIVA.md`. Campanha inicial em `data/pilot/night_01..03.tres`;
+`data/nights/` continua disponível como cenário de regressão.
+
+- `ContentLibrary.night(number, directory = NIGHTS_DIR)` aceita catálogo.
+  `GameState.start_run(seed_value = 0, campaign_directory = PILOT_DIR)`
+  seleciona a campanha; a mesa pode exportar esse diretório para testes.
+- `FramingOption`: `label: String`, `required_claim_id: String` opcionais.
+  `ProgramRundown` recebe `Validator` opcional; `framing_available(item,
+  kind)` verifica existência e cruzamento com resultado diferente de
+  UNRELATED da claim exigida. Marcar suspeita não desbloqueia fala.
+- `NightDefinition`: `title`, `intro`, `call: RadioCall`,
+  `call_block_position = 1`, `opening_flag`, `opening_if_set`,
+  `opening_if_unset`, `baseline_headline`, `allow_breaks = false`.
+- `BroadcastItem.required_flag` e `excluded_flag` filtram variantes da
+  inbox por decisões anteriores. O jogador recebe só a variante ativa.
+- `RadioCall` (Resource): `caller`, `transcript`, `trigger_seconds = 3`,
+  `aired_reaction`, `cut_reaction`, `aired_consequence_ids`,
+  `cut_consequence_ids`. `LiveBroadcast` aceita chamada opcional no
+  construtor. Agenda uma vez após tempo ativo; buffer de 7 s corre mesmo
+  com microfone fechado. Roteiro aguarda buffer antes de terminar.
+- `LiveBroadcast.start_break(kind)` aceita `music` ou `ad` por 6 s,
+  uma vez por instância; `NightCycle.start_break(kind)` impõe uma vez por
+  noite. Intervalo pausa roteiro, buffer e improviso, não cobra ar morto.
+  Intervalo pausa a ligação em prévia, nunca reverte áudio transmitido.
+  `break_seconds_left`, `break_kind`, `call_outcome`, `reaction` expõem
+  estado. Eventos BREAK_STARTED e BREAK_ENDED vão para apresentação.
+- `NightCycle` colhe resultado da ligação e intervalo; consequência só
+  é aplicada uma vez na manhã. Música agenda `p_music`, anúncio `p_ad`.
+  `ConsequenceEffect.resource_deltas` permite anúncio render dinheiro.
+  `opening_message()` lê flag e oferece resposta condicional na próxima
+  noite. `station_mementos()` expõe descrições dos objetos conquistados.
+- Contradição apurada para o item atual isenta a inversão de
+  enquadramento da contagem de inconsistência. Não altera casos antigos
+  sem evidência. Alinhamento não ganha barra na abertura.
+- UI: microfone alternável com clique/ESPAÇO; C corta ligação; botões de
+  música/anúncio revelam duração e custo de usar a única reserva. Mesa e
+  caderno acessíveis ao vivo; não é permitido alterar escalação no ar.
+  Prévia, prazo e reação visíveis; botão MANHÃ ao terminar, reinício após
+  terceira manhã. Feedback operacional pode aparecer imediatamente.
+- Assets: mapas/primitivas em `tools/pixelart/sprite_defs/`, PNGs e
+  manifesto gerados pelo pipeline existente. Áudio PCM mono original
+  gerado em `tools/audio/generate.gd`, WAVs em `assets/audio/`.
+- Aceite: regressão preservada; novos testes de evidência, delay,
+  corte tardio, intervalo finito, ausência de perda no fim do bloco,
+  repercussões distintas em três noites e determinismo; inspeção visual.
+
 ## 1. O que sobrou da v0
 
 O loop da v0 foi removido no M10 (ADR 0003): `Choice`, `RadioEvent`,

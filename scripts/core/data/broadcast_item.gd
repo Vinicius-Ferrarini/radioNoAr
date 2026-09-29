@@ -20,6 +20,8 @@ enum Channel {
 }
 
 @export var id: String
+@export var required_flag: String
+@export var excluded_flag: String
 @export var type: ItemType
 @export var channel: Channel
 ## Aponta para um Sender em data/senders/ (ADR 0010).

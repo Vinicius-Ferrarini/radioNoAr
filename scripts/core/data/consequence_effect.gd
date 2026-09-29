@@ -18,6 +18,7 @@ enum Condition {
 @export var condition: Condition
 ## meter_id -> int
 @export var meter_deltas: Dictionary
+@export var resource_deltas: Dictionary
 ## O que o jogador le de manha. Pode ser ambiguo de proposito.
 @export_multiline var morning_headline: String
 @export_multiline var morning_letter: String

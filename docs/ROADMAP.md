@@ -1,7 +1,33 @@
 # No Ar — Roadmap
 
+## Revisão implementada: Rádio viva — 2026-09-29
+
+O pedido de revisão de gameplay antecipou a validação da abertura antes
+da expansão do M13. Plano: [PLANO_RADIO_VIVA.md](PLANO_RADIO_VIVA.md).
+
+| Entrega | Estado |
+|---|---|
+| Três noites: rotina → ponte → repercussão | implementado em `data/pilot/` |
+| Apuração desbloqueia falas concretas | implementado e testado |
+| Ligação agendada, prévia de 7 s e corte | jogável, com ramificação na próxima noite |
+| Microfone alternável e intervalo único de 6 s | implementado; música cria vínculo, anúncio rende $8 |
+| Resposta imediata e objetos de memória na mesa | implementado |
+| 8 novos sprites e 6 sons originais | gerados e integrados |
+| GUT | 282/282; 83.870 asserts; 7,739 s |
+| Verificação renderizada | sete capturas e navegação até a terceira noite |
+| Playtest humano de diversão e ritmo | pendente |
+
+A noite antiga permanece em `data/nights/` para regressão. A mesa inicia
+a nova abertura por padrão. A campanha completa de 21 noites, finais,
+gestão diária e dublagem completa continuam fora desta entrega. A tabela
+abaixo registra o roadmap anterior; M9½/M14 foram parcialmente antecipados.
+
 Status dos marcos. Critérios de aceite completos em `docs/SPEC.md` §9.
 Um marco só é "concluído" com a suíte GUT inteira verde headless.
+
+Para o panorama completo — o que dá para jogar hoje, o mapa do
+repositório, o que falta em cada marco e as dívidas conhecidas — veja
+**`docs/ESTADO_DO_PROJETO.md`**.
 
 Atualizado em: 2026-09-29 (sessão de planejamento da v1).
 
@@ -35,6 +61,7 @@ conteúdo no formato v0 agora seria trabalho perdido (ADR 0003).
 | M8 | Triagem e escalação: closes, marcar e cruzar, arrastar para os 4 blocos | ✅ ⁵ | M6, M7 |
 | M8B | Remetentes como personagens, closes diegéticos (celular/carta/caderno), luz | ✅ ⁶ | M8 |
 | M8C | Tela de título, opções e transições | ⬜ | M8B |
+| M9½ | Buracos do ao vivo: ligação com delay sem gatilho, trilha como sinal, eventos ao vivo | ⬜ | M9 |
 | M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ✅ ⁷ | M6, M8B |
 | M10 | Manhã + **fatia vertical: noite 1 de ponta a ponta**; remoção da v0 | ✅ ⁸ | M8, M9 |
 | M11 | Fase de dia: transmissor, sinal, equipe, dinheiro | ⬜ | M10 |

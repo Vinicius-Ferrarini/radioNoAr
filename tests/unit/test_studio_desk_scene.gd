@@ -42,6 +42,7 @@ var _root: Control
 func before_each() -> void:
 	var scene: PackedScene = load(SCENE_PATH)
 	_root = scene.instantiate()
+	_root.campaign_directory = ContentLibrary.NIGHTS_DIR
 	add_child_autofree(_root)
 	await get_tree().process_frame
 
@@ -52,7 +53,7 @@ func after_each() -> void:
 
 
 func after_all() -> void:
-	GameState.start_run(0)
+	GameState.start_run(0, ContentLibrary.NIGHTS_DIR)
 
 
 func _node(path: String) -> Node:
@@ -324,7 +325,7 @@ func test_going_on_air_clears_the_desk_objects() -> void:
 	_root._on_go_on_air_pressed()
 
 	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)
-	assert_false(_node("Phone").visible, "no ar, o celular sai da mesa")
+	assert_true(_node("Phone").visible, "no ar, as ferramentas continuam acessíveis")
 	assert_false(_close_item().visible)
 	assert_true(_node("Studio/BlockLabel").visible)
 	assert_string_contains(_node("Studio/BlockLabel").text, "BLOCO 1 DE 4")

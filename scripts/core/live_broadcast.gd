@@ -35,6 +35,8 @@ enum EventKind {
 	CALL_AIRED,
 	CALL_CUT,
 	BLOCK_FINISHED,
+	BREAK_STARTED,
+	BREAK_ENDED,
 }
 
 ## Ouvintes perdidos por segundo de silêncio.
@@ -65,13 +67,21 @@ var _chosen_options: Array[ImprovOption] = []
 var _call_transcript: String = ""
 var _call_left: float = 0.0
 var _call_pending: bool = false
+var _scheduled_call: RadioCall
+var _call_triggered := false
+var _elapsed := 0.0
+var _call_outcome := ""
+var _reaction := ""
+var _break_kind := ""
+var _break_left := 0.0
 
 var _events: Array[Dictionary] = []
 
 
-func _init(broadcast_script: BroadcastScript, rng: RandomNumberGenerator) -> void:
+func _init(broadcast_script: BroadcastScript, rng: RandomNumberGenerator, scheduled_call: RadioCall = null) -> void:
 	_script = broadcast_script
 	_rng = rng
+	_scheduled_call = scheduled_call
 	_flatten_slots()
 
 
@@ -145,6 +155,8 @@ func cut_call() -> bool:
 		return false
 
 	_call_pending = false
+	_call_outcome = "cut"
+	_reaction = _scheduled_call.cut_reaction if _scheduled_call != null else "Ligação cortada antes da transmissão."
 	_push(EventKind.CALL_CUT, {"transcript": _call_transcript})
 	return true
 
@@ -154,10 +166,25 @@ func cut_call() -> bool:
 # =====================================================================
 
 func tick(delta: float) -> void:
-	if _state == State.READY or _state == State.FINISHED:
+	if delta <= 0.0 or _state == State.READY or _state == State.FINISHED:
 		return
+	if _break_left > 0.0:
+		var consumed := minf(delta, _break_left)
+		_break_left -= consumed
+		delta -= consumed
+		if _break_left <= 0.0:
+			_push(EventKind.BREAK_ENDED, {})
+		if delta <= 0.0:
+			return
 
-	_tick_call(delta)
+	var call_delta := delta
+	var until_call := maxf(_scheduled_call.trigger_seconds - _elapsed, 0.0) if _scheduled_call != null else 0.0
+	_elapsed += delta
+	if _scheduled_call != null and not _call_triggered and _elapsed >= _scheduled_call.trigger_seconds:
+		_call_triggered = true
+		queue_call(_scheduled_call.transcript)
+		call_delta = maxf(delta - until_call, 0.0)
+	_tick_call(call_delta)
 
 	# O relógio do improviso corre mesmo no silêncio: ficar calado não é
 	# uma saída (regra 7).
@@ -181,6 +208,8 @@ func _tick_call(delta: float) -> void:
 		return
 
 	_call_pending = false
+	_call_outcome = "aired"
+	_reaction = _scheduled_call.aired_reaction if _scheduled_call != null else "O trecho foi transmitido."
 	_push(EventKind.CALL_AIRED, {"transcript": _call_transcript})
 
 
@@ -204,6 +233,9 @@ func _tick_script(delta: float) -> void:
 	_line_elapsed += delta
 	if _line_elapsed < line.read_seconds:
 		return
+	# Não perder a prévia quando o roteiro é mais curto que a ligação.
+	if _line_index + 1 >= _script.lines.size() and (_call_pending or (_scheduled_call != null and not _call_triggered)):
+		return
 
 	_air_line(_line_index)
 	_push(EventKind.LINE_ADVANCED, {"line_index": _line_index})
@@ -222,6 +254,35 @@ func _tick_script(delta: float) -> void:
 
 func state() -> State:
 	return _state
+
+
+func start_break(kind: String) -> bool:
+	if kind not in ["music", "ad"] or not _break_kind.is_empty() or _state in [State.READY, State.FINISHED]:
+		return false
+	_break_kind = kind
+	_break_left = 6.0
+	_push(EventKind.BREAK_STARTED, {"break_kind": kind})
+	return true
+
+
+func break_seconds_left() -> float:
+	return _break_left
+
+
+func break_kind() -> String:
+	return _break_kind
+
+
+func call_outcome() -> String:
+	return _call_outcome
+
+
+func reaction() -> String:
+	return _reaction
+
+
+func caller() -> String:
+	return _scheduled_call.caller if _scheduled_call != null else "Ouvinte"
 
 
 func is_finished() -> bool:

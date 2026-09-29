@@ -55,6 +55,36 @@
 		},
 		{
 			"height": 16,
+			"name": "avatar_nilo",
+			"palette": [
+				"amber_dim",
+				"desk_dark",
+				"ink",
+				"paper_dark",
+				"shadow"
+			],
+			"path": "res://assets/sprites/avatar_nilo.png",
+			"sha256": "0e3f6363a4cd513a6939c496829ad60047deee3b03a05cbf2225d963a00b9f0c",
+			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "avatar_rui",
+			"palette": [
+				"amber_mid",
+				"desk_hi",
+				"ink",
+				"night_blue",
+				"paper_dark",
+				"shadow",
+				"street_blue"
+			],
+			"path": "res://assets/sprites/avatar_rui.png",
+			"sha256": "c8e6bb12bbbc8ecfa39c98a35a6831f37d057cb00300cb04259417d985d85d7d",
+			"width": 16
+		},
+		{
+			"height": 16,
 			"name": "avatar_toledo",
 			"palette": [
 				"amber_dim",
@@ -106,6 +136,21 @@
 			"path": "res://assets/sprites/block_slot_quota.png",
 			"sha256": "222ff2a51871ca81c8450864cd3c6426a32b1b684454113b0a8a1e9270822038",
 			"width": 16
+		},
+		{
+			"height": 16,
+			"name": "bridge_note",
+			"palette": [
+				"cold_glow",
+				"night_blue",
+				"paper",
+				"paper_dark",
+				"paper_shade",
+				"red_hi"
+			],
+			"path": "res://assets/sprites/bridge_note.png",
+			"sha256": "582a6d15f4fc23a4426535cd66448521580805433d333f7099ace03856c19dff",
+			"width": 24
 		},
 		{
 			"height": 12,
@@ -160,6 +205,22 @@
 			"path": "res://assets/sprites/desk_surface.png",
 			"sha256": "8bddb569bcc6af91d2c7f83be5960ce61158cbb1a4c3a73887f7f629a7afec4f",
 			"width": 24
+		},
+		{
+			"height": 24,
+			"name": "gift_record",
+			"palette": [
+				"amber_dim",
+				"glow",
+				"ink",
+				"paper",
+				"paper_shade",
+				"red_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/gift_record.png",
+			"sha256": "ffb9797bb955432ec511eec336144ba9e0e5af39a9f422a02889c3c79d6d145e",
+			"width": 32
 		},
 		{
 			"height": 32,
@@ -320,6 +381,19 @@
 			"width": 32
 		},
 		{
+			"height": 16,
+			"name": "sponsor_plaque",
+			"palette": [
+				"amber_hi",
+				"amber_mid",
+				"desk_dark",
+				"glow"
+			],
+			"path": "res://assets/sprites/sponsor_plaque.png",
+			"sha256": "668666942b864996f86b6aee8f9053e1527273366dd2424a475c4b6835041ac3",
+			"width": 24
+		},
+		{
 			"height": 20,
 			"name": "stamp_ministry",
 			"palette": [
@@ -330,6 +404,57 @@
 			"path": "res://assets/sprites/stamp_ministry.png",
 			"sha256": "92d5ea053e46b6536ad98ad143c2bb61efb3f968026dbf5a9e65fba12fd95a85",
 			"width": 20
+		},
+		{
+			"height": 32,
+			"name": "studio_telephone",
+			"palette": [
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"paper_dark",
+				"paper_shade",
+				"red_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/studio_telephone.png",
+			"sha256": "461c2eda2488968791f94a0dce30db009ca317dc60dbb319dae3be396e663174",
+			"width": 48
+		},
+		{
+			"height": 24,
+			"name": "studio_turntable",
+			"palette": [
+				"amber_dim",
+				"amber_hi",
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"paper",
+				"paper_dark",
+				"paper_shade",
+				"red_hi",
+				"shadow"
+			],
+			"path": "res://assets/sprites/studio_turntable.png",
+			"sha256": "378dd00db6ff73f213eb2e2eefdeebe1eee9e3c81e730f2d155619e80b8c172f",
+			"width": 48
+		},
+		{
+			"height": 180,
+			"name": "studio_wall",
+			"palette": [
+				"amber_dim",
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"paper_dark",
+				"shadow"
+			],
+			"path": "res://assets/sprites/studio_wall.png",
+			"sha256": "b7552fa4f2a5a4296efc5f05d964b9c2b55241dae130dad784353e803be5e70b",
+			"width": 320
 		},
 		{
 			"height": 24,

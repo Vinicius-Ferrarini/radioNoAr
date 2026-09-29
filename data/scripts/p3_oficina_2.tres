@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+
+[sub_resource type="Resource" id="l0"]
+script = ExtResource("l")
+text = "Anúncio compra tempo de publicidade. A pauta continua com a rádio."
+read_seconds = 4.6
+
+[resource]
+script = ExtResource("s")
+id = "p3_oficina_2"
+lines = Array[ExtResource("l")]([SubResource("l0")])

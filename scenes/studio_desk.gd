@@ -1,5 +1,8 @@
 extends Control
 
+## Vazio usa a campanha padrão do autoload.
+@export_dir var campaign_directory: String = ""
+
 ## A mesa do estúdio, que é a casa do jogo: ela nunca sai da tela. Os
 ## objetos em cima dela é que abrem (ADR 0010).
 ##
@@ -40,6 +43,23 @@ const _RESULT_MESSAGES := {
 @onready var _block_label: Label = $Studio/BlockLabel
 @onready var _microphone: TextureButton = $Studio/Microphone
 @onready var _on_air_sign: TextureRect = $Studio/OnAirSign
+@onready var _call_panel: Control = $CallPanel
+@onready var _call_text: Label = $CallPanel/Transcript
+@onready var _call_status: Label = $CallPanel/Status
+@onready var _call_progress: ProgressBar = $CallPanel/Delay
+@onready var _cut_button: Button = $CallPanel/Cut
+@onready var _music: Button = $LiveControls/Music
+@onready var _ad: Button = $LiveControls/Ad
+@onready var _mic_switch: Button = $LiveControls/Mic
+@onready var _sfx: AudioStreamPlayer = $Sfx
+@onready var _music_player: AudioStreamPlayer = $MusicPlayer
+
+const _SWITCH = preload("res://assets/audio/switch.wav")
+const _RING = preload("res://assets/audio/phone_ring.wav")
+const _CUT = preload("res://assets/audio/line_cut.wav")
+const _JINGLE = preload("res://assets/audio/station_jingle.wav")
+const _WALTZ = preload("res://assets/audio/neighborhood_waltz.wav")
+const _AD = preload("res://assets/audio/workshop_ad.wav")
 
 @onready var _blocks: Array[Node] = [
 	$Blocks/Block1,
@@ -70,8 +90,12 @@ func _ready() -> void:
 	GameState.live_block_started.connect(_on_live_block_started)
 	GameState.live_events.connect(_on_live_events)
 
-	_microphone.button_down.connect(_on_mic_down)
-	_microphone.button_up.connect(_on_mic_up)
+	_microphone.pressed.connect(_toggle_mic)
+	_mic_switch.pressed.connect(_toggle_mic)
+	_cut_button.pressed.connect(_cut_call)
+	_music.pressed.connect(func() -> void: GameState.start_break("music"))
+	_ad.pressed.connect(func() -> void: GameState.start_break("ad"))
+	$Briefing/Start.pressed.connect(func() -> void: $Briefing.hide())
 	_improv_strip.option_chosen.connect(_on_improv_chosen)
 	_close_morning.continue_requested.connect(_on_morning_continue)
 	GameState.morning_ready.connect(_on_morning_ready)
@@ -97,18 +121,18 @@ func _ready() -> void:
 		block.block_clicked.connect(_on_block_clicked)
 
 	_show_desk()
-	GameState.start_run()
+	GameState.start_run(0, campaign_directory)
 
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	# Segurar ESPAÇO é o mesmo que segurar o microfone: quem está no ar
 	# com uma mão no dial não larga o botão para clicar.
-	if event.is_action_pressed("ui_accept") and _is_live():
-		_on_mic_down()
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_SPACE and _is_live():
+		_toggle_mic()
 		get_viewport().set_input_as_handled()
 		return
-	if event.is_action_released("ui_accept") and _is_live():
-		_on_mic_up()
+	if event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_C and _is_live():
+		_cut_call()
 		get_viewport().set_input_as_handled()
 		return
 
@@ -137,6 +161,17 @@ func _on_night_started(night: int, quota: int) -> void:
 	_selected_block = -1
 	_show_desk()
 	_feedback.text = "Chegou coisa no celular e na porta."
+	_music_player.stop()
+	_sfx.stop()
+	$Briefing/Title.text = "%02d / %s" % [night, GameState.night_title()]
+	$Briefing/Body.text = GameState.opening_message()
+	$Briefing/Reserve.text = "CAIXA $%d / 1 reserva: música ou anúncio" % GameState.station_money()
+	$Briefing.visible = not GameState.opening_message().is_empty()
+	var mementos := GameState.station_mementos()
+	$Studio/GiftRecord.visible = mementos.get("record", false)
+	$Studio/Sponsor.visible = mementos.get("sponsor", false)
+	$Studio/BridgeNote.visible = mementos.get("bridge", false)
+	$Header/AudienceLabel.tooltip_text = "Caixa da rádio: $%d" % GameState.station_money()
 
 
 func _on_inbox_ready(_items: Array) -> void:
@@ -149,7 +184,8 @@ func _on_notebook_updated(_new_entry_ids: Array) -> void:
 
 
 func _on_quota_changed(required: int, filled: int) -> void:
-	_quota_label.text = "COTA %d/%d" % [filled, required]
+	_quota_label.text = "PROGRAMA LIVRE" if required == 0 else "COTA %d/%d" % [filled, required]
+	_blocks[0].texture = preload("res://assets/sprites/block_slot.png") if required == 0 else preload("res://assets/sprites/block_slot_quota.png")
 
 
 func _on_rundown_changed() -> void:
@@ -160,7 +196,9 @@ func _on_rundown_changed() -> void:
 			continue
 		var sender := GameState.sender_of(item.id)
 		var who: String = sender.display_name if sender != null else item.headline
-		_blocks[i].show_item(who, FramingStrip.label_for(GameState.block_framing(i)))
+		var kind := GameState.block_framing(i)
+		var label := GameState.framing_label(item, kind)
+		_blocks[i].show_item(who, label if not label.is_empty() else FramingStrip.label_for(kind))
 
 	_go_on_air.disabled = not GameState.is_rundown_ready()
 	_refresh_badges()
@@ -177,9 +215,18 @@ func _on_phase_changed(phase: int) -> void:
 	var before_air: bool = phase == NightCycle.Phase.TRIAGE \
 		or phase == NightCycle.Phase.RUNDOWN
 
-	_phone.visible = before_air
-	_letters.visible = before_air
-	_notebook_object.visible = before_air
+	var live_now := phase == NightCycle.Phase.LIVE
+	_phone.visible = before_air or live_now
+	_letters.visible = before_air or live_now
+	_notebook_object.visible = before_air or live_now
+	$Blocks.visible = before_air
+	$LiveControls.visible = live_now
+	_call_panel.visible = live_now
+	$Studio/Turntable.visible = not live_now
+	$Studio/Teleprompter.position = Vector2(76, 34) if live_now else Vector2(112, 36)
+	$Studio/Teleprompter.size = Vector2(232, 46) if live_now else Vector2(128, 60)
+	$Studio/Teleprompter/LineProgress.position.y = 39 if live_now else 53
+	$Studio/Teleprompter/LineProgress.size.x = 218 if live_now else 114
 	if not before_air:
 		_show_desk()
 
@@ -188,8 +235,12 @@ func _on_phase_changed(phase: int) -> void:
 	_block_label.visible = phase == NightCycle.Phase.LIVE
 
 	if phase == NightCycle.Phase.LIVE:
-		_feedback.text = "Segure o microfone (ou ESPAÇO). Soltar é ar morto."
+		_feedback.text = "ESPAÇO: microfone  /  C: cortar ligação"
+		_play_sound(_JINGLE)
+		_go_on_air.disabled = true
 	else:
+		_go_on_air.text = "AO AR"
+		_go_on_air.disabled = not before_air or not GameState.is_rundown_ready()
 		_prompter.text = "O microfone ainda está desligado."
 		_block_label.text = ""
 		_on_air_sign.modulate = Color(1, 1, 1, 0.35)
@@ -285,6 +336,8 @@ func _on_suspect_toggled() -> void:
 
 
 func _on_item_dropped(item_id: String, block_index: int) -> void:
+	if _is_live():
+		return
 	var already_in := GameState.block_of_item(item_id)
 	if already_in != -1:
 		GameState.move_block(already_in, block_index)
@@ -294,6 +347,8 @@ func _on_item_dropped(item_id: String, block_index: int) -> void:
 
 
 func _on_block_clicked(block_index: int) -> void:
+	if _is_live():
+		return
 	_selected_block = block_index
 	_view = View.BLOCK
 	_refresh_views()
@@ -306,7 +361,8 @@ func _on_framing_chosen(kind: int) -> void:
 	if GameState.set_framing(_selected_block, kind) != ProgramRundown.PlaceResult.OK:
 		_feedback.text = "Esse enquadramento não vale para este item."
 		return
-	_feedback.text = "Bloco %d: %s." % [_selected_block + 1, FramingStrip.label_for(kind)]
+	var label := GameState.framing_label(GameState.block_item(_selected_block), kind)
+	_feedback.text = "Bloco %d: %s." % [_selected_block + 1, label if not label.is_empty() else FramingStrip.label_for(kind)]
 
 
 func _on_clear_block() -> void:
@@ -318,6 +374,11 @@ func _on_clear_block() -> void:
 ## Para o jogador, triagem e escalação são a mesma mesa: "AO AR" leva ao
 ## ar de verdade, em vez de trocar de fase sem nada acontecer.
 func _on_go_on_air_pressed() -> void:
+	if _is_live():
+		if GameState.is_live_done():
+			GameState.advance_phase()
+		return
+	$Briefing.hide()
 	if not GameState.is_rundown_ready():
 		_feedback.text = "Os quatro blocos precisam de alguém e de um enquadramento."
 		return
@@ -331,7 +392,7 @@ func _on_go_on_air_pressed() -> void:
 # --- o ao vivo ---
 
 func _on_live_block_started(position: int, total: int, headline: String) -> void:
-	_block_label.text = "BLOCO %d DE %d — %s" % [position + 1, total, headline]
+	_block_label.text = "BLOCO %d DE %d" % [position + 1, total]
 	_show_desk()
 	_refresh_live()
 
@@ -339,6 +400,23 @@ func _on_live_block_started(position: int, total: int, headline: String) -> void
 func _on_mic_down() -> void:
 	if _is_live():
 		GameState.set_mic_held(true)
+
+
+func _toggle_mic() -> void:
+	if _is_live():
+		GameState.toggle_microphone()
+		_play_sound(_SWITCH)
+
+
+func _cut_call() -> void:
+	if GameState.cut_call():
+		_play_sound(_CUT)
+		_refresh_live()
+
+
+func _play_sound(stream: AudioStream) -> void:
+	_sfx.stream = stream
+	_sfx.play()
 
 
 func _on_mic_up() -> void:
@@ -364,6 +442,15 @@ func _on_improv_chosen(option_index: int) -> void:
 func _on_live_events(events: Array) -> void:
 	for event in events:
 		match int(event["kind"]):
+			LiveBroadcast.EventKind.CALL_TRANSCRIPT:
+				_play_sound(_RING)
+			LiveBroadcast.EventKind.CALL_CUT, LiveBroadcast.EventKind.CALL_AIRED:
+				_feedback.text = GameState.live_console().get("reaction", "")
+			LiveBroadcast.EventKind.BREAK_STARTED:
+				_music_player.stream = _WALTZ if event["break_kind"] == "music" else _AD
+				_music_player.play()
+			LiveBroadcast.EventKind.BREAK_ENDED:
+				_music_player.stop()
 			LiveBroadcast.EventKind.DEAD_AIR_STARTED:
 				_feedback.text = "AR MORTO. Cada segundo calado custa ouvinte."
 			LiveBroadcast.EventKind.DEAD_AIR_ENDED:
@@ -395,7 +482,10 @@ func _on_morning_ready(report: Dictionary) -> void:
 
 
 func _on_morning_continue() -> void:
-	GameState.start_next_night()
+	if GameState.has_next_night():
+		GameState.start_next_night()
+	else:
+		GameState.restart_run()
 
 
 func _open_improv() -> void:
@@ -408,14 +498,9 @@ func _open_improv() -> void:
 ## próxima esperando — como um teleprompter de verdade.
 func _refresh_live() -> void:
 	var index := GameState.live_line_index()
-	var total := GameState.live_line_count()
 	var parts: Array[String] = []
 
-	if index > 0:
-		parts.append("[color=#8f8877]%s[/color]" % GameState.live_line_text(index - 1))
 	parts.append("[b]%s[/b]" % _with_forbidden_links(index))
-	if index + 1 < total:
-		parts.append("[color=#8f8877]%s[/color]" % GameState.live_line_text(index + 1))
 
 	_prompter.text = "\n\n".join(parts)
 	_line_progress.value = GameState.live_line_progress() * 100.0
@@ -426,6 +511,37 @@ func _refresh_live() -> void:
 
 	if _view == View.IMPROV:
 		_improv_strip.set_seconds_left(GameState.live_improv_seconds_left())
+	_refresh_console()
+
+
+func _refresh_console() -> void:
+	var console := GameState.live_console()
+	var pending: bool = console.get("pending", false)
+	var outcome: String = console.get("outcome", "")
+	var seconds: float = console.get("seconds", 0.0)
+	var break_left: float = console.get("break_seconds", 0.0)
+	_cut_button.disabled = not pending
+	_call_progress.value = seconds / LiveBroadcast.CALL_DELAY_SECONDS * 100.0
+	_call_progress.visible = pending
+	_call_text.text = console.get("transcript", "") if pending else console.get("reaction", "")
+	if pending:
+		_call_status.text = "PRÉVIA / %s / %.1fs" % [console.get("caller", ""), seconds]
+	elif outcome == "aired":
+		_call_status.text = "TRANSMITIDO / " + String(console.get("caller", ""))
+	elif outcome == "cut":
+		_call_status.text = "CORTADO / NÃO TRANSMITIDO"
+	else:
+		_call_status.text = "LINHA LIVRE / retorno de 7 segundos"
+		_call_text.text = "Quem ligar aparece aqui antes de ir ao ar. Você pode cortar com C."
+	if break_left > 0.0:
+		_call_status.text = "INTERVALO / PRÉVIA EM ESPERA / %.1fs" % break_left
+	_music.disabled = not GameState.can_take_break()
+	_ad.disabled = _music.disabled
+	_mic_switch.text = "MIC LIGADO" if GameState.microphone_open() else "MIC DESLIGADO"
+	if GameState.is_live_done():
+		_go_on_air.text = "MANHÃ"
+		_go_on_air.disabled = false
+		_music_player.stop()
 
 
 func _with_forbidden_links(index: int) -> String:

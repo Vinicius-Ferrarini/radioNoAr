@@ -6,7 +6,7 @@
 
 [node name="FramingStrip" type="Control"]
 offset_right = 232.0
-offset_bottom = 46.0
+offset_bottom = 86.0
 script = ExtResource("1_strip")
 row_scene = ExtResource("3_row")
 
@@ -54,10 +54,10 @@ layout_mode = 0
 offset_left = 8.0
 offset_top = 19.0
 offset_right = 226.0
-offset_bottom = 40.0
-vertical_scroll_mode = 0
+offset_bottom = 80.0
+horizontal_scroll_mode = 0
 
-[node name="List" type="HBoxContainer" parent="Scroll"]
+[node name="List" type="VBoxContainer" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 2

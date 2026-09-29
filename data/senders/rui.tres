@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="Sender" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/sender.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "rui"
+display_name = "Rui, motorista"
+avatar = "avatar_rui"
+handle = "linha 2 / garagem"
+relationship = 2
+voice = "Fala direto, sabe os caminhos e confia em quem escuta."

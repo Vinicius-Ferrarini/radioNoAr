@@ -32,6 +32,8 @@ var _live_queue: Array[Dictionary] = []
 var _live_position: int = -1
 var _live: LiveBroadcast
 var _live_results: Array[Dictionary] = []
+var _break_used := false
+var _last_call: Dictionary = {}
 
 
 func _init(definition: NightDefinition, run: RunState) -> void:
@@ -39,7 +41,7 @@ func _init(definition: NightDefinition, run: RunState) -> void:
 	_run = run
 	_run.notebook().add_entries(definition.new_notebook_entries)
 	_validator = Validator.new(_run.notebook())
-	_rundown = ProgramRundown.new(definition.propaganda_quota, ContentLibrary.order_rules())
+	_rundown = ProgramRundown.new(definition.propaganda_quota, ContentLibrary.order_rules(), _validator)
 
 
 func phase() -> Phase:
@@ -47,7 +49,55 @@ func phase() -> Phase:
 
 
 func inbox() -> Array[BroadcastItem]:
-	return _definition.inbox
+	var available: Array[BroadcastItem] = []
+	var flags := _run.flags()
+	for item in _definition.inbox:
+		if not item.required_flag.is_empty() and not flags.has(item.required_flag):
+			continue
+		if not item.excluded_flag.is_empty() and flags.has(item.excluded_flag):
+			continue
+		available.append(item)
+	return available
+
+
+func opening_message() -> String:
+	var message := _definition.intro
+	if not _definition.opening_flag.is_empty():
+		message = (_definition.opening_if_set if _run.flags().has(_definition.opening_flag) else _definition.opening_if_unset) + "\n\n" + message
+	return message
+
+
+func console_snapshot() -> Dictionary:
+	if _live == null:
+		return {}
+	var current := {"caller": _live.caller(), "transcript": _live.call_transcript(),
+		"pending": _live.has_pending_call(), "seconds": _live.call_seconds_left(),
+		"outcome": _live.call_outcome(), "reaction": _live.reaction()}
+	if current["outcome"].is_empty() and not current["pending"] and not _last_call.is_empty():
+		current = _last_call.duplicate()
+	current["break_seconds"] = _live.break_seconds_left()
+	current["break_kind"] = _live.break_kind()
+	return current
+
+
+func title() -> String:
+	return _definition.title
+
+
+func can_take_break() -> bool:
+	return _definition.allow_breaks and not _break_used and _phase == Phase.LIVE and _live != null and _live.state() not in [LiveBroadcast.State.READY, LiveBroadcast.State.FINISHED]
+
+
+func start_break(kind: String) -> bool:
+	if not can_take_break() or not _live.start_break(kind):
+		return false
+	_break_used = true
+	return true
+
+
+func station_mementos() -> Dictionary:
+	var flags := _run.flags()
+	return {"record": flags.has("celia_music"), "sponsor": flags.has("sponsor_ad"), "bridge": flags.has("rui_aired")}
 
 
 func validator() -> Validator:
@@ -173,7 +223,10 @@ func _open_live() -> void:
 
 func _start_live_block(position: int) -> void:
 	_live_position = position
-	_live = LiveBroadcast.new(_live_queue[position]["script"], _run.rng())
+	var call: RadioCall = null
+	if position == mini(_definition.call_block_position, _live_queue.size() - 1):
+		call = _definition.call
+	_live = LiveBroadcast.new(_live_queue[position]["script"], _run.rng(), call)
 
 
 ## Guarda o que aquele bloco custou antes de trocar de roteiro.
@@ -183,6 +236,8 @@ func _harvest_live() -> void:
 	for result in _live_results:
 		if result["position"] == _live_position:
 			return
+	if not _live.call_outcome().is_empty():
+		_last_call = console_snapshot()
 
 	_live_results.append({
 		"position": _live_position,
@@ -190,6 +245,8 @@ func _harvest_live() -> void:
 		"dead_air_penalty": _live.dead_air_penalty(),
 		"infractions": _live.infractions(),
 		"chosen_options": _live.chosen_improv_options(),
+		"call_outcome": _live.call_outcome(),
+		"break_kind": _live.break_kind(),
 	})
 
 
@@ -227,6 +284,15 @@ func resolve_live() -> void:
 
 	_harvest_live()
 	for result in _live_results:
+		if _definition.call != null:
+			if result["call_outcome"] == "aired":
+				_schedule_consequences(_definition.call.aired_consequence_ids, result["item"], true)
+			elif result["call_outcome"] == "cut":
+				_schedule_consequences(_definition.call.cut_consequence_ids, result["item"], true)
+		if result["break_kind"] == "music":
+			_schedule_consequences(["p_music"], null, true)
+		elif result["break_kind"] == "ad":
+			_schedule_consequences(["p_ad"], null, true)
 		if result["dead_air_penalty"] != 0:
 			_run.meters().apply(Meters.AUDIENCE_TRUST, result["dead_air_penalty"])
 		for _infraction in result["infractions"]:
@@ -252,11 +318,14 @@ func morning_report() -> Dictionary:
 
 func _resolve_morning() -> void:
 	var headlines: Array[String] = []
+	if not _definition.baseline_headline.is_empty():
+		headlines.append(_definition.baseline_headline)
 	var letters: Array[String] = []
 	var new_entries: Array[String] = []
 	var applied: Dictionary = {}
 
 	for effect in _run.queue().pop_due(_run.current_night()):
+		_run.resources().apply(effect.resource_deltas)
 		var updated := _run.meters().apply_all(effect.meter_deltas)
 		for meter_id in updated:
 			applied[meter_id] = updated[meter_id]
@@ -314,6 +383,8 @@ func _apply_inconsistency(history_before: Array[Dictionary], aired: Array[Dictio
 	for entry in aired:
 		var item: BroadcastItem = entry["item"]
 		var kind: int = entry["kind"]
+		if not _validator.contradictions_for(item.id).is_empty():
+			continue
 
 		if not counted.has(item.sender_id):
 			for past in earlier:

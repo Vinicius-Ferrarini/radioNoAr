@@ -8,6 +8,9 @@ arquitetura limpa e testável acima de velocidade. Nunca sacrifique
 testabilidade por atalhos "só para rodar".
 
 ## Documentos de referência (leia antes de codar)
+- docs/PLANO_RADIO_VIVA.md — revisão executada da abertura em três
+  noites (ADR 0011). A mesa usa data/pilot/; data/nights/ guarda o cenário
+  anterior para regressão. A revisão inicial do SPEC prevalece.
 - docs/GAME_DESIGN.md — narrativa, tom, rotas/finais.
 - docs/SPEC.md — especificação técnica e critérios de aceite por marco.
   É a fonte de verdade técnica. Se o design pedir algo que o SPEC não
@@ -16,6 +19,9 @@ testabilidade por atalhos "só para rodar".
   Um ADR **proposto** não está decidido: não implemente o que ele
   descreve antes da confirmação.
 - docs/ROADMAP.md — status dos marcos e o que vem depois.
+- docs/ESTADO_DO_PROJETO.md — panorama: o que já dá para jogar, mapa do
+  repositório, o que falta em cada marco, dívidas e riscos. Comece por
+  aqui se estiver pegando o projeto do zero.
 
 ## Metodologia
 - **SDD:** implemente exatamente o que está em docs/SPEC.md. Não invente
@@ -81,6 +87,11 @@ Um clone novo precisa do `--import` antes da primeira execução, porque
 .godot/ não é versionado.
 
 ## Testes
+- Rádio viva: scripts de QA em tools/qa/. capture_radio.gd exige renderer
+  (sem --headless) e grava capturas em .godot/radio-qa/. Não confunda esse
+  percurso automatizado com playtest humano de diversão.
+- Sons originais: regerar com o Godot headless usando
+  `-s tools/audio/generate.gd`, seguido de `--headless --import`.
 - Framework: GUT, em addons/gut (já instalado manualmente, não reinstale).
 - Um marco só é "concluído" com a suíte INTEIRA passando headless.
 - Nenhum teste é apagado em silêncio: remover ou reescrever teste é

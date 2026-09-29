@@ -13,6 +13,9 @@ enum Kind {
 }
 
 @export var kind: Kind
+@export var label: String
+## Claim que precisa ter sido cruzada com uma entrada relacionada.
+@export var required_claim_id: String
 ## BroadcastScript usado no teleprompter (M9).
 @export var script_id: String
 ## meter_id -> int. Só medidores visiveis reagem ao vivo.

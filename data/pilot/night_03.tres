@@ -1,0 +1,242 @@
+[gd_resource type="Resource" script_class="NightDefinition" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/night_definition.gd" id="n"]
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_item.gd" id="i"]
+[ext_resource type="Script" path="res://scripts/core/data/framing_option.gd" id="f"]
+[ext_resource type="Script" path="res://scripts/core/data/item_claim.gd" id="c"]
+[ext_resource type="Script" path="res://scripts/core/data/notebook_entry.gd" id="e"]
+[ext_resource type="Script" path="res://scripts/core/data/radio_call.gd" id="r"]
+
+[sub_resource type="Resource" id="p3_rui_public_0"]
+script = ExtResource("f")
+kind = 0
+label = "Anunciar os fretes do Rui"
+script_id = "p3_rui_public_0"
+consequence_ids = Array[String](["p_help_rui"])
+
+[sub_resource type="Resource" id="p3_rui_public_2"]
+script = ExtResource("f")
+kind = 2
+label = "Não repetir o nome"
+script_id = "p3_rui_public_2"
+consequence_ids = Array[String](["p_keep_source"])
+
+[sub_resource type="Resource" id="p3_rui_public_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_rui_public"]
+script = ExtResource("i")
+id = "p3_rui_public"
+sender_id = "rui"
+headline = "Me tiraram da escala"
+body = "Ouviram meu nome ontem. Estou sem a linha dois. Posso fazer frete; se puder anunciar, ajuda."
+channel = 0
+type = 3
+received_at = "19:10"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = "rui_aired"
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p3_rui_public_0"), SubResource("p3_rui_public_2"), SubResource("p3_rui_public_5")])
+
+[sub_resource type="Resource" id="p3_rui_private_0"]
+script = ExtResource("f")
+kind = 0
+label = "Transmitir o desvio"
+script_id = "p3_rui_private_0"
+consequence_ids = Array[String](["p_help_rui"])
+
+[sub_resource type="Resource" id="p3_rui_private_2"]
+script = ExtResource("f")
+kind = 2
+label = "Manter a fonte protegida"
+script_id = "p3_rui_private_2"
+consequence_ids = Array[String](["p_keep_source"])
+
+[sub_resource type="Resource" id="p3_rui_private_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_rui_private"]
+script = ExtResource("i")
+id = "p3_rui_private"
+sender_id = "rui"
+headline = "Obrigado por cortar. Mas..."
+body = "Meu nome ficou protegido. Só que o pessoal ficou preso na ponte. Hoje eu posso passar o desvio sem citar ninguém."
+channel = 0
+type = 3
+received_at = "19:17"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = "rui_aired"
+framings = Array[ExtResource("f")]([SubResource("p3_rui_private_0"), SubResource("p3_rui_private_2"), SubResource("p3_rui_private_5")])
+
+[sub_resource type="Resource" id="p3_celia_0"]
+script = ExtResource("f")
+kind = 0
+label = "Abrir espaço para conversar"
+script_id = "p3_celia_0"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_celia_2"]
+script = ExtResource("f")
+kind = 2
+label = "Pedir calma"
+script_id = "p3_celia_2"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_celia_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_celia"]
+script = ExtResource("i")
+id = "p3_celia"
+sender_id = "dona_celia"
+headline = "A mesma cadeira na cozinha"
+body = "Antônio voltou tarde, mas voltou. Hoje eu queria conversar. Vou ligar no segundo bloco, sem pedir música dessa vez."
+channel = 0
+type = 3
+received_at = "19:24"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p3_celia_0"), SubResource("p3_celia_2"), SubResource("p3_celia_5")])
+
+[sub_resource type="Resource" id="p3_oficial_0"]
+script = ExtResource("f")
+kind = 0
+label = "Dar prioridade aos comunicados"
+script_id = "p3_oficial_0"
+consequence_ids = Array[String](["p_official"])
+
+[sub_resource type="Resource" id="p3_oficial_2"]
+script = ExtResource("f")
+kind = 2
+label = "Recusar identificar fontes"
+script_id = "p3_oficial_2"
+consequence_ids = Array[String](["p_keep_source"])
+
+[sub_resource type="Resource" id="p3_oficial_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_oficial"]
+script = ExtResource("i")
+id = "p3_oficial"
+sender_id = "ministerio_das_comunicacoes"
+headline = "Podemos facilitar sua licença"
+body = "A renovação da rádio pode ser rápida. Pedimos prioridade para os comunicados e que identifique quem relata bloqueios."
+channel = 3
+type = 5
+received_at = "19:31"
+is_fraudulent = false
+counts_for_quota = true
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p3_oficial_0"), SubResource("p3_oficial_2"), SubResource("p3_oficial_5")])
+
+[sub_resource type="Resource" id="p3_ajuda_0"]
+script = ExtResource("f")
+kind = 0
+label = "Aceitar ajuda, exigir apuração"
+script_id = "p3_ajuda_0"
+consequence_ids = Array[String](["p_decline_deal"])
+
+[sub_resource type="Resource" id="p3_ajuda_3"]
+script = ExtResource("f")
+kind = 3
+label = "Dar voz ao manifesto"
+script_id = "p3_ajuda_3"
+consequence_ids = Array[String](["p_help_rui"])
+
+[sub_resource type="Resource" id="p3_ajuda_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_ajuda"]
+script = ExtResource("i")
+id = "p3_ajuda"
+sender_id = "tecnico"
+headline = "Gente na porta"
+body = "Dois motoristas ofereceram ajuda com a antena. Querem que a rádio leia um manifesto sem conferir. Precisamos da ajuda, mas isso me incomoda."
+channel = 1
+type = 3
+received_at = "19:38"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p3_ajuda_0"), SubResource("p3_ajuda_3"), SubResource("p3_ajuda_5")])
+
+[sub_resource type="Resource" id="p3_oficina_0"]
+script = ExtResource("f")
+kind = 0
+label = "Manter a parceria condicionada"
+script_id = "p3_oficina_0"
+consequence_ids = Array[String](["p_sponsor_deal"])
+
+[sub_resource type="Resource" id="p3_oficina_2"]
+script = ExtResource("f")
+kind = 2
+label = "Separar anúncio e pauta"
+script_id = "p3_oficina_2"
+consequence_ids = Array[String](["p_decline_deal"])
+
+[sub_resource type="Resource" id="p3_oficina_5"]
+script = ExtResource("f")
+kind = 5
+label = "Guardar para depois"
+consequence_ids = Array[String]([])
+
+[sub_resource type="Resource" id="p3_oficina"]
+script = ExtResource("i")
+id = "p3_oficina"
+sender_id = "oficina_portao_doze"
+headline = "A conta da parceria"
+body = "O letreiro pode ficar. Mas preciso saber se ainda posso contar com a rádio quando a prefeitura ligar."
+channel = 0
+type = 1
+received_at = "19:45"
+is_fraudulent = false
+counts_for_quota = false
+required_flag = ""
+excluded_flag = ""
+framings = Array[ExtResource("f")]([SubResource("p3_oficina_0"), SubResource("p3_oficina_2"), SubResource("p3_oficina_5")])
+
+[sub_resource type="Resource" id="call"]
+script = ExtResource("r")
+caller = "Célia / Rua Bandeira"
+transcript = "Eu ouvi vocês ontem. Não entendo de política. Só quero poder ligar quando o Antônio não voltar."
+trigger_seconds = 3.0
+aired_reaction = "Nilo deixa o café na mesa sem fazer piada. A linha continua aberta."
+cut_reaction = "A linha fica muda. Nilo olha para o telefone, depois para você."
+aired_consequence_ids = Array[String](["p_n3_air"])
+cut_consequence_ids = Array[String](["p_n3_cut"])
+
+[resource]
+script = ExtResource("n")
+night = 3
+title = "Quem ficou ouvindo"
+intro = "Hoje chegaram ofertas de ajuda e pedidos de silêncio. Escolha seus compromissos. Esta é a última noite da abertura."
+allow_breaks = true
+propaganda_quota = 1
+call = SubResource("call")
+baseline_headline = "TRÊS NOITES NO AR. A PRÓXIMA PROGRAMAÇÃO JÁ NÃO SERÁ A MESMA."
+inbox = Array[ExtResource("i")]([SubResource("p3_rui_public"), SubResource("p3_rui_private"), SubResource("p3_celia"), SubResource("p3_oficial"), SubResource("p3_ajuda"), SubResource("p3_oficina")])
+opening_flag = "rui_aired"
+opening_if_set = "Rui foi retirado da escala depois que seu nome saiu no ar. Ele voltou procurando trabalho."
+opening_if_unset = "O nome de Rui ficou protegido. Ele voltou com uma rota alternativa e uma cobrança."

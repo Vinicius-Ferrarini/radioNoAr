@@ -19,7 +19,7 @@ const _INK := Color(0.07, 0.06, 0.05)
 
 func _ready() -> void:
 	_continue.pressed.connect(func() -> void: continue_requested.emit())
-	_title.add_theme_color_override("font_color", Color(0.91, 0.894, 0.855))
+	_title.add_theme_color_override("font_color", _INK)
 
 
 func show_report(night: int, report: Dictionary, audience: int) -> void:
@@ -47,9 +47,9 @@ func show_report(night: int, report: Dictionary, audience: int) -> void:
 
 
 func set_last_night(is_last: bool) -> void:
+	_continue.disabled = false
 	if is_last:
-		_continue.text = "FIM"
-		_continue.disabled = true
+		_continue.text = "RECOMEÇAR"
 
 
 func _add(text: String) -> void:
@@ -60,5 +60,7 @@ func _add(text: String) -> void:
 	row.clip_text = false
 	row.custom_minimum_size = Vector2(0, 16)
 	row.add_theme_color_override("font_color", _INK)
+	row.add_theme_color_override("font_disabled_color", _INK)
+	row.add_theme_stylebox_override("disabled", StyleBoxEmpty.new())
 	row.disabled = true
 	_list.add_child(row)

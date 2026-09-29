@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_help_rui"
+morning_headline = ""
+morning_letter = "Rui recebeu duas ofertas de frete depois do programa. \"Não paga o que perdi, mas já dá para amanhã.\""
+flags_set = Array[String](["community_help"])
+meter_deltas = {"audience_trust": 4, "alignment": -3}
+resource_deltas = {}

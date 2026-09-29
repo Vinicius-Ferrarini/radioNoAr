@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+
+[sub_resource type="Resource" id="l0"]
+script = ExtResource("l")
+text = "Célia e Antônio: quarenta anos juntos. A mesa da cozinha já virou salão."
+read_seconds = 5.4
+
+[sub_resource type="Resource" id="l1"]
+script = ExtResource("l")
+text = "O pedido da valsa está aqui. Tenho uma reserva de intervalo para música ou anúncio."
+read_seconds = 6.2
+
+[resource]
+script = ExtResource("s")
+id = "p1_celia_0"
+lines = Array[ExtResource("l")]([SubResource("l0"), SubResource("l1")])

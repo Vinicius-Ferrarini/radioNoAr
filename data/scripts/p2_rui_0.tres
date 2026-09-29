@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+
+[sub_resource type="Resource" id="l0"]
+script = ExtResource("l")
+text = "Um motorista relata uma barreira na Ponte Velha. Ainda vamos ouvir o que ele viu."
+read_seconds = 6.2
+
+[resource]
+script = ExtResource("s")
+id = "p2_rui_0"
+lines = Array[ExtResource("l")]([SubResource("l0")])

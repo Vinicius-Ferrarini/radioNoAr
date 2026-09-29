@@ -21,7 +21,7 @@ const _LABELS := {
 }
 
 @onready var _title: Label = $Title
-@onready var _list: HBoxContainer = $Scroll/List
+@onready var _list: VBoxContainer = $Scroll/List
 @onready var _clear_button: Button = $ClearButton
 @onready var _close_button: Button = $CloseButton
 
@@ -50,8 +50,14 @@ func show_block(block_index: int, item: BroadcastItem, chosen: int) -> void:
 
 	for framing in item.framings:
 		var row: Button = row_scene.instantiate()
-		row.setup(str(framing.kind), ("> " if framing.kind == chosen else "") + label_for(framing.kind), false)
+		var label := framing.label if not framing.label.is_empty() else label_for(framing.kind)
+		var available := GameState.framing_available(item, framing.kind)
+		if not available:
+			label += " — confira no caderno"
+		row.setup(str(framing.kind), ("> " if framing.kind == chosen else "") + label, false)
+		row.disabled = not available
 		row.custom_minimum_size = Vector2(0, 13)
-		row.clip_text = true
+		row.clip_text = false
+		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.row_pressed.connect(func(kind_id: String) -> void: framing_chosen.emit(int(kind_id)))
 		_list.add_child(row)

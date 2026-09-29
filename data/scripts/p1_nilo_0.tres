@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="BroadcastScript" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/broadcast_script.gd" id="s"]
+[ext_resource type="Script" path="res://scripts/core/data/script_line.gd" id="l"]
+
+[sub_resource type="Resource" id="l0"]
+script = ExtResource("l")
+text = "Nosso técnico exige que eu lembre: o botão vermelho não é apoio para o café."
+read_seconds = 6.2
+
+[sub_resource type="Resource" id="l1"]
+script = ExtResource("l")
+text = "Aqui é a rádio do bairro. Se errarmos, vocês sabem onde bater."
+read_seconds = 5.0
+
+[resource]
+script = ExtResource("s")
+id = "p1_nilo_0"
+lines = Array[ExtResource("l")]([SubResource("l0"), SubResource("l1")])

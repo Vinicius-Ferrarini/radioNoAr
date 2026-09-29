@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ConsequenceEffect" format=3]
+
+[ext_resource type="Script" path="res://scripts/core/data/consequence_effect.gd" id="s"]
+
+[resource]
+script = ExtResource("s")
+id = "p_ad"
+morning_headline = ""
+morning_letter = "A oficina pagou $8 pelo intervalo. Um letreiro chegou junto: \"Nosso nome fica na mesa, combinado?\""
+flags_set = Array[String](["sponsor_ad"])
+meter_deltas = {}
+resource_deltas = {"money": 8}

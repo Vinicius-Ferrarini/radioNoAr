@@ -17,13 +17,15 @@ enum PlaceResult {
 }
 
 var _quota: int
+var _validator: Validator
 var _rules: Array[OrderRule] = []
 var _items: Array[BroadcastItem] = []
 var _framings: Array[int] = []
 
 
-func _init(propaganda_quota: int, order_rules: Array[OrderRule]) -> void:
+func _init(propaganda_quota: int, order_rules: Array[OrderRule], validator: Validator = null) -> void:
 	_quota = propaganda_quota
+	_validator = validator
 	_rules = order_rules
 	for i in BLOCK_COUNT:
 		_items.append(null)
@@ -156,9 +158,21 @@ func _block_of(item: BroadcastItem) -> int:
 
 
 func _allows_framing(item: BroadcastItem, kind: int) -> bool:
+	return framing_available(item, kind)
+
+
+func framing_available(item: BroadcastItem, kind: int) -> bool:
+	if item == null:
+		return false
 	for framing in item.framings:
 		if framing != null and framing.kind == kind:
-			return true
+			if framing.required_claim_id.is_empty():
+				return true
+			if _validator == null:
+				return false
+			for link in _validator.links_for(item.id):
+				if link["claim_id"] == framing.required_claim_id and link["result"] != Validator.Result.UNRELATED:
+					return true
 	return false
 
 
