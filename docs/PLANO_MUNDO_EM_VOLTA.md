@@ -4,9 +4,10 @@ Proposta de redesenho pedida pelo dono em 2026-09-29, depois do primeiro
 playtest: a dinâmica precisa mudar, ser visual em vez de texto puro, e o
 jogo precisa de um mundo em volta em vez de uma mesa isolada.
 
-**Nada aqui está decidido.** A decisão está em
-`adr/0013-a-conversa-e-a-decisao.md`, com status proposto. O SPEC só
-recebe a seção nova depois da confirmação, como manda o CLAUDE.md.
+A decisão está em `adr/0013-a-conversa-e-a-decisao.md`, **aceito** com
+execução autorizada a começar pela Fase 1; as fases 2 a 4 seguem
+propostas e dependem do playtest de cada anterior. O contrato da Fase 1
+está no SPEC. Ver a seção de validação abaixo para o estado real.
 
 ## Diagnóstico
 
