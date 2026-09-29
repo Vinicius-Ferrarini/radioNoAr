@@ -17,6 +17,38 @@ campanha de **21 noites** até o referendo.
 
 ---
 
+## Fase 1 do redesenho: a conversa é a decisão (ADR 0013)
+
+Prevalece sobre a régua de enquadramento no fluxo do celular. Itens sem
+`thread` continuam usando a régua (ofício e propaganda).
+
+- `ChatMessage` (Resource): `from_me: bool`, `text: String`,
+  `delay_seconds: float = 1.2`, `at: String`. Uma fala curta; o `delay` é
+  contado a partir da mensagem anterior da mesma rajada.
+- `ReplyOption` (Resource): `id: String`, `text: String` (o que você
+  manda), `framing_kind: FramingOption.Kind`, `answer: Array[ChatMessage]`
+  (a réplica da pessoa). A resposta é a superfície diegética de um
+  `FramingOption` que o item já declara; consequências, roteiro e
+  exigência de evidência continuam no enquadramento.
+- `BroadcastItem` ganha `thread: Array[ChatMessage]` e
+  `replies: Array[ReplyOption]`. Item com `thread` não vazio é conversa.
+- `Conversation` (RefCounted, `scripts/core/`): recebe thread e respostas.
+  `tick(delta)` entrega as mensagens uma a uma; `drain_events()` conta o
+  que aconteceu; sem `signal`, sem `await`, sem relógio (ADR 0007).
+  `visible_messages()` devolve o histórico já entregue, em ordem.
+  `is_waiting_for_reply()` só é verdadeiro quando a rajada terminou: não
+  se responde no meio da frase. `send(index)` registra a fala do jogador,
+  enfileira a réplica e fixa a decisão; vale uma vez por noite.
+  `chosen_framing_kind()` devolve -1 antes de decidir.
+- Eventos: `MESSAGE_ARRIVED`, `REPLY_SENT`, `THREAD_IDLE`.
+- `GameState` expõe `conversation_of(item_id)`, `send_reply(item_id,
+  index)` e `reply_available(item_id, index)` — que reusa
+  `ProgramRundown.framing_available`, de modo que resposta sem apuração
+  não aparece como opção. Ao escalar um item já decidido na conversa, o
+  bloco herda o enquadramento; `ProgramRundown` não muda de regra.
+- A decisão de não levar ao ar é uma resposta como as outras
+  (`Kind.DISCARD`): você diz à pessoa que não vai falar disso.
+
 ## Revisão Rádio viva (2026-09-29, ADR 0011)
 
 Esta revisão prevalece sobre regras antigas conflitantes abaixo. Plano:
