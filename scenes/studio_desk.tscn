@@ -541,3 +541,9 @@ offset_bottom = 178.0
 focus_mode = 0
 text = "ENTRAR NO AR"
 theme_override_colors/font_color = Color(1, 0.847059, 0.447059, 1)
+
+[node name="Ambience" type="AudioStreamPlayer" parent="."]
+volume_db = -22.0
+
+[node name="Static" type="AudioStreamPlayer" parent="."]
+volume_db = -40.0

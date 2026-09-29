@@ -348,6 +348,50 @@ func test_an_incomplete_program_says_what_is_missing() -> void:
 		"o rodape acompanha o bloco em que o jogador esta mexendo")
 
 
+## --- atmosfera (ADR 0012) ---
+
+## O estudio tem leito continuo. Se o loop se perder numa regeracao de
+## audio, o som toca uma vez e a mesa emudece sem ninguem notar.
+func test_the_studio_keeps_a_continuous_bed_that_loops() -> void:
+	var ambience: AudioStreamPlayer = _node("Ambience")
+	var noise: AudioStreamPlayer = _node("Static")
+	assert_not_null(ambience.stream, "o zumbido do estudio precisa de stream")
+	assert_not_null(noise.stream, "a estatica precisa de stream")
+	assert_eq(ambience.stream.loop_mode, AudioStreamWAV.LOOP_FORWARD,
+		"leito sem loop toca uma vez e o estudio emudece")
+	assert_eq(noise.stream.loop_mode, AudioStreamWAV.LOOP_FORWARD,
+		"estatica sem loop para no meio do ar morto")
+
+
+## O ar morto tem que doer no ouvido, nao so no texto do rodape.
+func test_dead_air_is_audible_and_darkens_the_sign() -> void:
+	_schedule_whole_program()
+	_root._on_go_on_air_pressed()
+	_root._on_mic_down()
+	for i in 30:
+		_root._breathe(0.5)
+	var static_on_air: float = _node("Static").volume_db
+	var sign_on_air: float = _node("Studio/OnAirSign").modulate.a
+
+	_root._on_mic_up()
+	GameState._process(0.1)
+	for i in 30:
+		_root._breathe(0.5)
+	assert_gt(_node("Static").volume_db, static_on_air,
+		"no ar morto a estatica sobe")
+	assert_lt(_node("Studio/OnAirSign").modulate.a, sign_on_air,
+		"e o letreiro apaga junto com a voz")
+
+
+## Fora do ar a mesa nao fica congelada: a lampada oscila.
+func test_the_desk_lamp_never_sits_still() -> void:
+	var first: float = _node("Studio/DeskLamp").modulate.a
+	_root._clock += 0.7
+	_root._breathe(0.016)
+	assert_ne(_node("Studio/DeskLamp").modulate.a, first,
+		"a luz da mesa respira")
+
+
 ## O botao dedicado nunca fica desabilitado e nunca fica calado: em
 ## qualquer estado ele responde, e antes do ar ele abre o que falta.
 func test_the_enter_air_button_always_answers() -> void:

@@ -61,6 +61,9 @@ const _RESULT_MESSAGES := {
 @onready var _music: Button = $LiveControls/Music
 @onready var _ad: Button = $LiveControls/Ad
 @onready var _mic_switch: Button = $LiveControls/Mic
+@onready var _desk_lamp: TextureRect = $Studio/DeskLamp
+@onready var _ambience: AudioStreamPlayer = $Ambience
+@onready var _static: AudioStreamPlayer = $Static
 @onready var _sfx: AudioStreamPlayer = $Sfx
 @onready var _music_player: AudioStreamPlayer = $MusicPlayer
 
@@ -70,6 +73,16 @@ const _CUT = preload("res://assets/audio/line_cut.wav")
 const _JINGLE = preload("res://assets/audio/station_jingle.wav")
 const _WALTZ = preload("res://assets/audio/neighborhood_waltz.wav")
 const _AD = preload("res://assets/audio/workshop_ad.wav")
+## Leitos contínuos: o estúdio zumbindo e o transmissor chiando. Não são
+## efeitos, são o fundo que faz o silêncio virar som (ADR 0012).
+const _ROOM_TONE = preload("res://assets/audio/room_tone.wav")
+const _STATIC = preload("res://assets/audio/radio_static.wav")
+
+## Mixagem da estática por estado da mesa, em dB.
+const _STATIC_OFF_AIR := -26.0
+const _STATIC_ON_AIR := -34.0
+const _STATIC_DEAD_AIR := -11.0
+const _STATIC_BREAK := -42.0
 
 @onready var _blocks: Array[Node] = [
 	$Blocks/Block1,
@@ -84,6 +97,12 @@ var _open_item_id: String = ""
 var _marked_claim_id: String = ""
 var _marked_excerpt: String = ""
 var _selected_block: int = -1
+
+
+## Relógio só de apresentação: nada de estado de jogo aqui, só o que a
+## mesa precisa para respirar (luz, letreiro, telefone tremendo).
+var _clock: float = 0.0
+var _phone_home: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -131,6 +150,12 @@ func _ready() -> void:
 		block.item_dropped.connect(_on_item_dropped)
 		block.block_clicked.connect(_on_block_clicked)
 
+	_phone_home = _phone.position
+	_ambience.stream = _ROOM_TONE
+	_static.stream = _STATIC
+	_ambience.play()
+	_static.play()
+
 	_show_desk()
 	GameState.start_run(0, campaign_directory)
 
@@ -152,10 +177,44 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_clock += delta
+	_breathe(delta)
 	if not _is_live():
 		return
 	_refresh_live()
+
+
+## A mesa nunca fica parada nem muda: a lâmpada oscila, o letreiro pulsa
+## quando o microfone está aberto, o telefone treme enquanto a ligação
+## espera no atraso, e a estática sobe no ar morto. Só apresentação —
+## nada aqui decide nada.
+func _breathe(delta: float) -> void:
+	_desk_lamp.modulate.a = 0.93 + sin(_clock * 2.3) * 0.04 + sin(_clock * 9.7) * 0.03
+
+	var live := _is_live()
+	# O letreiro conta o que sai pela antena, nao a posicao da chave: em
+	# ar morto ele apaga junto com a voz.
+	var state: int = GameState.live_state() if live else -1
+	var airing := [LiveBroadcast.State.ON_AIR, LiveBroadcast.State.IMPROV]
+	var on_air: bool = state in airing
+	if live:
+		var pulse: float = sin(_clock * 5.0) * 0.1
+		_on_air_sign.modulate.a = (0.9 + pulse) if on_air else (0.34 + pulse * 0.3)
+	else:
+		_on_air_sign.modulate.a = 0.3
+
+	var console := GameState.live_console() if live else {}
+	var ringing: bool = console.get("pending", false)
+	_phone.position = _phone_home + (Vector2(sin(_clock * 34.0) * 1.0, 0.0) if ringing else Vector2.ZERO)
+	_phone.modulate.a = (0.75 + absf(sin(_clock * 6.0)) * 0.25) if ringing else 1.0
+
+	var target := _STATIC_OFF_AIR
+	if console.get("break_seconds", 0.0) > 0.0:
+		target = _STATIC_BREAK
+	elif live:
+		target = _STATIC_ON_AIR if on_air else _STATIC_DEAD_AIR
+	_static.volume_db = move_toward(_static.volume_db, target, 26.0 * delta)
 
 
 func _is_live() -> bool:
@@ -276,7 +335,6 @@ func _on_phase_changed(phase: int) -> void:
 		_go_on_air.disabled = not before_air or not GameState.is_rundown_ready()
 		_prompter.text = "O microfone ainda está desligado."
 		_block_label.text = ""
-		_on_air_sign.modulate = Color(1, 1, 1, 0.35)
 
 	_refresh_audience_label()
 
@@ -580,9 +638,6 @@ func _refresh_live() -> void:
 	_prompter.text = "\n\n".join(parts)
 	_line_progress.value = GameState.live_line_progress() * 100.0
 
-	var on_air: bool = GameState.live_state() == LiveBroadcast.State.ON_AIR \
-		or GameState.live_state() == LiveBroadcast.State.IMPROV
-	_on_air_sign.modulate = Color(1, 1, 1, 1.0 if on_air else 0.3)
 
 	if _view == View.IMPROV:
 		_improv_strip.set_seconds_left(GameState.live_improv_seconds_left())
