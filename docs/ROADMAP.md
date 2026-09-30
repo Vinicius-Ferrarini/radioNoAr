@@ -12,11 +12,13 @@ da expansão do M13. Plano: [PLANO_RADIO_VIVA.md](PLANO_RADIO_VIVA.md).
 | Ligação agendada, prévia de 7 s e corte | jogável, com ramificação na próxima noite |
 | Microfone alternável e intervalo único de 6 s | implementado; música cria vínculo, anúncio rende $8 |
 | Resposta imediata e objetos de memória na mesa | implementado |
-| 8 novos sprites e 6 sons originais | gerados e integrados |
-| GUT | 282/282; 83.878 asserts |
+| Arte e som | 47 sprites no manifesto e 6 sons originais; gerados e integrados |
+| GUT | 330/330; 207.423 asserts |
 | Verificação renderizada | sete capturas e navegação até a terceira noite |
 | Playtest humano de diversão e ritmo | 1º feito: veredito de monotonia |
 | Atmosfera (leito de som, mesa em movimento) | implementado — ADR 0012 |
+| Redesenho visual das telas | implementado: materiais por função, celular compacto, pauta física e console integrado |
+| Kit de UI | 11 sprites novos; 47 sprites no manifesto, gerados deterministicamente |
 
 A noite antiga permanece em `data/nights/` para regressão. A mesa inicia
 a nova abertura por padrão. A campanha completa de 21 noites, finais,
@@ -61,6 +63,7 @@ conteúdo no formato v0 agora seria trabalho perdido (ADR 0003).
 | M7 | Pipeline de pixel art + manifesto + mesa estática + resolução/escala | ✅ ⁴ | M4 |
 | M8 | Triagem e escalação: closes, marcar e cruzar, arrastar para os 4 blocos | ✅ ⁵ | M6, M7 |
 | M8B | Remetentes como personagens, closes diegéticos (celular/carta/caderno), luz | ✅ ⁶ | M8 |
+| M8D | Roteiro automático: resposta confirma pauta, papel variável e tempo informativo | ✅ ⁹ | M8B |
 | M8C | Tela de título, opções e transições | ⬜ | M8B |
 | M9½ | Buracos do ao vivo: ligação com delay sem gatilho, trilha como sinal, eventos ao vivo | ⬜ | M9 |
 | M9 | Ao vivo: `LiveBroadcast`, teleprompter, ar morto, palavras proibidas, improviso, ligação | ✅ ⁷ | M6, M8B |
@@ -130,6 +133,12 @@ consciente registrada lá). Suíte **265/265, 21 695 asserts**.
 Correção de modelo encontrada ao montar a fatia: a `ConsequenceQueue`
 vencia uma manhã tarde demais, e a manhã da noite 1 vinha vazia. A
 unidade da fila passou a ser a manhã (SPEC §4.5).
+
+⁹ M8D concluído em 2026-09-30 (ADR 0014): `ProgramRundown` aceita uma
+sequência variável; responder no celular confirma a pauta automaticamente;
+cartas e comunicados oferecem a decisão no próprio documento; a folha de
+roteiro mostra ordem, promessa, duração e aviso informativo. A grade de
+quatro cartuchos saiu da preparação. Suíte **336/336, 207.467 asserts**.
 
 M7 não depende tecnicamente de M5/M6 — a pixel art e a lógica não se
 cruzam. Ficou decidido rodar a lógica primeiro (M5 → M6) e só então o M7:

@@ -24,14 +24,14 @@ Conteúdo novo: `data/pilot/`, roteiros `data/scripts/p*.tres`, consequências
 `data/consequences/p_*.tres`. O cenário antigo de `data/nights/` é mantido
 para testes de regressão. A escolha do catálogo fica em `GameState`.
 
-Assets: 35 sprites no manifesto (8 novos), 6 WAVs originais sintetizados
+Assets: 47 sprites no manifesto, 6 WAVs originais sintetizados
 em `assets/audio/`. Fontes em `tools/pixelart/sprite_defs/` e
 `tools/audio/generate.gd`. Sem dublagem: as falas ainda são legendadas.
 
-Validação: **282 testes passando**, 83.878 asserts. Inclui os
+Validação: **336 testes passando**, 207.467 asserts. Inclui os
 dois caminhos das três noites, investigação, reserva limitada, corte e
 controles da mesa. `tools/qa/capture_radio.gd` percorre a UI com renderer
-e grava sete capturas em `.godot/radio-qa/`. O modo Dummy desse roteiro
+e grava nove capturas em `.godot/radio-qa/`. O modo Dummy desse roteiro
 não avalia som por audição. Diversão e ritmo precisam de playtest humano.
 
 Plano e decisões: `PLANO_RADIO_VIVA.md`, SPEC (revisão inicial) e ADR 0011.
@@ -40,12 +40,30 @@ pendentes. Não interpretar as três noites como a campanha final pronta.
 
 ## Atualização: redesenho em curso (ADR 0013)
 
-**Fase 1 — a conversa é a decisão.** O celular é um aparelho em pé: data
+### Direção visual das telas (2026-09-30)
+
+As sete telas do roteiro de QA foram auditadas. O principal problema é a
+hierarquia: overlays escondem o estúdio, ações diferentes usam o mesmo
+retângulo vermelho e o console ao vivo parece uma pilha de texto. A análise,
+as regras por material e o plano de integração estão em
+`ANALISE_VISUAL_DAS_TELAS.md`.
+
+Foram gerados 11 assets pelo pipeline determinístico: chassi e
+lâmpadas da ligação, tecla física, cartuchos de pauta, painéis de celular e
+papel, mais dois conceitos 320×180. O manifesto agora contém **47 sprites**.
+O kit está integrado às cenas: tema neutro/âmbar/azul/perigo, briefing em
+pasta lateral, celular compacto, pauta em cartuchos, caderno e manhã em
+papel e console ao vivo com chassi e lâmpadas físicas. Os conceitos ficam
+somente como referência; a interface continua composta por nós editáveis.
+
+**Fase 1 — a conversa é a decisão (concluída, ADR 0014).** O celular é um aparelho em pé: data
 (15/07/2008 na noite 1), relógio que começa às 19:00 e anda com a noite,
 lista de conversas com a hora da última fala e quantas não lidas, e dentro
 de cada uma os balões chegando um a um. **A resposta que você manda é o
-enquadramento**: ao escalar a pessoa, o bloco herda o que você disse a
-ela. A régua de enquadramento ficou só para papel (carta e ofício).
+enquadramento** e a pauta entra automaticamente no roteiro. Carta e ofício
+oferecem as escolhas no próprio papel. Uma folha vista de cima reúne a
+ordem das decisões e soma a duração; curto, na medida e longo são avisos
+informativos. A antiga faixa inferior de quatro blocos saiu da preparação.
 
 As mensagens correm sozinhas desde o começo da noite — abrir o aparelho
 não dispara nada. Toda fala é marcada pelo relógio na entrega, então a
@@ -86,8 +104,9 @@ Dois WAVs novos em loop (`room_tone`, `radio_static`), gerados por
 uma vez e emudece a mesa sem ninguém notar.
 
 Entrar no ar: o botão **ENTRAR NO AR** (embaixo à direita) nunca fica
-desabilitado e nunca fica calado — se o programa não está pronto, diz o
-que falta e abre o celular ou a régua de enquadramento do bloco pendente.
+desabilitado e nunca fica calado — se o roteiro está vazio, explica o
+próximo passo e abre o celular. Uma decisão completa já permite transmitir;
+o aviso de duração não bloqueia.
 
 ### Pontas conhecidas da abertura
 

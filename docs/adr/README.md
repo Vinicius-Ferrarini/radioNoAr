@@ -28,6 +28,7 @@ escopo, ou ao reverter uma decisão anterior.
 | [0011](0011-radio-viva-e-abertura-gradual.md) | Rádio viva e abertura gradual | aceito e implementado |
 | [0012](0012-a-mesa-respira.md) | A mesa respira: leito de som e movimento | aceito e implementado |
 | [0013](0013-a-conversa-e-a-decisao.md) | A conversa é a decisão; a cidade é o medidor | aceito (Fase 1 em execução) |
+| [0014](0014-o-roteiro-e-a-resposta.md) | O roteiro é a resposta | aceito e em execução |
 
 Decisões do designer em 2026-09-29, fora de ADR (registradas em
 `docs/GAME_DESIGN.md` e `docs/SPEC.md`): campanha de **21 noites** até o

@@ -1,8 +1,9 @@
 class_name ProgramRundown
 extends RefCounted
 
-## Os 4 blocos do programa da noite. A ordem importa: propaganda logo
-## depois de uma denuncia soa como ironia.
+## A sequência de decisões do programa. As quatro posições iniciais são
+## mantidas durante a migração da API antiga; commit() cresce além delas e
+## a prontidão considera somente decisões que realmente existem (ADR 0014).
 
 const BLOCK_COUNT := 4
 ## Ainda sem enquadramento escolhido.
@@ -45,6 +46,40 @@ func place(item: BroadcastItem, block_index: int) -> PlaceResult:
 	return PlaceResult.OK
 
 
+## Confirma uma decisão editorial. A primeira decisão livre recebe o item;
+## depois das quatro posições históricas a sequência cresce sem limite.
+## Confirmar de novo o mesmo item atualiza a promessa sem duplicá-la.
+func commit(item: BroadcastItem, kind: int) -> PlaceResult:
+	if item == null:
+		return PlaceResult.INVALID_BLOCK
+	if not _allows_framing(item, kind):
+		return PlaceResult.FRAMING_NOT_ALLOWED
+
+	var existing := _block_of(item)
+	if existing != -1:
+		_framings[existing] = kind
+		return PlaceResult.OK
+
+	for i in _items.size():
+		if _items[i] == null:
+			_items[i] = item
+			_framings[i] = kind
+			return PlaceResult.OK
+
+	_items.append(item)
+	_framings.append(kind)
+	return PlaceResult.OK
+
+
+## Extensão ocupada da sequência. Buracos internos podem existir enquanto a
+## API antiga está disponível, mas posições vazias ao fim não contam.
+func size() -> int:
+	for i in range(_items.size() - 1, -1, -1):
+		if _items[i] != null:
+			return i + 1
+	return 0
+
+
 ## Mover para um bloco ocupado troca os dois. O enquadramento acompanha
 ## o item, nao o bloco.
 func move(from_index: int, to_index: int) -> PlaceResult:
@@ -71,13 +106,13 @@ func clear_block(block_index: int) -> void:
 
 
 func item_at(block_index: int) -> BroadcastItem:
-	if not _is_valid_block(block_index):
+	if not _is_existing_index(block_index):
 		return null
 	return _items[block_index]
 
 
 func set_framing(block_index: int, kind: int) -> PlaceResult:
-	if not _is_valid_block(block_index) or _items[block_index] == null:
+	if not _is_existing_index(block_index) or _items[block_index] == null:
 		return PlaceResult.INVALID_BLOCK
 	if not _allows_framing(_items[block_index], kind):
 		return PlaceResult.FRAMING_NOT_ALLOWED
@@ -87,7 +122,7 @@ func set_framing(block_index: int, kind: int) -> PlaceResult:
 
 
 func framing_at(block_index: int) -> int:
-	if not _is_valid_block(block_index):
+	if not _is_existing_index(block_index):
 		return NO_FRAMING
 	return _framings[block_index]
 
@@ -107,7 +142,7 @@ func quota_required() -> int:
 ## So conta o que vai ao ar: descartar um comunicado nao cumpre a cota.
 func quota_filled() -> int:
 	var filled := 0
-	for i in BLOCK_COUNT:
+	for i in size():
 		if _goes_on_air(i) and _items[i].counts_for_quota:
 			filled += 1
 	return filled
@@ -120,15 +155,17 @@ func quota_met() -> bool:
 ## Cota nao cumprida nao impede o programa: recusar e escolha do jogador,
 ## paga em atencao do regime na manha seguinte.
 func is_ready() -> bool:
-	for i in BLOCK_COUNT:
-		if _items[i] == null or _framings[i] == NO_FRAMING:
+	if filled_blocks() == 0:
+		return false
+	for i in size():
+		if _items[i] != null and _framings[i] == NO_FRAMING:
 			return false
 	return true
 
 
 func aired_items() -> Array[BroadcastItem]:
 	var aired: Array[BroadcastItem] = []
-	for i in BLOCK_COUNT:
+	for i in size():
 		if _goes_on_air(i):
 			aired.append(_items[i])
 	return aired
@@ -137,7 +174,7 @@ func aired_items() -> Array[BroadcastItem]:
 ## Regras casadas pelos pares de blocos consecutivos que vao ao ar.
 func order_effects() -> Array[OrderRule]:
 	var effects: Array[OrderRule] = []
-	for i in BLOCK_COUNT - 1:
+	for i in maxi(size() - 1, 0):
 		if not _goes_on_air(i) or not _goes_on_air(i + 1):
 			continue
 		for rule in _rules:
@@ -150,8 +187,12 @@ func _is_valid_block(block_index: int) -> bool:
 	return block_index >= 0 and block_index < BLOCK_COUNT
 
 
+func _is_existing_index(block_index: int) -> bool:
+	return block_index >= 0 and block_index < _items.size()
+
+
 func _block_of(item: BroadcastItem) -> int:
-	for i in BLOCK_COUNT:
+	for i in _items.size():
 		if _items[i] == item:
 			return i
 	return -1

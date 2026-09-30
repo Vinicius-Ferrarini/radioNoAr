@@ -1,0 +1,90 @@
+extends RefCounted
+
+## Concept art funcional do console ao vivo em 320x180.
+static func definition() -> Dictionary:
+	return {
+		"name": "ui_live_console_concept",
+		"size": Vector2i(320, 180),
+		"primitives": [
+			{"op": "rect", "x": 0, "y": 0, "w": 320, "h": 180, "color": "desk_dark"},
+			{"op": "dither", "x": 0, "y": 14, "w": 320, "h": 108, "step": 7, "color": "desk_mid"},
+			{"op": "rect", "x": 0, "y": 0, "w": 320, "h": 14, "color": "ink"},
+			{"op": "rect", "x": 8, "y": 5, "w": 35, "h": 3, "color": "paper_shade"},
+			{"op": "rect", "x": 137, "y": 5, "w": 46, "h": 3, "color": "red_hi"},
+			{"op": "rect", "x": 274, "y": 5, "w": 37, "h": 3, "color": "paper_shade"},
+
+			# Janela e microfone preservam a fantasia do estúdio.
+			{"op": "rect", "x": 7, "y": 20, "w": 88, "h": 61, "color": "ink"},
+			{"op": "rect", "x": 11, "y": 24, "w": 80, "h": 53, "color": "night_deep"},
+			{"op": "rect", "x": 13, "y": 53, "w": 76, "h": 2, "color": "street_blue"},
+			{"op": "rect", "x": 20, "y": 62, "w": 13, "h": 15, "color": "street_blue"},
+			{"op": "rect", "x": 50, "y": 47, "w": 17, "h": 30, "color": "street_blue"},
+			{"op": "rect", "x": 55, "y": 51, "w": 3, "h": 2, "color": "amber_dim"},
+			{"op": "rect", "x": 33, "y": 83, "w": 37, "h": 19, "color": "ink"},
+			{"op": "rect", "x": 45, "y": 69, "w": 13, "h": 22, "color": "paper_dark"},
+			{"op": "frame", "x": 43, "y": 67, "w": 17, "h": 26, "color": "desk_hi"},
+			{"op": "line", "x1": 51, "y1": 92, "x2": 51, "y2": 106, "color": "paper_dark"},
+
+			# Teleprompter menor, com a linha do momento isolada.
+			{"op": "rect", "x": 103, "y": 20, "w": 209, "h": 50, "color": "ink"},
+			{"op": "frame", "x": 105, "y": 22, "w": 205, "h": 46, "color": "desk_hi"},
+			{"op": "rect", "x": 110, "y": 27, "w": 195, "h": 10, "color": "desk_dark"},
+			{"op": "rect", "x": 115, "y": 31, "w": 141, "h": 2, "color": "paper_dark"},
+			{"op": "rect", "x": 110, "y": 40, "w": 195, "h": 17, "color": "shadow"},
+			{"op": "rect", "x": 116, "y": 45, "w": 171, "h": 3, "color": "paper"},
+			{"op": "rect", "x": 116, "y": 52, "w": 112, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 110, "y": 61, "w": 142, "h": 2, "color": "paper_dark"},
+			{"op": "rect", "x": 256, "y": 61, "w": 49, "h": 2, "color": "desk_hi"},
+
+			# Canal telefônico como equipamento; fila e estados ficam nos trilhos.
+			{"op": "rect", "x": 103, "y": 74, "w": 209, "h": 45, "color": "ink"},
+			{"op": "frame", "x": 105, "y": 76, "w": 205, "h": 41, "color": "desk_hi"},
+			{"op": "rect", "x": 111, "y": 82, "w": 22, "h": 28, "color": "desk_mid"},
+			{"op": "rect", "x": 114, "y": 84, "w": 16, "h": 5, "color": "paper_dark"},
+			{"op": "rect", "x": 116, "y": 92, "w": 12, "h": 12, "color": "ink"},
+			{"op": "rect", "x": 139, "y": 82, "w": 111, "h": 28, "color": "shadow"},
+			{"op": "rect", "x": 145, "y": 87, "w": 75, "h": 2, "color": "amber_hi"},
+			{"op": "rect", "x": 145, "y": 94, "w": 94, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 145, "y": 101, "w": 82, "h": 2, "color": "paper_dark"},
+			# Lâmpadas: livre, prévia, no ar.
+			{"op": "rect", "x": 257, "y": 83, "w": 14, "h": 9, "color": "street_blue"},
+			{"op": "frame", "x": 257, "y": 83, "w": 14, "h": 9, "color": "desk_hi"},
+			{"op": "rect", "x": 274, "y": 83, "w": 14, "h": 9, "color": "amber_mid"},
+			{"op": "frame", "x": 274, "y": 83, "w": 14, "h": 9, "color": "desk_hi"},
+			{"op": "rect", "x": 291, "y": 83, "w": 14, "h": 9, "color": "red_hi"},
+			{"op": "frame", "x": 291, "y": 83, "w": 14, "h": 9, "color": "desk_hi"},
+			{"op": "rect", "x": 257, "y": 98, "w": 48, "h": 12, "color": "red_dim"},
+			{"op": "frame", "x": 257, "y": 98, "w": 48, "h": 12, "color": "red_hi"},
+			{"op": "rect", "x": 269, "y": 103, "w": 24, "h": 2, "color": "paper"},
+
+			# Console inferior: pauta à esquerda, ações físicas à direita.
+			{"op": "rect", "x": 0, "y": 122, "w": 320, "h": 58, "color": "desk_mid"},
+			{"op": "dither", "x": 0, "y": 122, "w": 320, "h": 58, "step": 5, "color": "desk_hi"},
+			{"op": "rect", "x": 7, "y": 128, "w": 174, "h": 44, "color": "ink"},
+			{"op": "frame", "x": 8, "y": 129, "w": 172, "h": 42, "color": "desk_hi"},
+			{"op": "rect", "x": 13, "y": 134, "w": 36, "h": 29, "color": "paper_shade"},
+			{"op": "rect", "x": 17, "y": 138, "w": 26, "h": 3, "color": "night_blue"},
+			{"op": "rect", "x": 55, "y": 134, "w": 36, "h": 29, "color": "paper_shade"},
+			{"op": "rect", "x": 59, "y": 138, "w": 26, "h": 3, "color": "night_blue"},
+			{"op": "rect", "x": 97, "y": 134, "w": 36, "h": 29, "color": "paper_shade"},
+			{"op": "rect", "x": 101, "y": 138, "w": 26, "h": 3, "color": "night_blue"},
+			{"op": "rect", "x": 139, "y": 134, "w": 36, "h": 29, "color": "paper_shade"},
+			{"op": "rect", "x": 139, "y": 134, "w": 5, "h": 29, "color": "red_dim"},
+			{"op": "rect", "x": 148, "y": 138, "w": 21, "h": 3, "color": "red_hi"},
+			# Teclas com diferenças de cor e tamanho, sem ocupar a largura toda.
+			{"op": "rect", "x": 190, "y": 129, "w": 57, "h": 19, "color": "ink"},
+			{"op": "rect", "x": 192, "y": 127, "w": 53, "h": 18, "color": "desk_hi"},
+			{"op": "frame", "x": 194, "y": 129, "w": 49, "h": 14, "color": "amber_mid"},
+			{"op": "rect", "x": 204, "y": 135, "w": 29, "h": 2, "color": "amber_hi"},
+			{"op": "rect", "x": 255, "y": 129, "w": 57, "h": 19, "color": "ink"},
+			{"op": "rect", "x": 257, "y": 127, "w": 53, "h": 18, "color": "red_dim"},
+			{"op": "frame", "x": 259, "y": 129, "w": 49, "h": 14, "color": "red_hi"},
+			{"op": "rect", "x": 269, "y": 135, "w": 29, "h": 2, "color": "paper"},
+			{"op": "rect", "x": 190, "y": 155, "w": 57, "h": 17, "color": "ink"},
+			{"op": "rect", "x": 192, "y": 153, "w": 53, "h": 16, "color": "desk_hi"},
+			{"op": "rect", "x": 204, "y": 160, "w": 29, "h": 2, "color": "paper_shade"},
+			{"op": "rect", "x": 255, "y": 155, "w": 57, "h": 17, "color": "ink"},
+			{"op": "rect", "x": 257, "y": 153, "w": 53, "h": 16, "color": "desk_hi"},
+			{"op": "rect", "x": 269, "y": 160, "w": 29, "h": 2, "color": "paper_shade"},
+		],
+	}

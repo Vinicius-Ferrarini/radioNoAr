@@ -1,13 +1,13 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scenes/parts/close_phone.gd" id="1_phone"]
-[ext_resource type="Texture2D" path="res://assets/sprites/phone_body.png" id="2_body"]
+[ext_resource type="Texture2D" path="res://assets/sprites/phone_glass_panel.png" id="2_body"]
 [ext_resource type="PackedScene" path="res://scenes/parts/chat_bubble.tscn" id="3_bubble"]
 [ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="4_row"]
 
 [node name="ClosePhone" type="Control"]
-offset_right = 140.0
-offset_bottom = 164.0
+offset_right = 118.0
+offset_bottom = 149.0
 script = ExtResource("1_phone")
 bubble_scene = ExtResource("3_bubble")
 row_scene = ExtResource("4_row")
@@ -29,7 +29,7 @@ patch_margin_bottom = 12
 layout_mode = 0
 offset_left = 9.0
 offset_top = 4.0
-offset_right = 83.0
+offset_right = 70.0
 offset_bottom = 13.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 7
@@ -38,9 +38,9 @@ text = "15/07/2008"
 
 [node name="Clock" type="Label" parent="."]
 layout_mode = 0
-offset_left = 85.0
+offset_left = 72.0
 offset_top = 4.0
-offset_right = 131.0
+offset_right = 109.0
 offset_bottom = 13.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 7
@@ -52,7 +52,7 @@ horizontal_alignment = 2
 layout_mode = 0
 offset_left = 22.0
 offset_top = 15.0
-offset_right = 112.0
+offset_right = 91.0
 offset_bottom = 25.0
 mouse_filter = 2
 theme_override_font_sizes/font_size = 7
@@ -71,9 +71,9 @@ text = "<"
 
 [node name="CloseButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 119.0
+offset_left = 97.0
 offset_top = 14.0
-offset_right = 131.0
+offset_right = 109.0
 offset_bottom = 26.0
 focus_mode = 0
 text = "x"
@@ -82,8 +82,8 @@ text = "x"
 layout_mode = 0
 offset_left = 9.0
 offset_top = 28.0
-offset_right = 131.0
-offset_bottom = 156.0
+offset_right = 109.0
+offset_bottom = 141.0
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="ListScroll"]
@@ -96,8 +96,8 @@ visible = false
 layout_mode = 0
 offset_left = 9.0
 offset_top = 28.0
-offset_right = 131.0
-offset_bottom = 96.0
+offset_right = 109.0
+offset_bottom = 86.0
 horizontal_scroll_mode = 0
 
 [node name="Thread" type="VBoxContainer" parent="ChatScroll"]
@@ -109,16 +109,16 @@ theme_override_constants/separation = 2
 visible = false
 layout_mode = 0
 offset_left = 9.0
-offset_top = 98.0
-offset_right = 131.0
-offset_bottom = 108.0
+offset_top = 88.0
+offset_right = 109.0
+offset_bottom = 98.0
 theme_override_constants/separation = 2
 
 [node name="Replies" type="VBoxContainer" parent="."]
 visible = false
 layout_mode = 0
 offset_left = 9.0
-offset_top = 110.0
-offset_right = 131.0
-offset_bottom = 158.0
+offset_top = 100.0
+offset_right = 109.0
+offset_bottom = 143.0
 theme_override_constants/separation = 1

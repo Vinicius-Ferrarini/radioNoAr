@@ -52,12 +52,13 @@ meio do caminho.
 
 ## 2. Loop de uma noite
 
-1. **Noite — triagem.** Chegam mais itens do que cabem no programa: pelo
-   celular, por cartas e como propaganda oficial. O jogador lê, confere e
-   marca cada um.
-2. **Escalação.** Arrasta itens para os 4 blocos do programa. A ordem
-   importa: propaganda logo depois de uma denúncia soa como ironia.
-3. **Enquadramento.** Escolhe como apresentar cada item escalado.
+1. **Noite — triagem.** Chegam pautas pelo celular, por cartas e como
+   propaganda oficial. O jogador lê, confere e marca cada uma.
+2. **Decisão.** Responder uma conversa já define o que será dito e põe a
+   pauta no roteiro. Carta e comunicado oferecem a decisão no próprio
+   papel. A ordem das respostas vira a ordem do programa.
+3. **Roteiro.** Uma folha sobre a mesa reúne as decisões e estima o tempo.
+   Programa curto ou longo gera aviso informativo, sem impedir o ar.
 4. **No ar.** Apresenta ao vivo (seção 6).
 5. **Manhã.** Manchetes, cartas e bilhetes mostram a consequência da
    noite anterior.
@@ -74,11 +75,11 @@ Fatia vertical de referência (noite 1): 2 mensagens de celular, 1 carta,
 | Suborno | Dinheiro para falar ou calar algo | Combustível, peças, segurança | Credibilidade cai se descobrirem |
 | Vendedor | Troca uma peça | Conserta o transmissor | Peça pode ser roubada ou grampeada |
 | Vingança | Expor alguém no ar | Pode desmascarar um informante | Pode ser só briga de vizinho |
-| Quer aparecer | Espaço no ar | Audiência, às vezes mensagem codificada | Ocupa um bloco |
+| Quer aparecer | Espaço no ar | Audiência, às vezes mensagem codificada | Alonga o roteiro |
 | Pedido de ajuda | Dizer o nome de um desaparecido | Pressão pública protege | Pode condenar a pessoa |
-| Propaganda oficial | Obrigatória (cota) | Evita atenção do regime | Um bloco a menos para o povo |
+| Propaganda oficial | Obrigatória (cota) | Evita atenção do regime | Toma tempo que poderia ser do povo |
 
-**Cota de propaganda:** número mínimo de blocos oficiais por programa,
+**Cota de propaganda:** número mínimo de pautas oficiais por programa,
 crescendo com as noites (1 → 2 → 3). Recusar a cota atrai atenção do
 regime em vez de ser bloqueado pela interface.
 
@@ -120,22 +121,22 @@ punido na hora: o item falso vai ao ar e a conta chega de manhã.
 
 ## 6. Apresentação ao vivo (mecânica central)
 
-- **Teleprompter:** o roteiro do bloco sobe na tela enquanto o jogador
+- **Teleprompter:** cada entrada do roteiro sobe na tela enquanto o jogador
   segura o botão do microfone. Soltar = ar morto, e a audiência cai por
   segundo de silêncio.
 - **Palavras proibidas:** aparecem no roteiro sem destaque; clicar troca
   por um sinônimo aprovado. Deixar passar = infração anotada pelo regime.
-- **Improviso:** 2–3 momentos por bloco em que o roteiro para e o jogador
+- **Improviso:** momentos por entrada em que o roteiro para e o jogador
   escolhe a próxima frase com tempo contado. Aqui o enquadramento
   escolhido antes vira fala.
 - **Ligações com delay de 7 s:** a transcrição aparece 7 s antes do
   público ouvir; existe um botão de corte.
-- **Trilha entre blocos:** escolher a música é mandar sinal (os códigos
+- **Trilha entre pautas:** escolher a música é mandar sinal (os códigos
   estão no caderno).
 - **Só a audiência reage ao vivo** (ponteiro de ouvintes). O regime não
   reage no ar; a consequência real chega de manhã.
-- **Eventos ao vivo:** queda de energia (ligar o gerador ou cortar um
-  bloco), interferência (girar o dial sem parar de falar), batida na
+- **Eventos ao vivo:** queda de energia (ligar o gerador ou cortar uma
+  pauta), interferência (girar o dial sem parar de falar), batida na
   porta, ouvinte em perigo ao vivo.
 
 ## 7. Medidores

@@ -28,11 +28,11 @@ func _gui_input(event: InputEvent) -> void:
 
 
 func show_empty(placeholder: String) -> void:
-	_label.text = placeholder
+	_label.text = "%s\nLIVRE" % placeholder
 
 
 func show_item(headline: String, framing_label: String) -> void:
 	if framing_label.is_empty():
 		_label.text = headline
 	else:
-		_label.text = "%s\n[%s]" % [headline, framing_label]
+		_label.text = "%s\n%s" % [headline, framing_label]

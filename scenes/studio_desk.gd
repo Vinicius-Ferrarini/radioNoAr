@@ -54,14 +54,15 @@ const _RESULT_MESSAGES := {
 @onready var _microphone: TextureButton = $Studio/Microphone
 @onready var _on_air_sign: TextureRect = $Studio/OnAirSign
 @onready var _enter_air: Button = $EnterAirButton
+@onready var _rundown_paper: Control = $RundownPaper
 @onready var _call_panel: Control = $CallPanel
 @onready var _call_text: Label = $CallPanel/Transcript
 @onready var _call_status: Label = $CallPanel/Status
 @onready var _call_progress: ProgressBar = $CallPanel/Delay
 @onready var _spoken: RichTextLabel = $Studio/Teleprompter/Spoken
-@onready var _lamp_free: Label = $CallPanel/Lamps/Free
-@onready var _lamp_preview: Label = $CallPanel/Lamps/Preview
-@onready var _lamp_on_air: Label = $CallPanel/Lamps/OnAir
+@onready var _lamp_free: TextureRect = $CallPanel/Lamps/Free
+@onready var _lamp_preview: TextureRect = $CallPanel/Lamps/Preview
+@onready var _lamp_on_air: TextureRect = $CallPanel/Lamps/OnAir
 @onready var _queue_label: Label = $CallPanel/Queue
 @onready var _cut_button: Button = $CallPanel/Cut
 @onready var _music: Button = $LiveControls/Music
@@ -90,10 +91,10 @@ const _STATIC_ON_AIR := -34.0
 const _STATIC_DEAD_AIR := -11.0
 const _STATIC_BREAK := -42.0
 
-## Lâmpadas do console: apagada, acesa e a que pede decisão.
-const _LAMP_OFF := Color(0.36, 0.38, 0.35, 1.0)
-const _LAMP_ON := Color(0.58, 0.85, 0.6, 1.0)
-const _LAMP_ALERT := Color(1.0, 0.72, 0.3, 1.0)
+## As texturas já carregam a cor semântica. O estado só acende ou apaga,
+## preservando azul=livre, âmbar=prévia e vermelho=no ar.
+const _LAMP_OFF := Color(1.0, 1.0, 1.0, 0.28)
+const _LAMP_ON := Color(1.0, 1.0, 1.0, 1.0)
 
 @onready var _blocks: Array[Node] = [
 	$Blocks/Block1,
@@ -137,7 +138,7 @@ func _ready() -> void:
 	_cut_button.pressed.connect(_cut_call)
 	_music.pressed.connect(func() -> void: GameState.start_break("music"))
 	_ad.pressed.connect(func() -> void: GameState.start_break("ad"))
-	$Briefing/Start.pressed.connect(func() -> void: $Briefing.hide())
+	$Briefing/Start.pressed.connect(_dismiss_briefing)
 	_improv_strip.option_chosen.connect(_on_improv_chosen)
 	_close_morning.continue_requested.connect(_on_morning_continue)
 	GameState.morning_ready.connect(_on_morning_ready)
@@ -151,6 +152,7 @@ func _ready() -> void:
 	_close_item.claim_marked.connect(_on_claim_marked)
 	_close_item.suspect_toggled.connect(_on_suspect_toggled)
 	_close_item.sibling_selected.connect(_open_item)
+	_close_item.framing_chosen.connect(_on_paper_framing_chosen)
 	_close_item.close_requested.connect(_show_desk)
 	_close_phone.thread_opened.connect(_open_item)
 	_close_phone.reply_chosen.connect(_on_reply_chosen)
@@ -270,6 +272,7 @@ func _on_night_started(night: int, quota: int) -> void:
 	$Briefing/Body.text = GameState.opening_message()
 	$Briefing/Reserve.text = "CAIXA $%d / 1 reserva: música ou anúncio" % GameState.station_money()
 	$Briefing.visible = not GameState.opening_message().is_empty()
+	_enter_air.visible = not $Briefing.visible
 	var mementos := GameState.station_mementos()
 	$Studio/GiftRecord.visible = mementos.get("record", false)
 	$Studio/Sponsor.visible = mementos.get("sponsor", false)
@@ -288,17 +291,21 @@ func _on_notebook_updated(_new_entry_ids: Array) -> void:
 
 func _on_quota_changed(required: int, filled: int) -> void:
 	_quota_label.text = "PROGRAMA LIVRE" if required == 0 else "COTA %d/%d" % [filled, required]
-	_blocks[0].texture = preload("res://assets/sprites/block_slot.png") if required == 0 else preload("res://assets/sprites/block_slot_quota.png")
+	_blocks[0].texture = preload("res://assets/sprites/program_cart.png") if required == 0 else preload("res://assets/sprites/block_slot_quota.png")
 
 
 func _on_rundown_changed() -> void:
+	_rundown_paper.show_rundown(GameState.rundown_entries(), GameState.rundown_estimated_seconds())
+	# Os cartuchos continuam atualizados durante a migração para que o
+	# ao vivo e saves antigos não dependam da antiga superfície visual.
 	for i in _blocks.size():
+		_blocks[i].modulate = Color.WHITE
 		var item := GameState.block_item(i)
 		if item == null:
 			_blocks[i].show_empty("%d" % (i + 1))
 			continue
 		var sender := GameState.sender_of(item.id)
-		var who: String = sender.display_name if sender != null else item.headline
+		var who: String = _cart_name(sender.display_name if sender != null else item.headline)
 		var kind := GameState.block_framing(i)
 		if kind == ProgramRundown.NO_FRAMING:
 			# Sem isto um bloco sem enquadramento fica igual a um pronto, e
@@ -320,18 +327,16 @@ func _on_rundown_changed() -> void:
 ## jogador le sem procurar. Dizer "falta algo" nao serve — tem que dizer
 ## qual bloco e o que fazer nele.
 func _pending_hint() -> String:
-	# Bloco por bloco, e nao todos os vazios primeiro: quem acabou de
-	# soltar alguem num bloco precisa ouvir sobre o enquadramento dele,
-	# que e a regua aberta na frente do jogador naquele instante.
-	for i in _blocks.size():
-		if GameState.block_item(i) == null:
-			return "Bloco %d vazio: arraste alguém do celular ou das cartas." % (i + 1)
-		if GameState.block_framing(i) == ProgramRundown.NO_FRAMING:
-			var item := GameState.block_item(i)
-			if item != null and GameState.conversation_of(item.id) != null:
-				return "Bloco %d: responda a conversa no celular." % (i + 1)
-			return "Bloco %d: escolha na régua como esse item vai ao ar." % (i + 1)
-	return ""
+	return "Responda no celular ou escolha no papel o que entra no roteiro."
+
+
+## Cartucho é identificação rápida, não ficha completa. O nome inteiro
+## continua no celular e no documento aberto.
+func _cart_name(display_name: String) -> String:
+	if display_name.length() <= 11:
+		return display_name
+	var words := display_name.split(" ", false)
+	return String(words[words.size() - 1]) if not words.is_empty() else display_name.left(11)
 
 
 func _on_meter_changed(meter_id: String, new_value: int) -> void:
@@ -347,14 +352,26 @@ func _on_phase_changed(phase: int) -> void:
 	_phone.visible = before_air or live_now
 	_letters.visible = before_air or live_now
 	_notebook_object.visible = before_air or live_now
-	$Blocks.visible = before_air
+	$Blocks.visible = false
+	_rundown_paper.visible = before_air
 	$LiveControls.visible = live_now
 	_call_panel.visible = live_now
+	_enter_air.visible = before_air and not $Briefing.visible
+	_go_on_air.visible = live_now
 	$Studio/Turntable.visible = not live_now
-	$Studio/Teleprompter.position = Vector2(76, 34) if live_now else Vector2(112, 36)
-	$Studio/Teleprompter.size = Vector2(232, 46) if live_now else Vector2(128, 60)
-	$Studio/Teleprompter/LineProgress.position.y = 39 if live_now else 53
-	$Studio/Teleprompter/LineProgress.size.x = 218 if live_now else 114
+	$Studio/Teleprompter.position = Vector2(104, 20) if live_now else Vector2(112, 36)
+	$Studio/Teleprompter.size = Vector2(208, 50) if live_now else Vector2(128, 60)
+	$Studio/Teleprompter/LineProgress.position.y = 43 if live_now else 53
+	$Studio/Teleprompter/LineProgress.size.x = 194 if live_now else 114
+	_block_label.position = Vector2(104, 14) if live_now else Vector2(112, 25)
+	_block_label.size = Vector2(208, 9) if live_now else Vector2(128, 10)
+	_notebook_object.position = Vector2(280, 144) if live_now else Vector2(104, 142)
+	_phone.position = Vector2(6, 78) if live_now else Vector2(6, 130)
+	_phone_home = _phone.position
+	_letters.position = Vector2(52, 98) if live_now else Vector2(58, 142)
+	_feedback.position = Vector2(8, 122) if live_now else Vector2(128, 66)
+	_feedback.size = Vector2(172, 10) if live_now else Vector2(184, 10)
+	_set_block_layout(live_now)
 	if not before_air:
 		_show_desk()
 
@@ -373,6 +390,11 @@ func _on_phase_changed(phase: int) -> void:
 		_block_label.text = ""
 
 	_refresh_audience_label()
+
+
+func _dismiss_briefing() -> void:
+	$Briefing.hide()
+	_enter_air.visible = true
 
 
 func _on_link_evaluated(_item_id: String, _claim_id: String, _entry_id: String, result: int) -> void:
@@ -446,7 +468,20 @@ func _on_reply_chosen(index: int) -> void:
 	_refresh_item()
 	var talk := GameState.conversation_of(_open_item_id)
 	if talk != null:
-		_feedback.text = "Você respondeu: %s" % talk.chosen_reply_id()
+		_feedback.text = "Resposta confirmada · entrou no roteiro."
+	_play_sound(_SWITCH)
+
+
+func _on_paper_framing_chosen(kind: int) -> void:
+	var item := GameState.item_by_id(_open_item_id)
+	if item == null:
+		return
+	if GameState.commit_item(item.id, kind) != ProgramRundown.PlaceResult.OK:
+		_feedback.text = "Essa decisão não está disponível agora."
+		return
+	var label := GameState.framing_label(item, kind)
+	_feedback.text = "%s · entrou no roteiro." % label
+	_refresh_item()
 	_play_sound(_SWITCH)
 
 
@@ -552,7 +587,7 @@ func _on_go_on_air_pressed() -> void:
 		return
 	$Briefing.hide()
 	if not GameState.is_rundown_ready():
-		_feedback.text = "Os quatro blocos precisam de alguém e de um enquadramento."
+		_feedback.text = "O roteiro ainda está vazio. Tome ao menos uma decisão."
 		return
 
 	while GameState.current_phase() == NightCycle.Phase.TRIAGE \
@@ -583,19 +618,13 @@ func _on_enter_air_pressed() -> void:
 
 	# Nao basta dizer o que falta: levar o jogador ate lá.
 	_feedback.text = _pending_hint()
-	for i in _blocks.size():
-		if GameState.block_item(i) == null:
-			_open_phone()
-			return
-		if GameState.block_framing(i) == ProgramRundown.NO_FRAMING:
-			_on_block_clicked(i)
-			return
+	_open_phone()
 
 
 # --- o ao vivo ---
 
 func _on_live_block_started(position: int, total: int, headline: String) -> void:
-	_block_label.text = "BLOCO %d DE %d" % [position + 1, total]
+	_block_label.text = "ROTEIRO %d DE %d" % [position + 1, total]
 	_show_desk()
 	_refresh_live()
 
@@ -769,8 +798,17 @@ func _paint_lamps(pending: bool, outcome: String, break_left: float) -> void:
 	var on_air: bool = outcome == "aired" and not pending
 	var free: bool = not pending and not on_air and break_left <= 0.0
 	_lamp_free.modulate = _LAMP_ON if free else _LAMP_OFF
-	_lamp_preview.modulate = _LAMP_ALERT if pending else _LAMP_OFF
+	_lamp_preview.modulate = _LAMP_ON if pending else _LAMP_OFF
 	_lamp_on_air.modulate = _LAMP_ON if on_air else _LAMP_OFF
+
+
+## A mesma pauta permanece na mesa durante a transmissão. Antes do ar ela
+## abre espaço para celular e papéis; ao vivo encosta à esquerda e deixa o
+## banco de teclas à direita.
+func _set_block_layout(live_now: bool) -> void:
+	var first_x: float = 8.0 if live_now else 38.0
+	for i in _blocks.size():
+		_blocks[i].position = Vector2(first_x + i * 44.0, 14.0)
 
 
 func _with_forbidden_links(index: int) -> String:
@@ -798,8 +836,17 @@ func _refresh_item() -> void:
 		_chips_like(item),
 		GameState.is_suspicious(item.id),
 		GameState.contradictions_for(item.id),
-		GameState.block_of_item(item.id)
+		GameState.block_of_item(item.id),
+		_available_framings(item)
 	)
+
+
+func _available_framings(item: BroadcastItem) -> Array[int]:
+	var kinds: Array[int] = []
+	for framing in item.framings:
+		if framing != null and GameState.framing_available(item, framing.kind):
+			kinds.append(framing.kind)
+	return kinds
 
 
 

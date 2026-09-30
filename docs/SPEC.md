@@ -384,6 +384,10 @@ cruza detecção com verdade é a fase de manhã, via
 
 ### 4.4 ProgramRundown — `program_rundown.gd`
 
+> Revisão do ADR 0014: o roteiro é uma sequência variável de decisões. A
+> API de quatro blocos abaixo permanece durante a migração, mas não define
+> mais a prontidão nem a superfície da preparação.
+
 ```gdscript
 const BLOCK_COUNT := 4
 enum PlaceResult { OK, INVALID_BLOCK, BLOCK_TAKEN, ITEM_ALREADY_PLACED, FRAMING_NOT_ALLOWED }
@@ -394,19 +398,23 @@ func move(from_index: int, to_index: int) -> PlaceResult
 func clear_block(block_index: int) -> void
 func item_at(block_index: int) -> BroadcastItem
 func set_framing(block_index: int, kind: int) -> PlaceResult
+func commit(item: BroadcastItem, kind: int) -> PlaceResult # acrescenta ou atualiza
+func size() -> int                                         # extensão da sequência
 func framing_at(block_index: int) -> int            # -1 se não escolhido
 func filled_blocks() -> int
 func quota_required() -> int
 func quota_filled() -> int                          # itens com counts_for_quota
 func quota_met() -> bool
-func is_ready() -> bool                             # 4 blocos com item e enquadramento
+func is_ready() -> bool                             # ao menos 1 decisão, todas completas
 func aired_items() -> Array[BroadcastItem]          # os que realmente vão ao ar
 func order_effects() -> Array[OrderRule]            # regras casadas pela ordem atual
 ```
 
-- `move` para um bloco ocupado **troca** os dois itens; o enquadramento
+- `commit` acrescenta a decisão ao fim; se o item já existe, atualiza seu
+  enquadramento sem duplicá-lo. A sequência não tem limite fixo.
+- `move` para uma posição ocupada **troca** os dois itens; o enquadramento
   acompanha o item, não o bloco.
-- `move` de um bloco vazio, ou com índice fora de 0–3, é
+- `move` de uma posição vazia, ou com índice inválido, é
   `INVALID_BLOCK`.
 - `set_framing` recusa um `kind` que não esteja em `item.framings`, e
   recusa bloco vazio. `framing_at` devolve `-1` enquanto não escolhido.
@@ -416,8 +424,17 @@ func order_effects() -> Array[OrderRule]            # regras casadas pela ordem 
   o custo de descartar.
 - Cota não cumprida **não** impede `is_ready()`: recusar a cota é uma
   escolha do jogador, paga em `REGIME_ATTENTION` na manhã seguinte.
-- `order_effects` percorre os pares de blocos consecutivos que vão ao ar
+- `order_effects` percorre os pares de decisões consecutivas que vão ao ar
   e devolve cada `OrderRule` casada, na ordem dos blocos.
+
+#### Roteiro automático e duração
+
+- `GameState.send_reply()` chama `commit` com o `framing_kind` da resposta.
+- Carta e comunicado chamam `GameState.commit_item()` a partir da escolha
+  feita no próprio papel.
+- A UI soma `read_seconds` das linhas do `BroadcastScript` escolhido. Menos
+  de 24 s é curto; 24–36 s está na medida; acima de 36 s está longo.
+- A duração é informativa e não participa de `is_ready()`.
 
 ### 4.5 ConsequenceQueue — `consequence_queue.gd`
 

@@ -126,16 +126,18 @@
 			"width": 16
 		},
 		{
-			"height": 16,
+			"height": 28,
 			"name": "block_slot_quota",
-			"nine_patch": 5,
 			"palette": [
-				"desk_dark",
+				"ink",
+				"paper_dark",
+				"paper_shade",
+				"red_dim",
 				"red_hi"
 			],
 			"path": "res://assets/sprites/block_slot_quota.png",
-			"sha256": "222ff2a51871ca81c8450864cd3c6426a32b1b684454113b0a8a1e9270822038",
-			"width": 16
+			"sha256": "54f77b5c017e898e52a7625a13ae12afef6764558c9e5d3622b897265380ff39",
+			"width": 44
 		},
 		{
 			"height": 16,
@@ -189,6 +191,76 @@
 			"path": "res://assets/sprites/close_button.png",
 			"sha256": "e812df7a45eca21e5b7ab09b73b34c794bf17b42b24b5b964b3b011a1c763c09",
 			"width": 12
+		},
+		{
+			"height": 32,
+			"name": "console_call_frame",
+			"nine_patch": 12,
+			"palette": [
+				"amber_dim",
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"paper_dark",
+				"shadow"
+			],
+			"path": "res://assets/sprites/console_call_frame.png",
+			"sha256": "cd6c7d770ec69e65a611d9a5c260cd8c2d346ed79473de44282b884b031c5a2f",
+			"width": 48
+		},
+		{
+			"height": 16,
+			"name": "console_key",
+			"nine_patch": 6,
+			"palette": [
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"paper_dark"
+			],
+			"path": "res://assets/sprites/console_key.png",
+			"sha256": "d2ea4f84af897c13f639cf36a8cec78cc283f73766fc694f5e380af613cff70f",
+			"width": 24
+		},
+		{
+			"height": 10,
+			"name": "console_lamp_free",
+			"palette": [
+				"cold_glow",
+				"desk_hi",
+				"ink",
+				"street_blue"
+			],
+			"path": "res://assets/sprites/console_lamp_free.png",
+			"sha256": "c2077fae432adb590e56ce5cca297bb97e1edfb6871ad9f29024c12cbcef228f",
+			"width": 14
+		},
+		{
+			"height": 10,
+			"name": "console_lamp_on_air",
+			"palette": [
+				"desk_hi",
+				"glow",
+				"ink",
+				"red_hi"
+			],
+			"path": "res://assets/sprites/console_lamp_on_air.png",
+			"sha256": "5c235d2e315a7559a4ba79d642bef61268beb6721841da87dd2b17a4ffe2365e",
+			"width": 14
+		},
+		{
+			"height": 10,
+			"name": "console_lamp_preview",
+			"palette": [
+				"amber_mid",
+				"desk_hi",
+				"glow",
+				"ink"
+			],
+			"path": "res://assets/sprites/console_lamp_preview.png",
+			"sha256": "997dc81bbd3b0d5ebe38e98ee563f358838ffb48f446abd4d34fce6f44dd5dae",
+			"width": 14
 		},
 		{
 			"height": 26,
@@ -365,6 +437,21 @@
 			"width": 40
 		},
 		{
+			"height": 32,
+			"name": "paper_folder_panel",
+			"nine_patch": 12,
+			"palette": [
+				"ink",
+				"paper",
+				"paper_dark",
+				"paper_shade",
+				"red_dim"
+			],
+			"path": "res://assets/sprites/paper_folder_panel.png",
+			"sha256": "43164b58a8cfb69cea65e5d5c5eb4ab8b17fa70b7abf66c1b831fc320f36f164",
+			"width": 48
+		},
+		{
 			"height": 44,
 			"name": "phone",
 			"palette": [
@@ -392,6 +479,51 @@
 			"path": "res://assets/sprites/phone_body.png",
 			"sha256": "4e26acb8dcca5babcf88cfdaf910b4928a9ae19683404bcd88b55855d56c38e9",
 			"width": 32
+		},
+		{
+			"height": 32,
+			"name": "phone_glass_panel",
+			"nine_patch": 12,
+			"palette": [
+				"desk_hi",
+				"ink",
+				"night_deep",
+				"paper_dark",
+				"street_blue",
+				"street_hi"
+			],
+			"path": "res://assets/sprites/phone_glass_panel.png",
+			"sha256": "ffe16205397982baf959ca24bd4c81a2b5369ad94a0fb3d194bf75d30dace5e9",
+			"width": 32
+		},
+		{
+			"height": 28,
+			"name": "program_cart",
+			"palette": [
+				"amber_mid",
+				"desk_hi",
+				"ink",
+				"night_blue",
+				"paper_dark",
+				"paper_shade"
+			],
+			"path": "res://assets/sprites/program_cart.png",
+			"sha256": "59e28ef6de843e8216885c0885ffd07c245679e2d1a0574000edebdcc0b277c6",
+			"width": 44
+		},
+		{
+			"height": 28,
+			"name": "program_cart_quota",
+			"palette": [
+				"ink",
+				"paper_dark",
+				"paper_shade",
+				"red_dim",
+				"red_hi"
+			],
+			"path": "res://assets/sprites/program_cart_quota.png",
+			"sha256": "54f77b5c017e898e52a7625a13ae12afef6764558c9e5d3622b897265380ff39",
+			"width": 44
 		},
 		{
 			"height": 16,
@@ -483,6 +615,56 @@
 			"path": "res://assets/sprites/teleprompter_frame.png",
 			"sha256": "f41f239511920d170be87d7236bfbed3611623e801751446b835f86521e39453",
 			"width": 24
+		},
+		{
+			"height": 180,
+			"name": "ui_live_console_concept",
+			"palette": [
+				"amber_dim",
+				"amber_hi",
+				"amber_mid",
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"night_blue",
+				"night_deep",
+				"paper",
+				"paper_dark",
+				"paper_shade",
+				"red_dim",
+				"red_hi",
+				"shadow",
+				"street_blue"
+			],
+			"path": "res://assets/sprites/ui_live_console_concept.png",
+			"sha256": "9a46b80e64504f5c5b2ecd74243c36fc6ffbc27c47595096903bd9bf8f58f71b",
+			"width": 320
+		},
+		{
+			"height": 180,
+			"name": "ui_planning_concept",
+			"palette": [
+				"amber_dim",
+				"amber_hi",
+				"amber_mid",
+				"cold_glow",
+				"desk_dark",
+				"desk_hi",
+				"desk_mid",
+				"ink",
+				"night_blue",
+				"night_deep",
+				"paper_dark",
+				"paper_shade",
+				"red_dim",
+				"red_hi",
+				"street_blue",
+				"street_hi"
+			],
+			"path": "res://assets/sprites/ui_planning_concept.png",
+			"sha256": "300fa4008e04ebfc4560388c8e462eb69d6f082ef225a00fef2a9ef7ce6c1013",
+			"width": 320
 		},
 		{
 			"height": 20,

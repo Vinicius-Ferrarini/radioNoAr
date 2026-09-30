@@ -10,6 +10,7 @@ extends Control
 signal claim_marked(claim_id: String)
 signal suspect_toggled()
 signal sibling_selected(item_id: String)
+signal framing_chosen(kind: int)
 signal close_requested()
 
 @export var row_scene: PackedScene
@@ -32,6 +33,8 @@ const _LIGHT := Color(0.91, 0.894, 0.855)
 @onready var _mark: TextureRect = $Mark
 @onready var _bubble: NinePatchRect = $BubbleFrame
 @onready var _body: RichTextLabel = $BubbleFrame/BodyScroll/Body
+@onready var _paper_body: RichTextLabel = $PaperBody
+@onready var _decisions: HBoxContainer = $Decisions
 @onready var _claims_title: Label = $ClaimsTitle
 @onready var _claims_list: HBoxContainer = $ClaimsList
 @onready var _suspect: Button = $SuspectButton
@@ -51,16 +54,19 @@ func show_item(
 	sibling_chips: Array,
 	suspicious: bool,
 	contradictions: Array,
-	scheduled_block: int
+	scheduled_block: int,
+	available_framings: Array[int] = []
 ) -> void:
 	_dress_for(item.channel)
 	_fill_header(item, sender, scheduled_block)
 	_body.text = item.body
+	_paper_body.text = item.body
 	_body.visible = true
 	_suspect.button_pressed = suspicious
 
 	_rebuild_avatar_row(sibling_chips)
 	_rebuild_claims(item, contradictions)
+	_rebuild_decisions(item, available_framings)
 
 
 func _dress_for(channel: int) -> void:
@@ -80,6 +86,8 @@ func _dress_for(channel: int) -> void:
 
 	_mark.visible = _mark.texture != null
 	_bubble.visible = not on_paper
+	_paper_body.visible = on_paper
+	_decisions.visible = on_paper
 	_paint_text(_INK if on_paper else _LIGHT)
 
 
@@ -87,6 +95,22 @@ func _paint_text(color: Color) -> void:
 	for label in [_sender_name, _sender_handle, _received_at, _claims_title]:
 		label.add_theme_color_override("font_color", color)
 	_body.add_theme_color_override("default_color", color)
+	_paper_body.add_theme_color_override("default_color", color)
+
+
+func _rebuild_decisions(item: BroadcastItem, available_framings: Array[int]) -> void:
+	_clear(_decisions)
+	for framing in item.framings:
+		if framing == null or not available_framings.has(framing.kind):
+			continue
+		var button := Button.new()
+		button.text = framing.label
+		button.tooltip_text = "Esta decisão entra no roteiro automaticamente."
+		button.add_theme_font_size_override("font_size", 5)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var kind: int = framing.kind
+		button.pressed.connect(func() -> void: framing_chosen.emit(kind))
+		_decisions.add_child(button)
 
 
 func _fill_header(item: BroadcastItem, sender: Sender, scheduled_block: int) -> void:
@@ -99,7 +123,7 @@ func _fill_header(item: BroadcastItem, sender: Sender, scheduled_block: int) -> 
 
 	_received_at.text = item.received_at
 	if scheduled_block != -1:
-		_received_at.text = "%s · bloco %d" % [item.received_at, scheduled_block + 1]
+		_received_at.text = "%s · no roteiro" % item.received_at
 
 
 ## Os chips vem prontos da mesa: {id, name, avatar, current}. O close nao

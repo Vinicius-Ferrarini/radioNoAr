@@ -26,6 +26,7 @@ const EXPECTED_NODES := [
 	"Header/AudienceLabel",
 	"Header/GoOnAirButton",
 	"EnterAirButton",
+	"RundownPaper",
 	"Closes/CloseItem",
 	"Closes/CloseNotebook",
 	"Closes/FramingStrip",
@@ -357,37 +358,29 @@ func test_the_badge_counts_what_is_still_unscheduled() -> void:
 
 # --- ir ao ar ---
 
-func test_going_on_air_needs_the_whole_program() -> void:
+func test_going_on_air_needs_at_least_one_decision() -> void:
 	_root._on_go_on_air_pressed()
 	assert_eq(GameState.current_phase(), NightCycle.Phase.TRIAGE)
-	assert_string_contains(_node("Feedback").text, "quatro blocos")
+	assert_string_contains(_node("Feedback").text, "roteiro ainda está vazio")
 
 
-## O botao AO AR fica desabilitado enquanto o programa nao esta pronto, e
-## um botao desabilitado nao fala. Quem tem que dizer o que falta e a
-## mesa: o bloco incompleto e o rodape.
-func test_an_incomplete_program_says_what_is_missing() -> void:
-	assert_true(_node("Header/GoOnAirButton").disabled)
-	assert_string_contains(_node("Feedback").text, "Bloco 1 vazio",
-		"com a mesa vazia, o rodape manda arrastar alguem")
+## ADR 0014 substitui a grade fixa: decidir no documento atualiza a folha
+## e uma única decisão completa já permite entrar no ar.
+func test_deciding_on_a_paper_updates_the_automatic_rundown() -> void:
+	assert_false(_node("Blocks").visible, "a grade de quatro blocos saiu da interface")
+	assert_true(_node("RundownPaper").visible)
+	assert_string_contains(_node("RundownPaper/Paper/Warning").text, "Responda")
 
-	_drop_on_block(0, "n01_carta_envelope_azul")
-	assert_string_contains(_blocks()[0].get_node("Label").text, "escolher",
-		"bloco com item e sem enquadramento nao pode parecer pronto")
-	assert_string_contains(_node("Feedback").text, "Bloco 1: escolha",
-		"o rodape pede o enquadramento do bloco que acabou de receber alguem")
-	assert_true(_node("Header/GoOnAirButton").disabled)
+	_root._open_item("n01_carta_envelope_azul")
+	var choices := _node("Closes/CloseItem/Decisions").get_children()
+	assert_gt(choices.size(), 0, "o papel oferece a decisão no próprio documento")
+	choices[0].pressed.emit()
 
-	for row in _framing_rows():
-		if int(row.row_id()) == FramingOption.Kind.TRUTH:
-			_press(row)
-	assert_false(_blocks()[0].get_node("Label").text.contains("escolher"),
-		"resolvido o enquadramento, a marca sai do bloco")
-	assert_true(_node("Header/GoOnAirButton").disabled, "faltam tres blocos")
-
-	_drop_on_block(1, "n01_carta_a_mendes")
-	assert_string_contains(_node("Feedback").text, "Bloco 2: escolha",
-		"o rodape acompanha o bloco em que o jogador esta mexendo")
+	assert_true(GameState.is_rundown_ready())
+	assert_eq(GameState.block_of_item("n01_carta_envelope_azul"), 0)
+	assert_gt(GameState.rundown_estimated_seconds(), 0.0)
+	assert_string_contains(_node("RundownPaper/Paper/Total").text, "0:")
+	assert_string_contains(_node("Feedback").text, "entrou no roteiro")
 
 
 ## --- atmosfera (ADR 0012) ---
@@ -440,25 +433,16 @@ func test_the_enter_air_button_always_answers() -> void:
 	var button: Button = _node("EnterAirButton")
 	assert_false(button.disabled, "este botao nunca fica desabilitado")
 
-	# Mesa vazia: manda encher o bloco 1 e abre o celular para isso.
+	# Mesa vazia: explica a decisão e abre o celular para começar.
 	button.pressed.emit()
 	assert_eq(GameState.current_phase(), NightCycle.Phase.TRIAGE)
-	assert_string_contains(_node("Feedback").text, "Bloco 1 vazio")
+	assert_string_contains(_node("Feedback").text, "Responda no celular")
 	assert_true(_node("Closes/ClosePhone").visible, "abre o celular, onde estao as pessoas")
 	assert_false(button.disabled)
 
-	# Item de papel sem enquadramento: abre a regua do bloco que falta.
-	_drop_on_block(0, "n01_carta_envelope_azul")
-	_root._show_desk()
-	button.pressed.emit()
-	assert_string_contains(_node("Feedback").text, "Bloco 1: escolha")
-	assert_true(_node("Closes/FramingStrip").visible, "abre a regua do bloco 1")
-	assert_false(button.disabled)
-
-	# Programa completo: sobe ao ar de verdade. Libera o bloco 0 primeiro,
-	# senao a carta ja colocada recusa o item que o programa quer ali.
-	GameState.clear_block(0)
-	_schedule_whole_program()
+	# Uma decisão completa no papel já forma um roteiro válido.
+	_root._open_item("n01_carta_envelope_azul")
+	_node("Closes/CloseItem/Decisions").get_child(0).pressed.emit()
 	button.pressed.emit()
 	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)
 	assert_false(button.disabled, "no ar ele continua clicavel")
@@ -485,7 +469,8 @@ func test_going_on_air_clears_the_desk_objects() -> void:
 	assert_true(_node("Phone").visible, "no ar, as ferramentas continuam acessíveis")
 	assert_false(_close_item().visible)
 	assert_true(_node("Studio/BlockLabel").visible)
-	assert_string_contains(_node("Studio/BlockLabel").text, "BLOCO 1 DE 4")
+	assert_string_contains(_node("Studio/BlockLabel").text, "ROTEIRO 1 DE 4")
+	assert_false(_node("RundownPaper").visible, "a folha libera espaço para o console ao vivo")
 
 
 func test_the_teleprompter_shows_the_script_of_the_block() -> void:

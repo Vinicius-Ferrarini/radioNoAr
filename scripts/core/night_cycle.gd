@@ -275,7 +275,7 @@ func _open_live() -> void:
 	_live_results.clear()
 	_live_position = -1
 
-	for block_index in ProgramRundown.BLOCK_COUNT:
+	for block_index in _rundown.size():
 		var item := _rundown.item_at(block_index)
 		var kind := _rundown.framing_at(block_index)
 		if item == null or kind == ProgramRundown.NO_FRAMING or kind == FramingOption.Kind.DISCARD:
@@ -347,7 +347,7 @@ func resolve_live() -> void:
 	var history_before := _run.aired_history()
 	var aired: Array[Dictionary] = []
 
-	for block_index in ProgramRundown.BLOCK_COUNT:
+	for block_index in _rundown.size():
 		var item := _rundown.item_at(block_index)
 		var kind := _rundown.framing_at(block_index)
 		if item == null or kind == ProgramRundown.NO_FRAMING:

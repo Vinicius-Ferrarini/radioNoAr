@@ -36,6 +36,7 @@ func show_notebook(night: int, entries: Array, marked_excerpt: String) -> void:
 
 	for entry in entries:
 		var row: Button = row_scene.instantiate()
+		row.theme_type_variation = &"PaperButton"
 		row.setup(entry.id, entry.text, false)
 		row.tooltip_text = entry.text
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

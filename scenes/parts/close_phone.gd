@@ -61,6 +61,7 @@ func show_list(threads: Array) -> void:
 		# programa, que era o que os chips de avatar faziam antes.
 		var row: Button = row_scene.instantiate()
 		_list.add_child(row)
+		row.theme_type_variation = &"PhoneButton"
 		var unread: int = int(thread.get("unread", 0))
 		var mark: String = "(%d) " % unread if unread > 0 else ""
 		row.setup(String(thread["item_id"]),
@@ -106,6 +107,7 @@ func show_chat(
 		var chip: Button = row_scene.instantiate()
 		_claims.add_child(chip)
 		var caught: bool = contradictions.has(claim.id)
+		chip.theme_type_variation = &"DangerButton" if caught else &"PhoneButton"
 		chip.setup(claim.id, ("! " if caught else "? ") + claim.excerpt, false)
 		chip.clip_text = true
 		chip.custom_minimum_size = Vector2(34, 10)
@@ -117,6 +119,15 @@ func show_chat(
 		_replies.add_child(row)
 		var reply: ReplyOption = replies[index]
 		var locked: bool = not bool(available[index])
+		# A cor comunica o tom da resposta sem rotular uma escolha como
+		# moralmente certa: conferir, negociar, confrontar.
+		match index:
+			0:
+				row.theme_type_variation = &"PhoneButton"
+			1:
+				row.theme_type_variation = &"AmberButton"
+			_:
+				row.theme_type_variation = &"DangerButton"
 		row.setup(str(index), reply.text if not locked else reply.text + " — conferir antes", false)
 		row.disabled = locked
 		row.clip_text = false

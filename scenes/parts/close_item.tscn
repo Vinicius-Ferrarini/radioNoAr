@@ -120,6 +120,26 @@ size_flags_horizontal = 3
 fit_content = true
 scroll_active = false
 
+[node name="PaperBody" type="RichTextLabel" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 46.0
+offset_right = 224.0
+offset_bottom = 70.0
+mouse_filter = 2
+fit_content = false
+scroll_active = false
+
+[node name="Decisions" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 8.0
+offset_top = 72.0
+offset_right = 224.0
+offset_bottom = 89.0
+theme_override_constants/separation = 2
+
 [node name="ClaimsTitle" type="Label" parent="."]
 layout_mode = 0
 offset_left = 8.0

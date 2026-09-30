@@ -148,8 +148,8 @@ func test_the_phone_clock_walks_with_the_night() -> void:
 		"trinta segundos de jogo são quinze minutos de programa")
 
 
-## O que você responde entra na thread e decide o enquadramento do bloco.
-func test_the_reply_becomes_your_bubble_and_the_block_inherits_it() -> void:
+## O que você responde entra na thread e no roteiro sem uma segunda etapa.
+func test_the_reply_becomes_your_bubble_and_enters_the_rundown() -> void:
 	desk.get_node("Briefing/Start").pressed.emit()
 	desk._open_item("p1_celia")
 	_wait_for_her_to_finish()
@@ -162,19 +162,20 @@ func test_the_reply_becomes_your_bubble_and_the_block_inherits_it() -> void:
 	assert_eq(mine.size(), 1, "a sua fala entra na thread")
 	assert_eq(_reply_rows().size(), 0, "respondido, não há mais o que escolher")
 
-	desk._on_item_dropped("p1_celia", 0)
+	assert_eq(GameState.block_of_item("p1_celia"), 0,
+		"responder confirma a pauta automaticamente")
 	assert_eq(GameState.block_framing(0), FramingOption.Kind.AS_RECEIVED,
-		"o bloco herda o que você disse a ela")
-	assert_string_contains(desk.get_node("Blocks/Block1/Label").text, "Dar os parabéns")
+		"o roteiro usa exatamente o que você prometeu")
+	assert_string_contains(desk.get_node("RundownPaper/Paper/ListScroll/List").get_child(0).text, "Dar os parabéns")
 
 
-## Enquanto não há resposta, a mesa manda para o celular, não para a régua.
+## Enquanto não há resposta, o roteiro segue vazio e a mesa abre o celular.
 func test_an_undecided_conversation_points_to_the_phone() -> void:
 	desk.get_node("Briefing/Start").pressed.emit()
-	desk._on_item_dropped("p1_celia", 0)
-	assert_string_contains(desk.get_node("Feedback").text, "responda a conversa",
-		"o rodapé manda conversar, não escolher enquadramento")
-	assert_true(desk.get_node("Header/GoOnAirButton").disabled)
+	desk.get_node("EnterAirButton").pressed.emit()
+	assert_string_contains(desk.get_node("Feedback").text, "Responda no celular")
+	assert_true(desk.get_node("Closes/ClosePhone").visible)
+	assert_eq(GameState.block_of_item("p1_celia"), -1)
 
 
 func test_visible_controls_cut_call_preserve_reaction_and_reach_morning() -> void:

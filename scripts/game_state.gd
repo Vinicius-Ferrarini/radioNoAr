@@ -172,10 +172,9 @@ func send_reply(item_id: String, index: int) -> bool:
 	var talk := conversation_of(item_id)
 	if talk == null or not reply_available(item_id, index) or not talk.send(index):
 		return false
-	# Se o item já está escalado, o bloco passa a valer o que você disse.
-	var block := block_of_item(item_id)
-	if block != -1:
-		_inherit_framing(item_id, block)
+	# Responder é confirmar a pauta: a promessa aparece no roteiro na hora.
+	var item := item_by_id(item_id)
+	_cycle.rundown().commit(item, talk.chosen_framing_kind())
 	_announce_rundown()
 	return true
 
@@ -484,6 +483,19 @@ func set_framing(block_index: int, kind: int) -> int:
 	return result
 
 
+## Confirma uma carta ou comunicado no próprio papel (ADR 0014).
+func commit_item(item_id: String, kind: int) -> int:
+	if not _can_edit_program():
+		return ProgramRundown.PlaceResult.INVALID_BLOCK
+	var item := item_by_id(item_id)
+	if item == null or not framing_available(item, kind):
+		return ProgramRundown.PlaceResult.FRAMING_NOT_ALLOWED
+	var result := _cycle.rundown().commit(item, kind)
+	if result == ProgramRundown.PlaceResult.OK:
+		_announce_rundown()
+	return result
+
+
 func block_item(block_index: int) -> BroadcastItem:
 	return _cycle.rundown().item_at(block_index) if _cycle != null else null
 
@@ -495,7 +507,9 @@ func block_framing(block_index: int) -> int:
 
 
 func block_of_item(item_id: String) -> int:
-	for i in ProgramRundown.BLOCK_COUNT:
+	if _cycle == null:
+		return -1
+	for i in _cycle.rundown().size():
 		var item := block_item(i)
 		if item != null and item.id == item_id:
 			return i
@@ -504,6 +518,60 @@ func block_of_item(item_id: String) -> int:
 
 func is_rundown_ready() -> bool:
 	return _cycle != null and _cycle.rundown().is_ready()
+
+
+## Leitura pronta para a folha da mesa. A cena não abre conteúdo nem soma
+## regras: recebe apenas o que precisa apresentar.
+func rundown_entries() -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	if _cycle == null:
+		return entries
+	for i in _cycle.rundown().size():
+		var item := _cycle.rundown().item_at(i)
+		if item == null:
+			continue
+		var kind := _cycle.rundown().framing_at(i)
+		var framing := _framing_of(item, kind)
+		var sender := sender_of(item.id)
+		entries.append({
+			"index": i,
+			"item_id": item.id,
+			"sender": sender.display_name if sender != null else item.sender_id,
+			"headline": item.headline,
+			"framing": framing.label if framing != null else "",
+			"discarded": kind == FramingOption.Kind.DISCARD,
+			"seconds": _script_seconds(framing),
+		})
+	return entries
+
+
+func rundown_estimated_seconds() -> float:
+	var total := 0.0
+	for entry in rundown_entries():
+		total += float(entry["seconds"])
+	return total
+
+
+func _framing_of(item: BroadcastItem, kind: int) -> FramingOption:
+	if item == null:
+		return null
+	for framing in item.framings:
+		if framing != null and framing.kind == kind:
+			return framing
+	return null
+
+
+func _script_seconds(framing: FramingOption) -> float:
+	if framing == null or framing.kind == FramingOption.Kind.DISCARD or framing.script_id.is_empty():
+		return 0.0
+	var script := ContentLibrary.broadcast_script(framing.script_id)
+	if script == null:
+		return 0.0
+	var total := 0.0
+	for line in script.lines:
+		if line != null:
+			total += line.read_seconds
+	return total
 
 
 func quota_required() -> int:

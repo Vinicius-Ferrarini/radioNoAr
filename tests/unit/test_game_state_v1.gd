@@ -149,6 +149,24 @@ func test_irony_is_allowed_on_the_official_communique() -> void:
 	assert_eq(GameState.set_framing(0, FramingOption.Kind.IRONY), ProgramRundown.PlaceResult.OK)
 
 
+func test_commit_item_adds_a_paper_directly_to_the_rundown() -> void:
+	watch_signals(GameState)
+	assert_eq(GameState.commit_item("n01_carta_envelope_azul", FramingOption.Kind.TRUTH),
+		ProgramRundown.PlaceResult.OK)
+	assert_eq(GameState.block_of_item("n01_carta_envelope_azul"), 0)
+	assert_true(GameState.is_rundown_ready())
+	assert_signal_emitted(GameState, "rundown_changed")
+
+
+func test_rundown_entries_include_the_estimated_script_time() -> void:
+	GameState.commit_item("n01_carta_envelope_azul", FramingOption.Kind.TRUTH)
+	var entries := GameState.rundown_entries()
+	assert_eq(entries.size(), 1)
+	assert_eq(entries[0]["item_id"], "n01_carta_envelope_azul")
+	assert_gt(float(entries[0]["seconds"]), 0.0)
+	assert_eq(GameState.rundown_estimated_seconds(), float(entries[0]["seconds"]))
+
+
 # --- cota ---
 
 func test_quota_changed_reports_required_and_filled() -> void:

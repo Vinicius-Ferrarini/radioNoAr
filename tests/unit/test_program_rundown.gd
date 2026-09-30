@@ -34,6 +34,40 @@ func _empty_rundown(quota := 1) -> ProgramRundown:
 	return ProgramRundown.new(quota, [] as Array[OrderRule])
 
 
+# --- roteiro automático (ADR 0014) ---
+
+func test_commit_appends_a_complete_decision() -> void:
+	var rundown := _empty_rundown()
+	var item := _make_item("i1", BroadcastItem.ItemType.SPOTLIGHT)
+	assert_eq(rundown.commit(item, FramingOption.Kind.TRUTH), ProgramRundown.PlaceResult.OK)
+	assert_eq(rundown.size(), 1)
+	assert_eq(rundown.item_at(0), item)
+	assert_eq(rundown.framing_at(0), FramingOption.Kind.TRUTH)
+	assert_true(rundown.is_ready(), "uma decisão completa já pode ir ao ar")
+
+
+func test_commit_updates_the_same_item_without_duplicating_it() -> void:
+	var rundown := _empty_rundown()
+	var item := _make_item("i1", BroadcastItem.ItemType.SPOTLIGHT)
+	rundown.commit(item, FramingOption.Kind.AS_RECEIVED)
+	rundown.commit(item, FramingOption.Kind.TRUTH)
+	assert_eq(rundown.size(), 1)
+	assert_eq(rundown.framing_at(0), FramingOption.Kind.TRUTH)
+
+
+func test_commit_accepts_more_than_four_decisions() -> void:
+	var rundown := _empty_rundown()
+	for i in 6:
+		assert_eq(rundown.commit(_make_item("i%d" % i, BroadcastItem.ItemType.SPOTLIGHT),
+			FramingOption.Kind.TRUTH), ProgramRundown.PlaceResult.OK)
+	assert_eq(rundown.size(), 6)
+	assert_eq(rundown.filled_blocks(), 6)
+
+
+func test_empty_automatic_rundown_is_not_ready() -> void:
+	assert_false(_empty_rundown().is_ready())
+
+
 # --- colocar itens nos blocos ---
 
 func test_place_puts_the_item_in_the_block() -> void:
