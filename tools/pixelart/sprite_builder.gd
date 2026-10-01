@@ -15,6 +15,7 @@ extends RefCounted
 ## por cima.
 
 const TRANSPARENT := Color(0, 0, 0, 0)
+const SOURCE_SCALE := 2
 
 
 ## Devolve "" quando a definição está bem formada, ou a descrição do
@@ -51,6 +52,10 @@ static func validate(definition: Dictionary) -> String:
 		var error := _validate_primitive(definition["name"], primitive)
 		if not error.is_empty():
 			return error
+	for primitive in definition.get("source_details", []):
+		var error := _validate_primitive(definition["name"], primitive)
+		if not error.is_empty():
+			return error
 
 	return ""
 
@@ -69,6 +74,13 @@ static func build(definition: Dictionary) -> Image:
 		_paint_rows(image, definition)
 
 	for primitive in definition.get("primitives", []):
+		_paint_primitive(image, primitive)
+
+	# A definição continua no grid lógico conhecido. A fonte exportada tem
+	# densidade 2x; detalhes opcionais são desenhados depois da ampliação e
+	# portanto podem usar um único pixel do novo canvas.
+	image.resize(size.x * SOURCE_SCALE, size.y * SOURCE_SCALE, Image.INTERPOLATE_NEAREST)
+	for primitive in definition.get("source_details", []):
 		_paint_primitive(image, primitive)
 
 	return image

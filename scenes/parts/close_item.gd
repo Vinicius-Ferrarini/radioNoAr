@@ -106,7 +106,7 @@ func _rebuild_decisions(item: BroadcastItem, available_framings: Array[int]) -> 
 		var button := Button.new()
 		button.text = framing.label
 		button.tooltip_text = "Esta decisão entra no roteiro automaticamente."
-		button.add_theme_font_size_override("font_size", 5)
+		button.add_theme_font_size_override("font_size", 10)
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var kind: int = framing.kind
 		button.pressed.connect(func() -> void: framing_chosen.emit(kind))
@@ -146,7 +146,7 @@ func _rebuild_claims(item: BroadcastItem, contradictions: Array) -> void:
 		var row: Button = row_scene.instantiate()
 		row.setup(claim.id, ("! " if found else "") + claim.excerpt, false)
 		row.tooltip_text = claim.excerpt
-		row.custom_minimum_size = Vector2(0, 12)
+		row.custom_minimum_size = Vector2(0, 24)
 		row.clip_text = true
 		row.row_pressed.connect(func(claim_id: String) -> void: claim_marked.emit(claim_id))
 		_claims_list.add_child(row)

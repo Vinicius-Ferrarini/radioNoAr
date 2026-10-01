@@ -34,7 +34,7 @@ func setup_avatar(row_id: String, avatar: Texture2D, hint: String, draggable: bo
 	text = ""
 	icon = avatar
 	tooltip_text = hint
-	custom_minimum_size = Vector2(18, 18)
+	custom_minimum_size = Vector2(36, 36)
 	expand_icon = true
 
 

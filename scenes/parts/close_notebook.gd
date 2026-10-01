@@ -41,6 +41,6 @@ func show_notebook(night: int, entries: Array, marked_excerpt: String) -> void:
 		row.tooltip_text = entry.text
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.clip_text = false
-		row.custom_minimum_size = Vector2(0, 16)
+		row.custom_minimum_size = Vector2(0, 32)
 		row.row_pressed.connect(func(entry_id: String) -> void: entry_chosen.emit(entry_id))
 		_list.add_child(row)

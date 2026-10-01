@@ -13,12 +13,18 @@ da expansão do M13. Plano: [PLANO_RADIO_VIVA.md](PLANO_RADIO_VIVA.md).
 | Microfone alternável e intervalo único de 6 s | implementado; música cria vínculo, anúncio rende $8 |
 | Resposta imediata e objetos de memória na mesa | implementado |
 | Arte e som | 47 sprites no manifesto e 6 sons originais; gerados e integrados |
-| GUT | 330/330; 207.423 asserts |
-| Verificação renderizada | sete capturas e navegação até a terceira noite |
+| GUT | 353/353; 921.594 asserts |
+| Verificação renderizada | treze capturas e navegação até a terceira noite |
 | Playtest humano de diversão e ritmo | 1º feito: veredito de monotonia |
 | Atmosfera (leito de som, mesa em movimento) | implementado — ADR 0012 |
 | Redesenho visual das telas | implementado: materiais por função, celular compacto, pauta física e console integrado |
 | Kit de UI | 11 sprites novos; 47 sprites no manifesto, gerados deterministicamente |
+| Polimento do roteiro e celular | implementado: folha retrátil, duas pautas legíveis, briefing em papel e conversas por recência — ADR 0015 |
+| Chat e roteiro inferior | implementado: não lidas ancoradas, decisões fora do aparelho e cartão animado — ADR 0016 |
+| Retratos e acabamento do chat | implementado: cinco retratos da noite 1, balões regulares e roteiro que volta a recolher — ADR 0017 |
+| Retratos 32 px e celular amplo | implementado: ilustrações com cenário, três contatos inteiros e cabeçalho de contato — ADR 0018 |
+| Estúdio e janela da cidade | implementado: janela panorâmica em camadas, rua vazia, `NO AR` e microfone — ADR 0019 |
+| Canvas e sprites 2× | implementado: canvas 640×360, fontes rasterizadas 2× e retratos 64×64 — ADR 0020 |
 
 A noite antiga permanece em `data/nights/` para regressão. A mesa inicia
 a nova abertura por padrão. A campanha completa de 21 noites, finais,
@@ -140,6 +146,11 @@ cartas e comunicados oferecem a decisão no próprio documento; a folha de
 roteiro mostra ordem, promessa, duração e aviso informativo. A grade de
 quatro cartuchos saiu da preparação. Suíte **336/336, 207.467 asserts**.
 
+Polimento posterior (ADR 0015): a folha ganhou recolhimento por clique e
+animação de entrada, a rolagem volta ao topo, o briefing ficou legível e o
+celular separa nome/hora e ordena as conversas pela última atividade. Suíte
+**339/339, 207.494 asserts** e onze capturas renderizadas.
+
 M7 não depende tecnicamente de M5/M6 — a pixel art e a lógica não se
 cruzam. Ficou decidido rodar a lógica primeiro (M5 → M6) e só então o M7:
 o custo é ficar dois marcos sem novidade na tela.
@@ -159,7 +170,7 @@ o custo é ficar dois marcos sem novidade na tela.
 | Risco | Mitigação |
 |---|---|
 | O ao vivo (M9) é a mecânica mais complexa e a mais fácil de ficar chata | Tempo injetado (ADR 0007) permite iterar nos números sem retestar à mão |
-| 320×180 pode não caber os closes de texto | ADR 0005 prevê a troca para 480×270 como substituição de ADR, mudança pequena |
+| ~~320×180 limita detalhe dos sprites~~ | Resolvido pelo ADR 0020: canvas 640×360 e composição lógica preservada em escala 2× |
 | Conteúdo de ~30 noites é o maior volume de trabalho do projeto | Teste de sanidade de conteúdo (ADR 0009) evita conteúdo quebrado silencioso |
 | ~~Dois modelos de dados convivendo entre M5 e M9~~ | Resolvido no M10: a v0 saiu |
 | Interface que funciona mas não é o jogo (aconteceu no M8) | Rodar o jogo e olhar, não só a suíte verde. ADR 0010 |

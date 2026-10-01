@@ -6,7 +6,7 @@ extends GutTest
 ## (ADR 0010).
 
 const SCENE_PATH := "res://scenes/studio_desk.tscn"
-const VIEWPORT := Vector2i(320, 180)
+const VIEWPORT := Vector2i(640, 360)
 
 ## A mesa e a casa: estes nos existem sempre (GAME_DESIGN secao 12).
 const EXPECTED_NODES := [
@@ -110,10 +110,31 @@ func test_every_promised_node_is_there() -> void:
 
 
 func test_the_desk_starts_uncovered() -> void:
+	assert_true(_node("Closes").visible, "o contêiner permite abrir os closes")
 	assert_false(_close_item().visible, "o close do item comeca fechado")
 	assert_false(_node("Closes/CloseNotebook").visible)
 	assert_false(_node("Closes/FramingStrip").visible)
 	assert_true(_node("Studio/Window").visible, "a mesa aparece desde o inicio")
+
+
+func test_the_city_window_dominates_the_studio_and_has_future_layers() -> void:
+	var window: TextureRect = _node("Studio/Window")
+	assert_gte(window.size.x, 500.0)
+	assert_gte(window.size.y, 192.0)
+	assert_true(window.clip_contents)
+	assert_not_null(window.get_node("StreetLayer"))
+	assert_not_null(window.get_node("PeopleLayer"))
+	assert_not_null(window.get_node("EventLayer"))
+
+
+func test_only_window_on_air_and_microphone_are_visible_in_the_studio() -> void:
+	assert_true(_node("Studio/Window").visible)
+	assert_true(_node("Studio/OnAirSign").visible)
+	assert_true(_node("Studio/Microphone").visible)
+	for path in ["Studio/Teleprompter", "Studio/BlockLabel", "Studio/Turntable",
+		"Studio/DeskLamp", "Studio/ListenersDial", "Studio/GiftRecord",
+		"Studio/Sponsor", "Studio/BridgeNote"]:
+		assert_false(_node(path).visible, "%s não faz parte da nova parede" % path)
 
 
 func test_everything_fits_inside_the_viewport() -> void:
@@ -128,12 +149,13 @@ func test_everything_fits_inside_the_viewport() -> void:
 
 
 func test_sprites_are_not_stretched_out_of_proportion() -> void:
-	# NinePatch pode esticar: e para isso que serve. TextureRect nao.
+	# No canvas nativo a fonte 2x mapeia 1:1 para controles fixos.
+	# NinePatch pode esticar: é para isso que serve.
 	for node in _all_nodes(_root):
 		if not (node is TextureRect) or node.texture == null:
 			continue
 		assert_eq(node.size, node.texture.get_size(),
-			"%s deveria ter o tamanho exato da textura" % node.name)
+			"%s deveria mapear a textura 1:1" % node.name)
 
 
 func test_the_quota_block_is_the_one_with_the_dashed_frame() -> void:
@@ -169,7 +191,7 @@ func test_opening_the_phone_shows_the_conversation_list() -> void:
 	assert_true(_node("Closes/ClosePhone").visible, "o celular abre como aparelho")
 	assert_false(_close_item().visible, "papel nao entra aqui")
 	assert_eq(_phone_title(), "MENSAGENS")
-	assert_string_contains(_phone_rows()[0].text, "Dona Célia",
+	assert_string_contains(_phone_rows()[0].get_node("Name").text, "Dona Célia",
 		"a primeira conversa e a da Dona Celia")
 
 
@@ -178,8 +200,11 @@ func test_opening_the_phone_shows_the_conversation_list() -> void:
 func test_the_phone_shows_the_date_and_the_time_of_the_last_message() -> void:
 	_root._open_phone()
 	assert_eq(_node("Closes/ClosePhone/Today").text, GameCalendar.date_of(1))
-	assert_string_contains(_phone_rows()[0].text, "19:00",
+	assert_eq(_phone_rows()[0].get_node("Time").text, "19:00",
 		"a lista mostra a hora que o relogio marcou na ultima fala")
+	assert_true(_phone_rows()[0].get_node("Name").clip_text)
+	assert_gt(_phone_rows()[0].get_node("Time").size.x, 0.0,
+		"a hora tem coluna própria e nome longo não pode empurrá-la")
 
 
 func test_the_phone_lists_only_phone_conversations() -> void:
@@ -194,11 +219,15 @@ func test_entering_a_conversation_from_the_list() -> void:
 	assert_true(_node("Closes/ClosePhone/ChatScroll").visible)
 
 
-func test_phone_rows_are_draggable_and_carry_the_item() -> void:
+func test_phone_rows_keep_name_time_and_preview_in_separate_areas() -> void:
 	_root._open_phone()
-	var payload: Variant = _phone_rows()[0].drag_payload()
-	assert_true(payload is Dictionary, "arrasta-se a conversa para o bloco")
-	assert_eq(payload["item_id"], "n01_msg_dona_celia")
+	var row := _phone_rows()[0]
+	assert_not_null(row.get_node("Name"))
+	assert_not_null(row.get_node("Time"))
+	assert_not_null(row.get_node("Preview"))
+	assert_lte(row.get_node("Name").get_rect().end.x,
+		row.get_node("Time").get_rect().position.x,
+		"nome e hora não disputam os mesmos pixels")
 
 
 # --- as cartas ---
@@ -234,7 +263,7 @@ func test_paper_and_phone_do_not_share_a_surface() -> void:
 # --- cruzar com o caderno ---
 
 func _phone_claim_rows() -> Array[Node]:
-	return _node("Closes/ClosePhone/Claims").get_children()
+	return _node("Closes/ClosePhone/DecisionPanel/DecisionContent/Claims").get_children()
 
 
 func test_marking_a_claim_opens_the_notebook() -> void:
@@ -368,6 +397,9 @@ func test_going_on_air_needs_at_least_one_decision() -> void:
 ## e uma única decisão completa já permite entrar no ar.
 func test_deciding_on_a_paper_updates_the_automatic_rundown() -> void:
 	assert_false(_node("Blocks").visible, "a grade de quatro blocos saiu da interface")
+	if _node("Briefing").visible:
+		assert_false(_node("RundownPaper").visible, "o briefing não divide espaço com a folha")
+		_node("Briefing/Start").pressed.emit()
 	assert_true(_node("RundownPaper").visible)
 	assert_string_contains(_node("RundownPaper/Paper/Warning").text, "Responda")
 
@@ -381,6 +413,53 @@ func test_deciding_on_a_paper_updates_the_automatic_rundown() -> void:
 	assert_gt(GameState.rundown_estimated_seconds(), 0.0)
 	assert_string_contains(_node("RundownPaper/Paper/Total").text, "0:")
 	assert_string_contains(_node("Feedback").text, "entrou no roteiro")
+
+
+func test_rundown_is_clickable_and_resets_its_scroll() -> void:
+	_node("Briefing/Start").pressed.emit()
+	var paper := _node("RundownPaper")
+	assert_true(paper.is_collapsed(), "o roteiro começa guardado na borda inferior")
+	paper.toggle_collapsed()
+	assert_false(paper.is_collapsed())
+	paper.toggle_collapsed()
+	assert_true(paper.is_collapsed())
+
+	GameState.commit_item("n01_carta_envelope_azul", FramingOption.Kind.TRUTH)
+	GameState.commit_item("n01_carta_a_mendes", FramingOption.Kind.TRUTH)
+	await get_tree().process_frame
+	var scroll: ScrollContainer = _node("RundownPaper/Paper/ListScroll")
+	assert_eq(scroll.scroll_vertical, 0, "atualizar a folha não corta a primeira pauta")
+	assert_eq(_node("RundownPaper/Paper/ListScroll/List").get_child_count(), 2)
+
+
+func test_collapsed_rundown_is_a_high_contrast_white_tab() -> void:
+	_node("Briefing/Start").pressed.emit()
+	var label: Label = _node("RundownPaper/CollapsedLabel")
+	var style := label.get_theme_stylebox("normal") as StyleBoxFlat
+	assert_not_null(style)
+	assert_gt(style.border_width_left, 0)
+	assert_gt(style.border_color.r, 0.8)
+	assert_gt(label.get_theme_color("font_color").r, 0.8)
+
+
+func test_two_quick_entries_still_return_the_rundown_to_the_edge() -> void:
+	_node("Briefing/Start").pressed.emit()
+	var paper := _node("RundownPaper")
+	var first: Array[Dictionary] = [{"index": 0, "sender": "Célia", "framing": "Parabéns", "seconds": 5.0}]
+	var second: Array[Dictionary] = first.duplicate()
+	second.append({"index": 1, "sender": "Oficina", "framing": "Endereço", "seconds": 5.0})
+	paper.show_rundown(first, 5.0)
+	await get_tree().create_timer(0.1).timeout
+	paper.show_rundown(second, 10.0)
+	await get_tree().create_timer(1.25).timeout
+	assert_true(paper.is_collapsed(),
+		"uma segunda pauta reinicia a atenção sem cancelar o recolhimento")
+
+
+func test_teleprompter_is_blank_before_the_broadcast() -> void:
+	assert_eq(_node("Studio/Teleprompter/ScriptText").text, "")
+	assert_false(_node("Studio/Teleprompter").visible,
+		"o texto técnico não aparece como aparelho na sala")
 
 
 ## --- atmosfera (ADR 0012) ---
@@ -418,13 +497,14 @@ func test_dead_air_is_audible_and_darkens_the_sign() -> void:
 		"e o letreiro apaga junto com a voz")
 
 
-## Fora do ar a mesa nao fica congelada: a lampada oscila.
-func test_the_desk_lamp_never_sits_still() -> void:
-	var first: float = _node("Studio/DeskLamp").modulate.a
+## Decisão visual de 2026-10-01: estes dois elementos não aparecem mais.
+func test_the_desk_lamp_and_listener_dial_stay_hidden() -> void:
+	assert_false(_node("Studio/DeskLamp").visible)
+	assert_false(_node("Studio/ListenersDial").visible)
 	_root._clock += 0.7
 	_root._breathe(0.016)
-	assert_ne(_node("Studio/DeskLamp").modulate.a, first,
-		"a luz da mesa respira")
+	assert_false(_node("Studio/DeskLamp").visible)
+	assert_false(_node("Studio/ListenersDial").visible)
 
 
 ## O botao dedicado nunca fica desabilitado e nunca fica calado: em
@@ -468,7 +548,7 @@ func test_going_on_air_clears_the_desk_objects() -> void:
 	assert_eq(GameState.current_phase(), NightCycle.Phase.LIVE)
 	assert_true(_node("Phone").visible, "no ar, as ferramentas continuam acessíveis")
 	assert_false(_close_item().visible)
-	assert_true(_node("Studio/BlockLabel").visible)
+	assert_false(_node("Studio/BlockLabel").visible)
 	assert_string_contains(_node("Studio/BlockLabel").text, "ROTEIRO 1 DE 4")
 	assert_false(_node("RundownPaper").visible, "a folha libera espaço para o console ao vivo")
 
@@ -481,6 +561,7 @@ func test_the_teleprompter_shows_the_script_of_the_block() -> void:
 	var prompter: String = _node("Studio/Teleprompter/ScriptText").text
 	assert_string_contains(prompter, "Célia", "a primeira linha do roteiro da Dona Celia")
 	assert_string_contains(prompter, "[b]", "a linha de agora vem em destaque")
+	assert_false(_node("Studio/Teleprompter").visible)
 
 
 func test_the_microphone_is_only_usable_on_air() -> void:

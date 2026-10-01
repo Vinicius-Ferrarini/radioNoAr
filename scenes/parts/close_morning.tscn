@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="3_row"]
 
 [node name="CloseMorning" type="Control"]
-offset_right = 232.0
-offset_bottom = 112.0
+offset_right = 464.0
+offset_bottom = 224.0
 script = ExtResource("1_morning")
 row_scene = ExtResource("3_row")
 
@@ -18,39 +18,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_paper")
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 6.0
-offset_right = 224.0
-offset_bottom = 16.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 448.0
+offset_bottom = 32.0
 mouse_filter = 2
 text = "MANHÃ SEGUINTE"
 horizontal_alignment = 1
 
 [node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 0
-offset_left = 10.0
-offset_top = 20.0
-offset_right = 222.0
-offset_bottom = 90.0
+offset_left = 20.0
+offset_top = 40.0
+offset_right = 444.0
+offset_bottom = 180.0
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="ContinueButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 168.0
-offset_top = 94.0
-offset_right = 224.0
-offset_bottom = 107.0
+offset_left = 336.0
+offset_top = 188.0
+offset_right = 448.0
+offset_bottom = 214.0
 theme_type_variation = &"AmberButton"
 text = "NOITE 2"

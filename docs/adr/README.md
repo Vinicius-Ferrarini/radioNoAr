@@ -29,6 +29,13 @@ escopo, ou ao reverter uma decisão anterior.
 | [0012](0012-a-mesa-respira.md) | A mesa respira: leito de som e movimento | aceito e implementado |
 | [0013](0013-a-conversa-e-a-decisao.md) | A conversa é a decisão; a cidade é o medidor | aceito (Fase 1 em execução) |
 | [0014](0014-o-roteiro-e-a-resposta.md) | O roteiro é a resposta | aceito e em execução |
+| [0015](0015-folha-retratil-e-recencia-do-celular.md) | Folha retrátil e recência do celular | aceito e implementado |
+| [0016](0016-chat-legivel-e-roteiro-na-borda.md) | Chat legível e roteiro na borda | aceito e implementado |
+| [0017](0017-retratos-no-celular-e-roteiro-transitorio.md) | Retratos no celular e roteiro transitório | aceito e implementado |
+| [0018](0018-retratos-32px-e-celular-amplo.md) | Retratos 32 px e celular amplo | aceito e implementado |
+| [0019](0019-a-janela-e-a-cidade.md) | A janela é a cidade | aceito e implementado |
+| [0020](0020-canvas-e-fontes-2x.md) | Canvas e fontes de sprite em densidade 2× | aceito e implementado |
+| [0021](0021-layout-nativo-e-fonte-pixel.md) | Layout nativo e fonte pixel | aceito e em execução |
 
 Decisões do designer em 2026-09-29, fora de ADR (registradas em
 `docs/GAME_DESIGN.md` e `docs/SPEC.md`): campanha de **21 noites** até o

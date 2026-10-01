@@ -68,7 +68,7 @@ const _RESULT_MESSAGES := {
 @onready var _music: Button = $LiveControls/Music
 @onready var _ad: Button = $LiveControls/Ad
 @onready var _mic_switch: Button = $LiveControls/Mic
-@onready var _desk_lamp: TextureRect = $Studio/DeskLamp
+@onready var _rundown_transfer: TextureRect = $RundownTransfer
 @onready var _ambience: AudioStreamPlayer = $Ambience
 @onready var _static: AudioStreamPlayer = $Static
 @onready var _sfx: AudioStreamPlayer = $Sfx
@@ -225,8 +225,6 @@ func _yield_to_drag() -> void:
 ## espera no atraso, e a estática sobe no ar morto. Só apresentação —
 ## nada aqui decide nada.
 func _breathe(delta: float) -> void:
-	_desk_lamp.modulate.a = 0.93 + sin(_clock * 2.3) * 0.04 + sin(_clock * 9.7) * 0.03
-
 	var live := _is_live()
 	# O letreiro conta o que sai pela antena, nao a posicao da chave: em
 	# ar morto ele apaga junto com a voz.
@@ -241,7 +239,7 @@ func _breathe(delta: float) -> void:
 
 	var console := GameState.live_console() if live else {}
 	var ringing: bool = console.get("pending", false)
-	_phone.position = _phone_home + (Vector2(sin(_clock * 34.0) * 1.0, 0.0) if ringing else Vector2.ZERO)
+	_phone.position = _phone_home + (Vector2(sin(_clock * 34.0) * 2.0, 0.0) if ringing else Vector2.ZERO)
 	_phone.modulate.a = (0.75 + absf(sin(_clock * 6.0)) * 0.25) if ringing else 1.0
 
 	var target := _STATIC_OFF_AIR
@@ -272,11 +270,14 @@ func _on_night_started(night: int, quota: int) -> void:
 	$Briefing/Body.text = GameState.opening_message()
 	$Briefing/Reserve.text = "CAIXA $%d / 1 reserva: música ou anúncio" % GameState.station_money()
 	$Briefing.visible = not GameState.opening_message().is_empty()
+	_rundown_paper.visible = not $Briefing.visible
 	_enter_air.visible = not $Briefing.visible
-	var mementos := GameState.station_mementos()
-	$Studio/GiftRecord.visible = mementos.get("record", false)
-	$Studio/Sponsor.visible = mementos.get("sponsor", false)
-	$Studio/BridgeNote.visible = mementos.get("bridge", false)
+	# A janela e a cidade são a leitura principal do estúdio. Os antigos
+	# adereços continuam na cena por compatibilidade com saves e testes,
+	# mas não disputam espaço visual com ela.
+	$Studio/GiftRecord.hide()
+	$Studio/Sponsor.hide()
+	$Studio/BridgeNote.hide()
 	$Header/AudienceLabel.tooltip_text = "Caixa da rádio: $%d" % GameState.station_money()
 
 
@@ -353,31 +354,35 @@ func _on_phase_changed(phase: int) -> void:
 	_letters.visible = before_air or live_now
 	_notebook_object.visible = before_air or live_now
 	$Blocks.visible = false
-	_rundown_paper.visible = before_air
+	_rundown_paper.visible = before_air and not $Briefing.visible
 	$LiveControls.visible = live_now
 	_call_panel.visible = live_now
 	_enter_air.visible = before_air and not $Briefing.visible
 	_go_on_air.visible = live_now
-	$Studio/Turntable.visible = not live_now
-	$Studio/Teleprompter.position = Vector2(104, 20) if live_now else Vector2(112, 36)
-	$Studio/Teleprompter.size = Vector2(208, 50) if live_now else Vector2(128, 60)
-	$Studio/Teleprompter/LineProgress.position.y = 43 if live_now else 53
-	$Studio/Teleprompter/LineProgress.size.x = 194 if live_now else 114
-	_block_label.position = Vector2(104, 14) if live_now else Vector2(112, 25)
-	_block_label.size = Vector2(208, 9) if live_now else Vector2(128, 10)
-	_notebook_object.position = Vector2(280, 144) if live_now else Vector2(104, 142)
-	_phone.position = Vector2(6, 78) if live_now else Vector2(6, 130)
+	$Studio/Window.show()
+	$Studio/OnAirSign.show()
+	$Studio/Microphone.show()
+	$Studio/Turntable.hide()
+	$Studio/Teleprompter.hide()
+	$Studio/Teleprompter.position = Vector2(208, 40) if live_now else Vector2(224, 72)
+	$Studio/Teleprompter.size = Vector2(416, 100) if live_now else Vector2(256, 120)
+	$Studio/Teleprompter/LineProgress.position.y = 86 if live_now else 106
+	$Studio/Teleprompter/LineProgress.size.x = 388 if live_now else 228
+	_block_label.position = Vector2(208, 28) if live_now else Vector2(224, 50)
+	_block_label.size = Vector2(416, 18) if live_now else Vector2(256, 20)
+	_notebook_object.position = Vector2(560, 288) if live_now else Vector2(208, 284)
+	_phone.position = Vector2(12, 156) if live_now else Vector2(12, 260)
 	_phone_home = _phone.position
-	_letters.position = Vector2(52, 98) if live_now else Vector2(58, 142)
-	_feedback.position = Vector2(8, 122) if live_now else Vector2(128, 66)
-	_feedback.size = Vector2(172, 10) if live_now else Vector2(184, 10)
+	_letters.position = Vector2(104, 196) if live_now else Vector2(116, 284)
+	_feedback.position = Vector2(16, 244) if live_now else Vector2(256, 132)
+	_feedback.size = Vector2(344, 20) if live_now else Vector2(368, 20)
 	_set_block_layout(live_now)
 	if not before_air:
 		_show_desk()
 
 	_microphone.disabled = phase != NightCycle.Phase.LIVE
 	_line_progress.visible = phase == NightCycle.Phase.LIVE
-	_block_label.visible = phase == NightCycle.Phase.LIVE
+	_block_label.hide()
 
 	if phase == NightCycle.Phase.LIVE:
 		_feedback.text = "ESPAÇO: microfone  /  C: cortar ligação"
@@ -386,7 +391,8 @@ func _on_phase_changed(phase: int) -> void:
 	else:
 		_go_on_air.text = "AO AR"
 		_go_on_air.disabled = not before_air or not GameState.is_rundown_ready()
-		_prompter.text = "O microfone ainda está desligado."
+		_prompter.text = ""
+		_spoken.text = ""
 		_block_label.text = ""
 
 	_refresh_audience_label()
@@ -395,6 +401,7 @@ func _on_phase_changed(phase: int) -> void:
 func _dismiss_briefing() -> void:
 	$Briefing.hide()
 	_enter_air.visible = true
+	_rundown_paper.visible = true
 
 
 func _on_link_evaluated(_item_id: String, _claim_id: String, _entry_id: String, result: int) -> void:
@@ -466,6 +473,7 @@ func _on_reply_chosen(index: int) -> void:
 		_feedback.text = "Essa resposta não está disponível."
 		return
 	_refresh_item()
+	_animate_phone_to_rundown()
 	var talk := GameState.conversation_of(_open_item_id)
 	if talk != null:
 		_feedback.text = "Resposta confirmada · entrou no roteiro."
@@ -483,6 +491,20 @@ func _on_paper_framing_chosen(kind: int) -> void:
 	_feedback.text = "%s · entrou no roteiro." % label
 	_refresh_item()
 	_play_sound(_SWITCH)
+
+
+func _animate_phone_to_rundown() -> void:
+	_rundown_transfer.position = Vector2(224, 192)
+	_rundown_transfer.modulate = Color.WHITE
+	_rundown_transfer.scale = Vector2(0.5, 0.5)
+	_rundown_transfer.show()
+	var tween := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tween.set_parallel(true)
+	tween.tween_property(_rundown_transfer, "position",
+		_rundown_paper.card_target_position(), 0.38)
+	tween.tween_property(_rundown_transfer, "scale", Vector2(0.26, 0.26), 0.38)
+	tween.tween_property(_rundown_transfer, "modulate:a", 0.0, 0.38).set_delay(0.22)
+	tween.chain().tween_callback(_rundown_transfer.hide)
 
 
 func _open_notebook() -> void:
@@ -806,9 +828,9 @@ func _paint_lamps(pending: bool, outcome: String, break_left: float) -> void:
 ## abre espaço para celular e papéis; ao vivo encosta à esquerda e deixa o
 ## banco de teclas à direita.
 func _set_block_layout(live_now: bool) -> void:
-	var first_x: float = 8.0 if live_now else 38.0
+	var first_x: float = 16.0 if live_now else 76.0
 	for i in _blocks.size():
-		_blocks[i].position = Vector2(first_x + i * 44.0, 14.0)
+		_blocks[i].position = Vector2(first_x + i * 88.0, 28.0)
 
 
 func _with_forbidden_links(index: int) -> String:
@@ -869,8 +891,10 @@ func _refresh_chat(item: BroadcastItem) -> void:
 		talk.replies() if talk.is_waiting_for_reply() else [],
 		available,
 		item.claims,
-		GameState.contradictions_for(item.id))
-	_close_phone.scroll_to_end()
+		GameState.contradictions_for(item.id),
+		talk.first_unread_index(),
+		_avatar_of(sender),
+		sender.handle if sender != null else "")
 	GameState.mark_thread_read(item.id)
 
 

@@ -45,9 +45,13 @@ Prevalece sobre a régua de enquadramento no fluxo do celular. Itens sem
   `tick(delta)` entrega as mensagens uma a uma; `drain_events()` conta o
   que aconteceu; sem `signal`, sem `await`, sem relógio (ADR 0007).
   `visible_messages()` devolve o histórico já entregue, em ordem.
+  `last_activity_minutes()` devolve o instante contínuo da última fala,
+  usando o `GameClock` injetado; serve apenas para ordenar a lista.
   `is_waiting_for_reply()` só é verdadeiro quando a rajada terminou: não
   se responde no meio da frase. `send(index)` registra a fala do jogador,
   enfileira a réplica e fixa a decisão; vale uma vez por noite.
+  `first_unread_index()` aponta a primeira mensagem recebida ainda não
+  lida, ignorando falas do apresentador; devolve `-1` quando não há novas.
   `chosen_framing_kind()` devolve -1 antes de decidir.
 - Eventos: `MESSAGE_ARRIVED`, `REPLY_SENT`, `THREAD_IDLE`.
 - `GameState` expõe `conversation_of(item_id)`, `send_reply(item_id,
@@ -57,6 +61,13 @@ Prevalece sobre a régua de enquadramento no fluxo do celular. Itens sem
   bloco herda o enquadramento; `ProgramRundown` não muda de regra.
 - A decisão de não levar ao ar é uma resposta como as outras
   (`Kind.DISCARD`): você diz à pessoa que não vai falar disso.
+- `GameState.phone_threads()` ordena por atividade mais recente. Empates
+  mantêm a ordem da inbox. A linha visual reserva colunas independentes
+  para nome e hora: nome longo pode ser cortado, hora não.
+- No chat, o aparelho é dedicado ao histórico e o painel de decisão fica
+  adjacente, com limites e rolagem próprios. Ao abrir, a primeira não lida
+  fica o mais alto possível; se não houver novas, o histórico abre no fim.
+  Pouco conteúdo é limitado pelo `ScrollContainer`, sem vazio artificial.
 
 ## Fase 2 do redesenho: o ao vivo é um console (ADR 0013)
 
@@ -435,6 +446,67 @@ func order_effects() -> Array[OrderRule]            # regras casadas pela ordem 
 - A UI soma `read_seconds` das linhas do `BroadcastScript` escolhido. Menos
   de 24 s é curto; 24–36 s está na medida; acima de 36 s está longo.
 - A duração é informativa e não participa de `is_ready()`.
+- A folha do roteiro alterna entre cabeçalho recolhido e carta aberta por
+  clique. Uma decisão nova revela a carta e produz um movimento breve; a
+  animação não altera `ProgramRundown`.
+- Recolhida, a folha fica na borda inferior à esquerda de `ENTRAR NO AR` e
+  mostra `ROTEIRO` em branco dentro de uma borda branca. Ao abrir, cresce para
+  cima. Uma resposta no celular anima um cartão até a folha; se ela estava
+  recolhida, abre para receber o cartão e volta a recolher depois da leitura.
+  Uma folha que o jogador já deixou aberta permanece aberta.
+- Reconstruir a lista sempre volta a rolagem ao início. Duas decisões devem
+  ficar inteiras na área útil da carta sem cortar a primeira linha.
+
+#### Retratos e acabamento do chat
+
+- Cada conversa da primeira noite mostra o retrato numa área lógica 32×32 na
+  lista e na faixa de contato. A fonte rasterizada mede 64×64 para aproveitar
+  o canvas 2×. Os retratos são sprites determinísticos do pipeline de pixel
+  art; a Oficina do Portão Doze usa a imagem da oficina, não um rosto.
+- A linha reserva áreas independentes para retrato, nome, hora e prévia. Nome
+  longo termina em reticências sem cobrir a hora. A linha mede 38 px e a lista
+  comporta três contatos inteiros antes da rolagem.
+- O aparelho mede 156×166. A faixa da conversa reúne retrato, nome e
+  identificação do contato; o fechar ocupa a faixa superior da moldura e não
+  disputa espaço com o nome.
+- Balões de conversa são retângulos exatos, sem cauda ou textura fora do
+  limite do controle. Cor e alinhamento continuam distinguindo remetente e
+  apresentador.
+
+#### Estúdio e janela da cidade
+
+- A área superior visível do estúdio contém somente janela panorâmica,
+  letreiro `NO AR` e microfone. Teleprompter, toca-discos, luminária, dial,
+  painel decorativo e lembranças não aparecem nessa composição.
+- A janela ocupa ao menos 250×96 px e mostra a base noturna da cidade.
+- A janela recorta camadas de apresentação separadas para rua/tráfego,
+  pessoas e eventos. Elas começam vazias; esta entrega não cria simulação nem
+  novas regras de campanha.
+- O teleprompter pode permanecer na árvore como implementação oculta enquanto
+  a transmissão atual depender de seus controles internos.
+
+#### Canvas e fontes de sprite em densidade 2×
+
+- O canvas nativo mede 640×360 e abre por padrão em 1280×720, numa escala
+  inteira de 2× com filtro nearest.
+- A mesa continua composta em 320×180 unidades lógicas e é apresentada por
+  uma cena-raiz com escala uniforme exata de 2×. Não há escala fracionária.
+- O pipeline exporta cada sprite com o dobro da largura e da altura declaradas
+  na definição. A dimensão declarada continua sendo a dimensão lógica.
+- Os cinco retratos telefônicos da primeira noite são fontes 64×64 para uma
+  área lógica de 32×32 e podem usar detalhes de um pixel da fonte.
+- Esta seção substitui a resolução-base definida no ADR 0005; preserva suas
+  regras de pixel quadrado, nearest-neighbor e escala inteira.
+
+#### Nitidez no canvas nativo
+
+- A mesa é composta diretamente em 640×360 com escala unitária em todos os
+  ancestrais visuais. O grid lógico 320×180 deixa de ser usado em cena.
+- Posições, tamanhos, margens, bordas e animações são expressos no canvas
+  nativo. Sprites de tamanho fixo mapeiam fonte e controle em 1:1.
+- Courier Prime usa tamanho-base 14 px, sem antialiasing e sem posicionamento
+  subpixel. O texto não deve produzir halo cinza por suavização de borda.
+- A janela final permanece 1280×720 e recebe o canvas por escala inteira 2×.
 
 ### 4.5 ConsequenceQueue — `consequence_queue.gd`
 
@@ -861,8 +933,8 @@ Mais dois testes que nasceram junto e valem o preço:
    do manifesto com o que a definição produz agora. É o que pega "mexi na
    arte e esqueci de rodar o gerador".
 9. `tests/unit/test_studio_desk_scene.gd` — a cena instancia, todo slot de
-   textura está preenchido, nada escapa de 320×180, `TextureRect` nenhum
-   estica pixel, e os 4 blocos não se sobrepõem.
+   textura está preenchido, nada escapa da composição lógica 320×180, cada
+   `TextureRect` usa uma fonte 2×, e os 4 blocos não se sobrepõem.
 
 Ler o PNG com `Image.load_from_file` em `res://` **não** serve: funciona
 no editor, quebra no export, e o engine emite erro (que o GUT conta como
@@ -871,12 +943,12 @@ falha, corretamente). Os testes leem pela textura importada
 
 ---
 
-## 7. Mudanças em `project.godot` (M7, ADR 0005)
+## 7. Mudanças em `project.godot` (M7, ADR 0005; substituído pelo ADR 0020)
 
 ```ini
 [display]
-window/size/viewport_width=320
-window/size/viewport_height=180
+window/size/viewport_width=640
+window/size/viewport_height=360
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
@@ -891,7 +963,8 @@ textures/canvas_textures/default_texture_filter=0   # Nearest
 0006: sprites em escala inteira sem borrar, fontes rasterizadas na
 resolução final (texto legível). O M3 usa hoje `canvas_items`/`expand`;
 a mudança para `keep` + `integer` é parte do aceite do M7, e o Theme
-precisa de tamanhos de fonte reescalados para o espaço de 320×180.
+preserva a composição lógica 320×180 por `game_canvas.tscn`, renderizada
+exatamente em 2× no canvas 640×360.
 
 ---
 

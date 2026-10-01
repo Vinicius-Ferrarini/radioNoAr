@@ -8,13 +8,35 @@ const _INK := Color(0.12, 0.09, 0.07)
 const _MUTED := Color(0.38, 0.31, 0.24)
 const _AMBER := Color(0.56, 0.29, 0.06)
 const _RED := Color(0.58, 0.12, 0.08)
+const _EXPANDED_SIZE := Vector2(368.0, 200.0)
+const _COLLAPSED_SIZE := Vector2(164.0, 24.0)
+const _EXPANDED_OFFSET := Vector2(0.0, -204.0)
+const _AUTO_COLLAPSE_SECONDS := 1.05
 
 @onready var _list: VBoxContainer = $Paper/ListScroll/List
+@onready var _scroll: ScrollContainer = $Paper/ListScroll
 @onready var _total: Label = $Paper/Total
 @onready var _warning: Label = $Paper/Warning
+@onready var _paper: NinePatchRect = $Paper
+@onready var _collapsed_label: Label = $CollapsedLabel
+
+var _collapsed: bool = true
+var _known_entries: int = 0
+var _home_position: Vector2
+var _size_tween: Tween
+var _attention_tween: Tween
+var _auto_collapse_pending: bool = false
+
+
+func _ready() -> void:
+	_home_position = position
+	gui_input.connect(_on_gui_input)
+	set_collapsed(true, false)
 
 
 func show_rundown(entries: Array[Dictionary], total_seconds: float) -> void:
+	var received_new := entries.size() > _known_entries
+	_known_entries = entries.size()
 	_clear(_list)
 	if entries.is_empty():
 		_add_line("Aguardando sua primeira decisão...", _MUTED)
@@ -40,13 +62,100 @@ func show_rundown(entries: Array[Dictionary], total_seconds: float) -> void:
 	else:
 		_warning.text = "ROTEIRO LONGO · você pode seguir assim"
 		_warning.add_theme_color_override("font_color", _RED)
+	_reset_scroll()
+	if received_new:
+		call_deferred("_animate_attention")
+
+
+func toggle_collapsed() -> void:
+	_auto_collapse_pending = false
+	if _attention_tween != null:
+		_attention_tween.kill()
+	set_collapsed(not _collapsed)
+
+
+func set_collapsed(value: bool, animated: bool = true) -> void:
+	_collapsed = value
+	if _size_tween != null:
+		_size_tween.kill()
+	var target_size := _COLLAPSED_SIZE if value else _EXPANDED_SIZE
+	var target_position := _home_position if value else _home_position + _EXPANDED_OFFSET
+	if not value:
+		_paper.show()
+		_collapsed_label.hide()
+	if not animated:
+		size = target_size
+		position = target_position
+		_paper.visible = not value
+		_collapsed_label.visible = value
+		return
+	_size_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_size_tween.set_parallel(true)
+	_size_tween.tween_property(self, "size", target_size, 0.22)
+	_size_tween.tween_property(self, "position", target_position, 0.22)
+	if value:
+		_size_tween.chain().tween_callback(func() -> void:
+			_paper.hide()
+			_collapsed_label.show())
+
+
+func is_collapsed() -> bool:
+	return _collapsed
+
+
+func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT \
+			and event.pressed:
+		toggle_collapsed()
+		accept_event()
+
+
+func _animate_attention() -> void:
+	if not is_inside_tree():
+		return
+	if _collapsed:
+		set_collapsed(false)
+		_auto_collapse_pending = true
+		if _attention_tween != null:
+			_attention_tween.kill()
+		_attention_tween = create_tween()
+		_attention_tween.tween_interval(_AUTO_COLLAPSE_SECONDS)
+		_attention_tween.tween_callback(_finish_auto_collapse)
+		return
+	var must_return_to_edge := _auto_collapse_pending
+	if _attention_tween != null:
+		_attention_tween.kill()
+	var expanded_position := _home_position + _EXPANDED_OFFSET
+	position = expanded_position
+	_attention_tween = create_tween().set_trans(Tween.TRANS_QUAD)
+	_attention_tween.tween_property(self, "position", expanded_position + Vector2(0, -10), 0.1)
+	_attention_tween.tween_property(self, "position", expanded_position, 0.16)
+	if must_return_to_edge:
+		_attention_tween.tween_interval(0.75)
+		_attention_tween.tween_callback(_finish_auto_collapse)
+
+
+func _finish_auto_collapse() -> void:
+	if _auto_collapse_pending and not _collapsed:
+		_auto_collapse_pending = false
+		set_collapsed(true)
+
+
+func card_target_position() -> Vector2:
+	return _home_position + _EXPANDED_OFFSET + Vector2(60, 60)
+
+
+func _reset_scroll() -> void:
+	_scroll.scroll_vertical = 0
+	await get_tree().process_frame
+	_scroll.scroll_vertical = 0
 
 
 func _add_line(text: String, color: Color) -> void:
 	var line := Label.new()
 	line.text = text
 	line.add_theme_color_override("font_color", color)
-	line.add_theme_font_size_override("font_size", 6)
+	line.add_theme_font_size_override("font_size", 12)
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_list.add_child(line)
 

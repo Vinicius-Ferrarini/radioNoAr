@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="3_row"]
 
 [node name="CloseNotebook" type="Control"]
-offset_right = 232.0
-offset_bottom = 112.0
+offset_right = 464.0
+offset_bottom = 224.0
 script = ExtResource("1_nb")
 row_scene = ExtResource("3_row")
 
@@ -18,46 +18,46 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_page")
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 5.0
-offset_right = 160.0
-offset_bottom = 15.0
+offset_left = 28.0
+offset_top = 10.0
+offset_right = 320.0
+offset_bottom = 30.0
 mouse_filter = 2
 text = "CADERNO"
 
 [node name="CloseButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 216.0
-offset_top = 5.0
-offset_right = 228.0
-offset_bottom = 17.0
+offset_left = 432.0
+offset_top = 10.0
+offset_right = 456.0
+offset_bottom = 34.0
 text = "x"
 
 [node name="PageScroll" type="ScrollContainer" parent="."]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 18.0
-offset_right = 226.0
-offset_bottom = 92.0
+offset_left = 28.0
+offset_top = 36.0
+offset_right = 452.0
+offset_bottom = 184.0
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="PageScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 1
+theme_override_constants/separation = 2
 
 [node name="Hint" type="Label" parent="."]
 layout_mode = 0
-offset_left = 14.0
-offset_top = 95.0
-offset_right = 226.0
-offset_bottom = 105.0
+offset_left = 28.0
+offset_top = 190.0
+offset_right = 452.0
+offset_bottom = 210.0
 mouse_filter = 2
 clip_text = true

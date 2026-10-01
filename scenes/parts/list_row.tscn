@@ -3,9 +3,9 @@
 [ext_resource type="Script" path="res://scenes/parts/list_row.gd" id="1_row"]
 
 [node name="ListRow" type="Button"]
-custom_minimum_size = Vector2(0, 11)
-offset_right = 112.0
-offset_bottom = 11.0
+custom_minimum_size = Vector2(0, 22)
+offset_right = 224.0
+offset_bottom = 22.0
 clip_text = true
 alignment = 0
 script = ExtResource("1_row")

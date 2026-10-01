@@ -56,7 +56,7 @@ func show_block(block_index: int, item: BroadcastItem, chosen: int) -> void:
 			label += " — confira no caderno"
 		row.setup(str(framing.kind), ("> " if framing.kind == chosen else "") + label, false)
 		row.disabled = not available
-		row.custom_minimum_size = Vector2(0, 13)
+		row.custom_minimum_size = Vector2(0, 26)
 		row.clip_text = false
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.row_pressed.connect(func(kind_id: String) -> void: framing_chosen.emit(int(kind_id)))

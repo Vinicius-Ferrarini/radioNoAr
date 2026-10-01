@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/parts/phone_thread_row.gd" id="1_script"]
+
+[node name="PhoneThreadRow" type="Button"]
+custom_minimum_size = Vector2(0, 76)
+offset_right = 200.0
+offset_bottom = 76.0
+focus_mode = 0
+theme_type_variation = &"PhoneButton"
+script = ExtResource("1_script")
+
+[node name="Avatar" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 70.0
+offset_bottom = 70.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 8.0
+offset_right = 196.0
+offset_bottom = 26.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Time" type="Label" parent="."]
+layout_mode = 0
+offset_left = 198.0
+offset_top = 8.0
+offset_right = 252.0
+offset_bottom = 26.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 2
+clip_text = true
+
+[node name="Preview" type="Label" parent="."]
+layout_mode = 0
+offset_left = 76.0
+offset_top = 42.0
+offset_right = 252.0
+offset_bottom = 62.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 12
+clip_text = true
+text_overrun_behavior = 3

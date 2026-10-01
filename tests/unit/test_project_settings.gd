@@ -6,18 +6,18 @@ extends GutTest
 ## nenhum — só faz o jogo abrir feio, ou minúsculo.
 
 
-func test_base_resolution_is_320x180() -> void:
-	assert_eq(ProjectSettings.get_setting("display/window/size/viewport_width"), 320)
-	assert_eq(ProjectSettings.get_setting("display/window/size/viewport_height"), 180)
+func test_base_resolution_is_640x360() -> void:
+	assert_eq(ProjectSettings.get_setting("display/window/size/viewport_width"), 640)
+	assert_eq(ProjectSettings.get_setting("display/window/size/viewport_height"), 360)
 
 
 func test_the_window_opens_at_an_integer_multiple_of_the_base() -> void:
 	var width: int = ProjectSettings.get_setting("display/window/size/window_width_override")
 	var height: int = ProjectSettings.get_setting("display/window/size/window_height_override")
-	assert_gt(width, 320, "a janela nao pode abrir do tamanho do viewport")
-	assert_eq(width % 320, 0, "a largura da janela deveria ser multiplo inteiro de 320")
-	assert_eq(height % 180, 0, "a altura da janela deveria ser multiplo inteiro de 180")
-	assert_eq(width / 320, height / 180, "os dois eixos precisam da mesma escala")
+	assert_gt(width, 640, "a janela nao pode abrir do tamanho do viewport")
+	assert_eq(width % 640, 0, "a largura da janela deveria ser multiplo inteiro de 640")
+	assert_eq(height % 360, 0, "a altura da janela deveria ser multiplo inteiro de 360")
+	assert_eq(width / 640, height / 360, "os dois eixos precisam da mesma escala")
 
 
 func test_stretch_keeps_pixels_square_and_text_sharp() -> void:
@@ -34,9 +34,15 @@ func test_textures_are_not_filtered() -> void:
 	assert_eq(ProjectSettings.get_setting("rendering/textures/canvas_textures/default_texture_filter"), 0)
 
 
-func test_the_main_scene_is_the_studio_desk() -> void:
+func test_the_main_scene_is_the_double_density_canvas() -> void:
 	assert_eq(ProjectSettings.get_setting("application/run/main_scene"),
-		"res://scenes/studio_desk.tscn")
+		"res://scenes/game_canvas.tscn")
+	var canvas: Control = load("res://scenes/game_canvas.tscn").instantiate()
+	add_child_autofree(canvas)
+	await get_tree().process_frame
+	var desk: Control = canvas.get_node("StudioDesk")
+	assert_eq(desk.scale, Vector2.ONE, "a mesa deve ser composta no canvas nativo")
+	assert_eq(desk.size, Vector2(640, 360))
 
 
 func test_the_autoload_is_registered() -> void:

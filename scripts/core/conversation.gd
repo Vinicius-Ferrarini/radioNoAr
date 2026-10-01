@@ -38,6 +38,8 @@ var _chosen: ReplyOption = null
 var _announced_idle: bool = false
 
 var _events: Array[Dictionary] = []
+## Instante contínuo da última fala, sem depender da hora formatada da UI.
+var _last_activity_minutes: float = 0.0
 
 ## O relógio da noite, injetado. É ele que marca a hora de cada fala: o
 ## conteúdo diz o que se fala e em quanto tempo, nunca a que horas.
@@ -86,6 +88,7 @@ func send(index: int) -> bool:
 	if _clock != null:
 		said.at = _clock.now()
 	_visible.append(said)
+	_mark_activity()
 
 	for message in reply.answer:
 		_queue.append(message)
@@ -116,10 +119,29 @@ func last_at() -> String:
 	return last.at if last != null else ""
 
 
+func last_activity_minutes() -> float:
+	return _last_activity_minutes
+
+
 ## Só conta o que veio do outro lado: o que você mesmo mandou não é
 ## novidade para você.
 func unread() -> int:
 	return _unread
+
+
+## Índice da primeira fala recebida desde a última leitura. A busca parte
+## do fim porque falas do apresentador podem existir no meio do histórico.
+func first_unread_index() -> int:
+	if _unread <= 0:
+		return -1
+	var remaining := _unread
+	for index in range(_visible.size() - 1, -1, -1):
+		if _visible[index].from_me:
+			continue
+		remaining -= 1
+		if remaining == 0:
+			return index
+	return 0
 
 
 func mark_read() -> void:
@@ -178,6 +200,7 @@ func _deliver_due() -> void:
 		if _clock != null:
 			arrived.at = _clock.now()
 		_visible.append(arrived)
+		_mark_activity()
 		_armed = false
 		if not arrived.from_me:
 			_unread += 1
@@ -191,3 +214,7 @@ func _deliver_due() -> void:
 func _push(kind: EventKind, data: Dictionary) -> void:
 	data["kind"] = kind
 	_events.append(data)
+
+
+func _mark_activity() -> void:
+	_last_activity_minutes = _clock.minutes_since_start() if _clock != null else 0.0

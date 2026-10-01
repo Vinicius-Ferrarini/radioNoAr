@@ -25,6 +25,8 @@ var _meter_snapshot: Dictionary = {}
 ## quando um bloco emenda no outro continua segurando.
 var _mic_held: bool = false
 var _campaign_directory: String = ContentLibrary.PILOT_DIR
+var _phone_reply_sequence: int = 0
+var _phone_reply_order: Dictionary = {}
 
 
 ## O ÚNICO ponto do projeto por onde o tempo entra (ADR 0007). Fora da
@@ -68,6 +70,8 @@ func start_run(seed_value: int = 0, campaign_directory: String = ContentLibrary.
 	if _campaign_directory.is_empty():
 		_campaign_directory = ContentLibrary.PILOT_DIR
 	_mic_held = false
+	_phone_reply_sequence = 0
+	_phone_reply_order.clear()
 	_run = RunState.new(RunState.DEFAULT_TOTAL_NIGHTS, seed_value)
 	_open_night()
 
@@ -130,7 +134,8 @@ func phone_threads() -> Array[Dictionary]:
 	var threads: Array[Dictionary] = []
 	if _cycle == null:
 		return threads
-	for item in _cycle.inbox():
+	for source_index in _cycle.inbox().size():
+		var item := _cycle.inbox()[source_index]
 		var talk := _cycle.conversation(item.id)
 		if talk == null:
 			continue
@@ -139,11 +144,26 @@ func phone_threads() -> Array[Dictionary]:
 		threads.append({
 			"item_id": item.id,
 			"name": sender.display_name if sender != null else item.sender_id,
+			"avatar": sender.avatar if sender != null else "",
 			"preview": last.text if last != null else "",
 			"at": talk.last_at(),
 			"unread": talk.unread(),
 			"decided": talk.is_decided(),
+			"activity": talk.last_activity_minutes(),
+			"reply_order": int(_phone_reply_order.get(item.id, 0)),
+			"source_index": source_index,
 		})
+	threads.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var a_activity := float(a.get("activity", 0.0))
+		var b_activity := float(b.get("activity", 0.0))
+		if not is_equal_approx(a_activity, b_activity):
+			return a_activity > b_activity
+		var a_reply := int(a.get("reply_order", 0))
+		var b_reply := int(b.get("reply_order", 0))
+		if a_reply != b_reply:
+			return a_reply > b_reply
+		return int(a.get("source_index", 0)) < int(b.get("source_index", 0))
+	)
 	return threads
 
 
@@ -172,6 +192,8 @@ func send_reply(item_id: String, index: int) -> bool:
 	var talk := conversation_of(item_id)
 	if talk == null or not reply_available(item_id, index) or not talk.send(index):
 		return false
+	_phone_reply_sequence += 1
+	_phone_reply_order[item_id] = _phone_reply_sequence
 	# Responder é confirmar a pauta: a promessa aparece no roteiro na hora.
 	var item := item_by_id(item_id)
 	_cycle.rundown().commit(item, talk.chosen_framing_kind())

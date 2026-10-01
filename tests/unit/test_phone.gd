@@ -167,6 +167,37 @@ func test_the_list_shows_the_last_message_and_its_time() -> void:
 	assert_eq(talk.last_at(), "19:12")
 
 
+func test_reply_moves_its_conversation_to_the_top_of_the_phone() -> void:
+	GameState.start_run(7)
+	var target := "p1_oficina"
+	var talk := GameState.conversation_of(target)
+	for i in 100:
+		if talk.is_waiting_for_reply():
+			break
+		GameState._process(0.1)
+	assert_true(talk.is_waiting_for_reply())
+	assert_true(GameState.send_reply(target, 0))
+	assert_eq(GameState.phone_threads()[0]["item_id"], target,
+		"a sua resposta é a atividade mais recente e traz a conversa ao topo")
+
+
+func test_first_night_phone_threads_expose_their_portraits() -> void:
+	GameState.start_run(7)
+	var expected := {
+		"p1_celia": "avatar_celia",
+		"p1_oficina": "avatar_valvula",
+		"p1_placar": "avatar_toledo",
+		"p1_chave": "avatar_rui",
+		"p1_nilo": "avatar_nilo",
+	}
+	for thread in GameState.phone_threads():
+		var item_id := String(thread["item_id"])
+		if expected.has(item_id):
+			assert_eq(thread.get("avatar", ""), expected[item_id], item_id)
+			assert_true(ResourceLoader.exists(
+				"res://assets/sprites/%s.png" % thread["avatar"]), item_id)
+
+
 # --- as conversas correm sozinhas na noite ---
 
 func test_the_phone_is_already_talking_before_you_pick_it_up() -> void:

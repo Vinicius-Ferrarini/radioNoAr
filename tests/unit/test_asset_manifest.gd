@@ -114,6 +114,17 @@ func test_png_dimensions_match_the_manifest() -> void:
 		assert_eq(image.get_height(), int(sprite["height"]), "altura de %s" % sprite["name"])
 
 
+func test_every_sprite_source_has_double_the_logical_density() -> void:
+	var by_name := {}
+	for sprite in _sprites:
+		by_name[sprite["name"]] = sprite
+	for definition in _definitions():
+		var logical_size: Vector2i = definition["size"]
+		var sprite: Dictionary = by_name[definition["name"]]
+		assert_eq(int(sprite["width"]), logical_size.x * 2, definition["name"])
+		assert_eq(int(sprite["height"]), logical_size.y * 2, definition["name"])
+
+
 # 4
 func test_every_opaque_pixel_is_a_palette_color() -> void:
 	var valid_keys := PixelPalette.all_color_keys()
@@ -184,6 +195,23 @@ func test_nine_patch_margins_fit_inside_the_sprite() -> void:
 			"margens de %s nao cabem na largura" % sprite["name"])
 		assert_lt(margin * 2, int(sprite["height"]),
 			"margens de %s nao cabem na altura" % sprite["name"])
+
+
+func test_first_night_phone_portraits_are_native_64px() -> void:
+	var expected := ["avatar_celia", "avatar_valvula", "avatar_toledo", "avatar_rui", "avatar_nilo"]
+	for sprite in _sprites:
+		if expected.has(sprite["name"]):
+			assert_eq(int(sprite["width"]), 64, sprite["name"])
+			assert_eq(int(sprite["height"]), 64, sprite["name"])
+
+
+func test_city_window_has_panorama_dimensions() -> void:
+	for sprite in _sprites:
+		if sprite["name"] == "window_night":
+			assert_eq(int(sprite["width"]), 528)
+			assert_eq(int(sprite["height"]), 204)
+			return
+	fail_test("window_night não está no manifesto")
 
 
 func test_sprite_names_are_unique() -> void:

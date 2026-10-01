@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="No Ar"
-run/main_scene="res://scenes/studio_desk.tscn"
+run/main_scene="res://scenes/game_canvas.tscn"
 config/features=PackedStringArray("4.7")
 
 [autoload]
@@ -20,8 +20,8 @@ GameState="*res://scripts/game_state.gd"
 
 [display]
 
-window/size/viewport_width=320
-window/size/viewport_height=180
+window/size/viewport_width=640
+window/size/viewport_height=360
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"

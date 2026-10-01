@@ -84,6 +84,22 @@ func test_one_decision_per_night() -> void:
 	assert_eq(talk.chosen_reply_id(), "parabens")
 
 
+func test_first_unread_index_points_to_the_start_of_the_new_burst() -> void:
+	var talk := _conversation()
+	assert_eq(talk.first_unread_index(), 0)
+	talk.mark_read()
+	talk.tick(3.0)
+	assert_eq(talk.first_unread_index(), 1,
+		"a conversa volta para a primeira fala que chegou depois da leitura")
+	talk.mark_read()
+	assert_true(talk.send(0))
+	assert_eq(talk.first_unread_index(), -1,
+		"a fala do apresentador não conta como mensagem nova")
+	talk.tick(2.0)
+	assert_eq(talk.first_unread_index(), 3,
+		"a resposta recebida depois da própria fala vira a nova âncora")
+
+
 func test_the_reply_decides_the_framing() -> void:
 	var talk := _conversation()
 	assert_eq(talk.chosen_framing_kind(), -1, "antes de responder não há decisão")

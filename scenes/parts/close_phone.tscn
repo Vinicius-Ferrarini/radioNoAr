@@ -1,124 +1,178 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scenes/parts/close_phone.gd" id="1_phone"]
 [ext_resource type="Texture2D" path="res://assets/sprites/phone_glass_panel.png" id="2_body"]
 [ext_resource type="PackedScene" path="res://scenes/parts/chat_bubble.tscn" id="3_bubble"]
 [ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="4_row"]
+[ext_resource type="PackedScene" path="res://scenes/parts/phone_thread_row.tscn" id="5_thread_row"]
+
+[sub_resource type="StyleBoxFlat" id="DecisionPanelStyle"]
+content_margin_left = 8.0
+content_margin_top = 6.0
+content_margin_right = 8.0
+content_margin_bottom = 6.0
+bg_color = Color(0.105882, 0.090196, 0.078431, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.560784, 0.533333, 0.466667, 1)
 
 [node name="ClosePhone" type="Control"]
-offset_right = 118.0
-offset_bottom = 149.0
+offset_right = 626.0
+offset_bottom = 332.0
 script = ExtResource("1_phone")
 bubble_scene = ExtResource("3_bubble")
 row_scene = ExtResource("4_row")
+thread_row_scene = ExtResource("5_thread_row")
 
 [node name="Body" type="NinePatchRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_right = 312.0
+offset_bottom = 332.0
 texture = ExtResource("2_body")
-patch_margin_left = 12
-patch_margin_top = 12
-patch_margin_right = 12
-patch_margin_bottom = 12
+patch_margin_left = 24
+patch_margin_top = 24
+patch_margin_right = 24
+patch_margin_bottom = 24
 
 [node name="Today" type="Label" parent="."]
 layout_mode = 0
-offset_left = 9.0
-offset_top = 4.0
-offset_right = 70.0
-offset_bottom = 13.0
+offset_left = 18.0
+offset_top = 8.0
+offset_right = 164.0
+offset_bottom = 26.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.58, 0.72, 0.62, 1)
 text = "15/07/2008"
 
 [node name="Clock" type="Label" parent="."]
 layout_mode = 0
-offset_left = 72.0
-offset_top = 4.0
-offset_right = 109.0
-offset_bottom = 13.0
+offset_left = 172.0
+offset_top = 8.0
+offset_right = 280.0
+offset_bottom = 26.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.91, 0.894, 0.855, 1)
 text = "19:00"
 horizontal_alignment = 2
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 15.0
-offset_right = 91.0
-offset_bottom = 25.0
+offset_left = 44.0
+offset_top = 30.0
+offset_right = 288.0
+offset_bottom = 54.0
 mouse_filter = 2
-theme_override_font_sizes/font_size = 7
+theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.91, 0.894, 0.855, 1)
 text = "MENSAGENS"
 clip_text = true
+text_overrun_behavior = 3
+
+[node name="ContactAvatar" type="TextureRect" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 48.0
+offset_top = 28.0
+offset_right = 112.0
+offset_bottom = 92.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ContactHandle" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 118.0
+offset_top = 58.0
+offset_right = 288.0
+offset_bottom = 78.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.580392, 0.721569, 0.619608, 1)
+theme_override_font_sizes/font_size = 10
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 9.0
-offset_top = 14.0
-offset_right = 20.0
-offset_bottom = 26.0
+offset_left = 18.0
+offset_top = 32.0
+offset_right = 40.0
+offset_bottom = 58.0
 focus_mode = 0
 text = "<"
 
 [node name="CloseButton" type="Button" parent="."]
 layout_mode = 0
-offset_left = 97.0
-offset_top = 14.0
-offset_right = 109.0
-offset_bottom = 26.0
+offset_left = 292.0
+offset_top = 4.0
+offset_right = 310.0
+offset_bottom = 22.0
 focus_mode = 0
-text = "x"
+theme_override_font_sizes/font_size = 10
+text = "X"
 
 [node name="ListScroll" type="ScrollContainer" parent="."]
 layout_mode = 0
-offset_left = 9.0
-offset_top = 28.0
-offset_right = 109.0
-offset_bottom = 141.0
+offset_left = 18.0
+offset_top = 60.0
+offset_right = 294.0
+offset_bottom = 316.0
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="ListScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="ChatScroll" type="ScrollContainer" parent="."]
 visible = false
 layout_mode = 0
-offset_left = 9.0
-offset_top = 28.0
-offset_right = 109.0
-offset_bottom = 86.0
+offset_left = 18.0
+offset_top = 96.0
+offset_right = 294.0
+offset_bottom = 316.0
 horizontal_scroll_mode = 0
 
 [node name="Thread" type="VBoxContainer" parent="ChatScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
-[node name="Claims" type="HBoxContainer" parent="."]
+[node name="DecisionPanel" type="PanelContainer" parent="."]
 visible = false
 layout_mode = 0
-offset_left = 9.0
-offset_top = 88.0
-offset_right = 109.0
-offset_bottom = 98.0
-theme_override_constants/separation = 2
+offset_left = 320.0
+offset_top = 76.0
+offset_right = 626.0
+offset_bottom = 318.0
+theme_override_styles/panel = SubResource("DecisionPanelStyle")
 
-[node name="Replies" type="VBoxContainer" parent="."]
+[node name="DecisionContent" type="VBoxContainer" parent="DecisionPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="DecisionTitle" type="Label" parent="DecisionPanel/DecisionContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.941176, 0.709804, 0.321569, 1)
+theme_override_font_sizes/font_size = 12
+text = "SUA RESPOSTA"
+horizontal_alignment = 1
+
+[node name="Claims" type="HBoxContainer" parent="DecisionPanel/DecisionContent"]
 visible = false
-layout_mode = 0
-offset_left = 9.0
-offset_top = 100.0
-offset_right = 109.0
-offset_bottom = 143.0
-theme_override_constants/separation = 1
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ReplyScroll" type="ScrollContainer" parent="DecisionPanel/DecisionContent"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Replies" type="VBoxContainer" parent="DecisionPanel/DecisionContent/ReplyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4

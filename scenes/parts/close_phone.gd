@@ -16,18 +16,25 @@ signal back_requested()
 
 @export var bubble_scene: PackedScene
 @export var row_scene: PackedScene
+@export var thread_row_scene: PackedScene
 
 @onready var _today: Label = $Today
 @onready var _clock: Label = $Clock
 @onready var _title: Label = $Title
+@onready var _contact_avatar: TextureRect = $ContactAvatar
+@onready var _contact_handle: Label = $ContactHandle
 @onready var _back: Button = $BackButton
 @onready var _close: Button = $CloseButton
 @onready var _list_scroll: ScrollContainer = $ListScroll
 @onready var _list: VBoxContainer = $ListScroll/List
 @onready var _chat_scroll: ScrollContainer = $ChatScroll
 @onready var _thread: VBoxContainer = $ChatScroll/Thread
-@onready var _claims: HBoxContainer = $Claims
-@onready var _replies: VBoxContainer = $Replies
+@onready var _decision_panel: PanelContainer = $DecisionPanel
+@onready var _decision_title: Label = $DecisionPanel/DecisionContent/DecisionTitle
+@onready var _claims: HBoxContainer = $DecisionPanel/DecisionContent/Claims
+@onready var _replies: VBoxContainer = $DecisionPanel/DecisionContent/ReplyScroll/Replies
+
+var _chat_revision: int = 0
 
 
 func _ready() -> void:
@@ -49,31 +56,26 @@ func set_clock(hour: String) -> void:
 ## abrir primeiro.
 func show_list(threads: Array) -> void:
 	_title.text = "MENSAGENS"
+	_title.offset_left = 44.0
+	_title.offset_top = 30.0
+	_title.offset_right = 288.0
+	_title.offset_bottom = 54.0
+	_contact_avatar.visible = false
+	_contact_handle.visible = false
 	_back.visible = false
 	_list_scroll.visible = true
 	_chat_scroll.visible = false
+	_decision_panel.visible = false
 	_claims.visible = false
 	_replies.visible = false
 	_clear(_list)
 
 	for thread in threads:
-		# Arrastável: a conversa sai do celular direto para um bloco do
-		# programa, que era o que os chips de avatar faziam antes.
-		var row: Button = row_scene.instantiate()
+		var row: Button = thread_row_scene.instantiate()
 		_list.add_child(row)
-		row.theme_type_variation = &"PhoneButton"
-		var unread: int = int(thread.get("unread", 0))
-		var mark: String = "(%d) " % unread if unread > 0 else ""
-		row.setup(String(thread["item_id"]),
-			"%s%s  %s
-%s" % [mark, thread["name"], thread["at"],
-				_one_line(String(thread["preview"]))],
-			true)
-		# Linha de altura fixa e prévia cortada: a lista é para escolher o
-		# que abrir, não para ler a mensagem inteira.
-		row.clip_text = true
-		row.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		row.custom_minimum_size = Vector2(0, 21)
+		row.setup(String(thread["item_id"]), String(thread["name"]),
+			String(thread["at"]), _one_line(String(thread["preview"])),
+			int(thread.get("unread", 0)), _avatar_texture(String(thread.get("avatar", ""))))
 		row.row_pressed.connect(func(row_id: String) -> void: thread_opened.emit(row_id))
 
 
@@ -85,23 +87,38 @@ func show_chat(
 	replies: Array,
 	available: Array,
 	claims: Array,
-	contradictions: Array
+	contradictions: Array,
+	first_unread_index: int,
+	avatar: Texture2D = null,
+	contact_handle: String = ""
 ) -> void:
+	_chat_revision += 1
 	_title.text = who
+	_title.offset_left = 118.0
+	_title.offset_top = 32.0
+	_title.offset_right = 288.0
+	_title.offset_bottom = 54.0
+	_contact_avatar.texture = avatar
+	_contact_avatar.visible = avatar != null
+	_contact_handle.text = contact_handle
+	_contact_handle.visible = not contact_handle.is_empty()
 	_back.visible = true
 	_list_scroll.visible = false
 	_chat_scroll.visible = true
+	_chat_scroll.scroll_vertical = 0
 	_clear(_thread)
 	_clear(_claims)
 	_clear(_replies)
 
-	var width: float = _chat_scroll.size.x - 6.0
+	var width: float = _chat_scroll.size.x - 10.0
 	# Toda fala mostra a hora em que foi mandada, sem agrupar: é assim que
 	# se lê uma conversa fora de ordem depois.
 	for message in messages:
 		var bubble: Control = bubble_scene.instantiate()
 		_thread.add_child(bubble)
-		bubble.setup(message.text, message.from_me, message.at, width * 0.82)
+		bubble.setup(message.text, message.from_me, message.at, width * 0.94)
+	_thread.queue_sort()
+	_stack_thread_now()
 
 	for claim in claims:
 		var chip: Button = row_scene.instantiate()
@@ -110,7 +127,7 @@ func show_chat(
 		chip.theme_type_variation = &"DangerButton" if caught else &"PhoneButton"
 		chip.setup(claim.id, ("! " if caught else "? ") + claim.excerpt, false)
 		chip.clip_text = true
-		chip.custom_minimum_size = Vector2(34, 10)
+		chip.custom_minimum_size = Vector2(68, 20)
 		chip.row_pressed.connect(func(row_id: String) -> void: claim_marked.emit(row_id))
 	_claims.visible = not claims.is_empty()
 
@@ -133,15 +150,48 @@ func show_chat(
 		row.clip_text = false
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		row.custom_minimum_size = Vector2(0, 9)
+		row.custom_minimum_size = Vector2(0, 18)
 		row.row_pressed.connect(func(row_id: String) -> void: reply_chosen.emit(int(row_id)))
 	_replies.visible = not replies.is_empty()
+	_decision_panel.visible = _claims.visible or _replies.visible
+	if _claims.visible and _replies.visible:
+		_decision_title.text = "CONFERIR / RESPONDER"
+	elif _claims.visible:
+		_decision_title.text = "CONFERIR"
+	else:
+		_decision_title.text = "SUA RESPOSTA"
+	_position_chat(first_unread_index, _chat_revision)
 
 
-## A conversa cresce para baixo: o jogador tem de ver a última fala.
-func scroll_to_end() -> void:
+## Conversa nova abre no começo das não lidas. Sem novidade, conserva o
+## comportamento normal de chat e mostra o final. O ScrollContainer limita
+## o valor quando há pouco conteúdo, portanto nunca cria vazio artificial.
+func _position_chat(first_unread_index: int, revision: int) -> void:
 	await get_tree().process_frame
-	_chat_scroll.scroll_vertical = int(_thread.size.y) + 128
+	_stack_thread_now()
+	await get_tree().process_frame
+	if revision != _chat_revision:
+		return
+	if first_unread_index >= 0 and first_unread_index < _thread.get_child_count():
+		var target: Control = _thread.get_child(first_unread_index)
+		_chat_scroll.scroll_vertical = int(target.position.y)
+		_chat_scroll.ensure_control_visible(target)
+	else:
+		_chat_scroll.scroll_vertical = int(_thread.size.y) + 256
+
+
+## A altura do texto embrulhado muda no nascimento do Label. Antecipar a
+## pilha evita que uma rajada apareça por um quadro inteiro na mesma linha
+## enquanto o VBox espera sua ordenação diferida.
+func _stack_thread_now() -> void:
+	var next_y := 0.0
+	var separation := float(_thread.get_theme_constant("separation"))
+	for bubble: Control in _thread.get_children():
+		var minimum := bubble.get_combined_minimum_size()
+		bubble.position.y = next_y
+		bubble.size.y = maxf(bubble.size.y, minimum.y)
+		next_y += bubble.size.y + separation
+	_thread.custom_minimum_size.y = maxf(0.0, next_y - separation)
 
 
 ## A prévia é só o começo da última fala.
@@ -153,6 +203,12 @@ func _one_line(text: String) -> String:
 
 func showing_chat() -> bool:
 	return _chat_scroll.visible
+
+
+func _avatar_texture(asset_name: String) -> Texture2D:
+	if asset_name.is_empty():
+		return null
+	return load("res://assets/sprites/%s.png" % asset_name)
 
 
 func _clear(container: Node) -> void:

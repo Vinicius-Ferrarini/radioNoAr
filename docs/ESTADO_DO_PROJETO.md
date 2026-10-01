@@ -28,10 +28,10 @@ Assets: 47 sprites no manifesto, 6 WAVs originais sintetizados
 em `assets/audio/`. Fontes em `tools/pixelart/sprite_defs/` e
 `tools/audio/generate.gd`. Sem dublagem: as falas ainda são legendadas.
 
-Validação: **336 testes passando**, 207.467 asserts. Inclui os
+Validação: **353 testes passando**, 921.594 asserts. Inclui os
 dois caminhos das três noites, investigação, reserva limitada, corte e
 controles da mesa. `tools/qa/capture_radio.gd` percorre a UI com renderer
-e grava nove capturas em `.godot/radio-qa/`. O modo Dummy desse roteiro
+e grava treze capturas em `.godot/radio-qa/`. O modo Dummy desse roteiro
 não avalia som por audição. Diversão e ritmo precisam de playtest humano.
 
 Plano e decisões: `PLANO_RADIO_VIVA.md`, SPEC (revisão inicial) e ADR 0011.
@@ -41,6 +41,57 @@ pendentes. Não interpretar as três noites como a campanha final pronta.
 ## Atualização: redesenho em curso (ADR 0013)
 
 ### Direção visual das telas (2026-09-30)
+
+**Canvas e sprites em densidade 2× (ADR 0020, 2026-10-01).** A resolução
+nativa passou de 320×180 para 640×360; a janela padrão continua 1280×720,
+agora em escala inteira 2×. A mesa preserva sua composição lógica 320×180
+dentro de `game_canvas.tscn`, sem coordenadas fracionárias. Os 47 sprites do
+manifesto têm fontes com o dobro da largura e altura; os cinco retratos da
+primeira noite agora medem 64×64 na fonte, ocupam a mesma área lógica e usam
+microdetalhes do novo grid. O plano está em
+`PLANO_RESOLUCAO_E_SPRITES_2X.md`.
+
+**Estúdio com janela panorâmica (ADR 0019, 2026-10-01).** A parede do
+estúdio agora é dominada por uma janela de 264×102 px para a cidade noturna.
+Na área do estúdio ficam visíveis apenas a janela, o letreiro `NO AR` e o
+microfone; teleprompter, toca-discos, painel decorativo e lembranças foram
+retirados da composição. A imagem-base já separa céu, prédios, bairro,
+calçada e rua vazia. Três camadas recortadas — `StreetLayer`, `PeopleLayer`
+e `EventLayer` — estão prontas para receber tráfego, bicicletas, pedestres
+e revolta em entregas futuras. Plano, conceito e critérios em
+`PLANO_ESTUDIO_JANELA_PANORAMICA.md` e `references/`.
+
+**Retratos e acabamento do chat (ADRs 0017 e 0018).** Os cinco contatos
+telefônicos da primeira noite agora têm retratos 32×32 próprios: Dona Célia
+idosa, a Oficina do Portão Doze como local, Toledo rígido, Rui na cabine e
+Nilo no estúdio. O celular cresceu para 156×166, mostra três contatos inteiros
+e usa uma faixa de conversa com foto, nome e identificação; fechar virou um
+botão da moldura superior. Os balões são caixas retangulares exatas, sem a
+saliência da antiga textura. A aba recolhida do roteiro tem texto e borda
+brancos; ao responder no celular, a folha abre para receber o cartão e volta a
+recolher, preservando o estado aberto quando foi escolha manual. Planos e
+referência em `PLANO_RETRATOS_E_ACABAMENTO_DO_CELULAR.md`,
+`PLANO_RETRATOS_32PX_E_CELULAR_AMPLO.md` e `references/`.
+
+**Polimento do roteiro e celular (ADR 0015).** O aviso prévio de
+microfone foi removido. A folha do roteiro agora é clicável, recolhe até o
+cabeçalho e abre com um breve movimento quando recebe uma pauta; a lista
+volta ao topo a cada atualização e exibe duas pautas sem cortar a primeira.
+O briefing usa tinta escura sobre papel e não disputa espaço com a folha.
+No celular, nome, hora e prévia têm áreas independentes: nomes longos
+terminam em reticências sem esconder a hora. A conversa respondida volta ao
+topo pela atividade mais recente. Plano e validação em
+`PLANO_POLIMENTO_ROTEIRO_E_CELULAR.md`.
+
+**Chat legível e roteiro na borda (ADR 0016).** O histórico do celular
+ganhou mais largura e altura; respostas e conferências ficam num painel de
+decisão externo que nunca ultrapassa seus limites. Ao abrir uma conversa,
+a primeira mensagem não lida fica no alto quando o conteúdo permite; sem
+novidades, abre no final. O roteiro começa guardado à esquerda de `ENTRAR
+NO AR`, cresce para cima e recebe um cartão animado vindo do celular. A
+faixa decorativa atrás do briefing foi coberta com papel limpo, e
+`DeskLamp`/`ListenersDial` permanecem invisíveis. Plano e validação em
+`PLANO_CHAT_ROTEIRO_INFERIOR.md`.
 
 As sete telas do roteiro de QA foram auditadas. O principal problema é a
 hierarquia: overlays escondem o estúdio, ações diferentes usam o mesmo

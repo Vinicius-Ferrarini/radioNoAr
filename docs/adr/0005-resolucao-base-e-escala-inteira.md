@@ -1,6 +1,6 @@
 # 0005 — Resolução base, escala inteira e filtro de textura
 
-- **Status:** aceito
+- **Status:** substituído pelo ADR 0020 em 2026-10-01
 - **Data:** 2026-09-29
 
 ## Contexto
