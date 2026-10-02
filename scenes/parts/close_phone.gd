@@ -56,10 +56,10 @@ func set_clock(hour: String) -> void:
 ## abrir primeiro.
 func show_list(threads: Array) -> void:
 	_title.text = "MENSAGENS"
-	_title.offset_left = 44.0
-	_title.offset_top = 30.0
-	_title.offset_right = 288.0
-	_title.offset_bottom = 54.0
+	_title.offset_left = 22.0
+	_title.offset_top = 15.0
+	_title.offset_right = 144.0
+	_title.offset_bottom = 27.0
 	_contact_avatar.visible = false
 	_contact_handle.visible = false
 	_back.visible = false
@@ -94,10 +94,10 @@ func show_chat(
 ) -> void:
 	_chat_revision += 1
 	_title.text = who
-	_title.offset_left = 118.0
-	_title.offset_top = 32.0
-	_title.offset_right = 288.0
-	_title.offset_bottom = 54.0
+	_title.offset_left = 59.0
+	_title.offset_top = 16.0
+	_title.offset_right = 144.0
+	_title.offset_bottom = 27.0
 	_contact_avatar.texture = avatar
 	_contact_avatar.visible = avatar != null
 	_contact_handle.text = contact_handle
@@ -110,7 +110,7 @@ func show_chat(
 	_clear(_claims)
 	_clear(_replies)
 
-	var width: float = _chat_scroll.size.x - 10.0
+	var width: float = _chat_scroll.size.x - 5.0
 	# Toda fala mostra a hora em que foi mandada, sem agrupar: é assim que
 	# se lê uma conversa fora de ordem depois.
 	for message in messages:
@@ -127,7 +127,7 @@ func show_chat(
 		chip.theme_type_variation = &"DangerButton" if caught else &"PhoneButton"
 		chip.setup(claim.id, ("! " if caught else "? ") + claim.excerpt, false)
 		chip.clip_text = true
-		chip.custom_minimum_size = Vector2(68, 20)
+		chip.custom_minimum_size = Vector2(34, 10)
 		chip.row_pressed.connect(func(row_id: String) -> void: claim_marked.emit(row_id))
 	_claims.visible = not claims.is_empty()
 
@@ -150,7 +150,7 @@ func show_chat(
 		row.clip_text = false
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		row.custom_minimum_size = Vector2(0, 18)
+		row.custom_minimum_size = Vector2(0, 9)
 		row.row_pressed.connect(func(row_id: String) -> void: reply_chosen.emit(int(row_id)))
 	_replies.visible = not replies.is_empty()
 	_decision_panel.visible = _claims.visible or _replies.visible
@@ -177,7 +177,7 @@ func _position_chat(first_unread_index: int, revision: int) -> void:
 		_chat_scroll.scroll_vertical = int(target.position.y)
 		_chat_scroll.ensure_control_visible(target)
 	else:
-		_chat_scroll.scroll_vertical = int(_thread.size.y) + 256
+		_chat_scroll.scroll_vertical = int(_thread.size.y) + 128
 
 
 ## A altura do texto embrulhado muda no nascimento do Label. Antecipar a

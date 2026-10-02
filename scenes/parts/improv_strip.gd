@@ -28,7 +28,7 @@ func show_improv(prompt: String, options: Array) -> void:
 		row.tooltip_text = option.text
 		row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		row.clip_text = false
-		row.custom_minimum_size = Vector2(0, 28)
+		row.custom_minimum_size = Vector2(0, 14)
 		row.row_pressed.connect(func(row_id: String) -> void: option_chosen.emit(int(row_id)))
 		_list.add_child(row)
 

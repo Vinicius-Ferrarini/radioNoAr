@@ -5,8 +5,8 @@
 [ext_resource type="PackedScene" path="res://scenes/parts/list_row.tscn" id="3_row"]
 
 [node name="ImprovStrip" type="Control"]
-offset_right = 464.0
-offset_bottom = 144.0
+offset_right = 232.0
+offset_bottom = 72.0
 script = ExtResource("1_improv")
 row_scene = ExtResource("3_row")
 
@@ -18,39 +18,39 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_frame")
-patch_margin_left = 16
-patch_margin_top = 16
-patch_margin_right = 16
-patch_margin_bottom = 16
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
 
 [node name="Prompt" type="Label" parent="."]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 10.0
-offset_right = 392.0
-offset_bottom = 30.0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 196.0
+offset_bottom = 15.0
 mouse_filter = 2
 clip_text = true
 
 [node name="Clock" type="Label" parent="."]
 layout_mode = 0
-offset_left = 396.0
-offset_top = 10.0
-offset_right = 452.0
-offset_bottom = 30.0
+offset_left = 198.0
+offset_top = 5.0
+offset_right = 226.0
+offset_bottom = 15.0
 mouse_filter = 2
 text = "0.0"
 horizontal_alignment = 2
 
 [node name="Scroll" type="ScrollContainer" parent="."]
 layout_mode = 0
-offset_left = 16.0
-offset_top = 36.0
-offset_right = 452.0
-offset_bottom = 132.0
+offset_left = 8.0
+offset_top = 18.0
+offset_right = 226.0
+offset_bottom = 66.0
 horizontal_scroll_mode = 0
 
 [node name="List" type="VBoxContainer" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 2
+theme_override_constants/separation = 1

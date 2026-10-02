@@ -119,8 +119,8 @@ func test_the_desk_starts_uncovered() -> void:
 
 func test_the_city_window_dominates_the_studio_and_has_future_layers() -> void:
 	var window: TextureRect = _node("Studio/Window")
-	assert_gte(window.size.x, 500.0)
-	assert_gte(window.size.y, 192.0)
+	assert_gte(window.size.x, 250.0)
+	assert_gte(window.size.y, 96.0)
 	assert_true(window.clip_contents)
 	assert_not_null(window.get_node("StreetLayer"))
 	assert_not_null(window.get_node("PeopleLayer"))
@@ -149,13 +149,14 @@ func test_everything_fits_inside_the_viewport() -> void:
 
 
 func test_sprites_are_not_stretched_out_of_proportion() -> void:
-	# No canvas nativo a fonte 2x mapeia 1:1 para controles fixos.
+	# A mesa lógica 320x180 amplia os controles 2x no canvas; as fontes PNG
+	# já vêm em densidade 2x e, portanto, mapeiam sem interpolação.
 	# NinePatch pode esticar: é para isso que serve.
 	for node in _all_nodes(_root):
 		if not (node is TextureRect) or node.texture == null:
 			continue
-		assert_eq(node.size, node.texture.get_size(),
-			"%s deveria mapear a textura 1:1" % node.name)
+		assert_eq(node.size * 2.0, node.texture.get_size(),
+			"%s deveria mapear a textura 2x na mesa lógica" % node.name)
 
 
 func test_the_quota_block_is_the_one_with_the_dashed_frame() -> void:

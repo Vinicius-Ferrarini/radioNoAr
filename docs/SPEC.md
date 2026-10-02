@@ -498,16 +498,6 @@ func order_effects() -> Array[OrderRule]            # regras casadas pela ordem 
 - Esta seção substitui a resolução-base definida no ADR 0005; preserva suas
   regras de pixel quadrado, nearest-neighbor e escala inteira.
 
-#### Nitidez no canvas nativo
-
-- A mesa é composta diretamente em 640×360 com escala unitária em todos os
-  ancestrais visuais. O grid lógico 320×180 deixa de ser usado em cena.
-- Posições, tamanhos, margens, bordas e animações são expressos no canvas
-  nativo. Sprites de tamanho fixo mapeiam fonte e controle em 1:1.
-- Courier Prime usa tamanho-base 14 px, sem antialiasing e sem posicionamento
-  subpixel. O texto não deve produzir halo cinza por suavização de borda.
-- A janela final permanece 1280×720 e recebe o canvas por escala inteira 2×.
-
 ### 4.5 ConsequenceQueue — `consequence_queue.gd`
 
 ```gdscript

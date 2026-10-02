@@ -8,9 +8,9 @@ const _INK := Color(0.12, 0.09, 0.07)
 const _MUTED := Color(0.38, 0.31, 0.24)
 const _AMBER := Color(0.56, 0.29, 0.06)
 const _RED := Color(0.58, 0.12, 0.08)
-const _EXPANDED_SIZE := Vector2(368.0, 200.0)
-const _COLLAPSED_SIZE := Vector2(164.0, 24.0)
-const _EXPANDED_OFFSET := Vector2(0.0, -204.0)
+const _EXPANDED_SIZE := Vector2(184.0, 100.0)
+const _COLLAPSED_SIZE := Vector2(82.0, 12.0)
+const _EXPANDED_OFFSET := Vector2(0.0, -102.0)
 const _AUTO_COLLAPSE_SECONDS := 1.05
 
 @onready var _list: VBoxContainer = $Paper/ListScroll/List
@@ -128,7 +128,7 @@ func _animate_attention() -> void:
 	var expanded_position := _home_position + _EXPANDED_OFFSET
 	position = expanded_position
 	_attention_tween = create_tween().set_trans(Tween.TRANS_QUAD)
-	_attention_tween.tween_property(self, "position", expanded_position + Vector2(0, -10), 0.1)
+	_attention_tween.tween_property(self, "position", expanded_position + Vector2(0, -5), 0.1)
 	_attention_tween.tween_property(self, "position", expanded_position, 0.16)
 	if must_return_to_edge:
 		_attention_tween.tween_interval(0.75)
@@ -142,7 +142,7 @@ func _finish_auto_collapse() -> void:
 
 
 func card_target_position() -> Vector2:
-	return _home_position + _EXPANDED_OFFSET + Vector2(60, 60)
+	return _home_position + _EXPANDED_OFFSET + Vector2(30, 30)
 
 
 func _reset_scroll() -> void:
@@ -155,7 +155,7 @@ func _add_line(text: String, color: Color) -> void:
 	var line := Label.new()
 	line.text = text
 	line.add_theme_color_override("font_color", color)
-	line.add_theme_font_size_override("font_size", 12)
+	line.add_theme_font_size_override("font_size", 6)
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_list.add_child(line)
 

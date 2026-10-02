@@ -239,7 +239,7 @@ func _breathe(delta: float) -> void:
 
 	var console := GameState.live_console() if live else {}
 	var ringing: bool = console.get("pending", false)
-	_phone.position = _phone_home + (Vector2(sin(_clock * 34.0) * 2.0, 0.0) if ringing else Vector2.ZERO)
+	_phone.position = _phone_home + (Vector2(sin(_clock * 34.0) * 1.0, 0.0) if ringing else Vector2.ZERO)
 	_phone.modulate.a = (0.75 + absf(sin(_clock * 6.0)) * 0.25) if ringing else 1.0
 
 	var target := _STATIC_OFF_AIR
@@ -364,18 +364,18 @@ func _on_phase_changed(phase: int) -> void:
 	$Studio/Microphone.show()
 	$Studio/Turntable.hide()
 	$Studio/Teleprompter.hide()
-	$Studio/Teleprompter.position = Vector2(208, 40) if live_now else Vector2(224, 72)
-	$Studio/Teleprompter.size = Vector2(416, 100) if live_now else Vector2(256, 120)
-	$Studio/Teleprompter/LineProgress.position.y = 86 if live_now else 106
-	$Studio/Teleprompter/LineProgress.size.x = 388 if live_now else 228
-	_block_label.position = Vector2(208, 28) if live_now else Vector2(224, 50)
-	_block_label.size = Vector2(416, 18) if live_now else Vector2(256, 20)
-	_notebook_object.position = Vector2(560, 288) if live_now else Vector2(208, 284)
-	_phone.position = Vector2(12, 156) if live_now else Vector2(12, 260)
+	$Studio/Teleprompter.position = Vector2(104, 20) if live_now else Vector2(112, 36)
+	$Studio/Teleprompter.size = Vector2(208, 50) if live_now else Vector2(128, 60)
+	$Studio/Teleprompter/LineProgress.position.y = 43 if live_now else 53
+	$Studio/Teleprompter/LineProgress.size.x = 194 if live_now else 114
+	_block_label.position = Vector2(104, 14) if live_now else Vector2(112, 25)
+	_block_label.size = Vector2(208, 9) if live_now else Vector2(128, 10)
+	_notebook_object.position = Vector2(280, 144) if live_now else Vector2(104, 142)
+	_phone.position = Vector2(6, 78) if live_now else Vector2(6, 130)
 	_phone_home = _phone.position
-	_letters.position = Vector2(104, 196) if live_now else Vector2(116, 284)
-	_feedback.position = Vector2(16, 244) if live_now else Vector2(256, 132)
-	_feedback.size = Vector2(344, 20) if live_now else Vector2(368, 20)
+	_letters.position = Vector2(52, 98) if live_now else Vector2(58, 142)
+	_feedback.position = Vector2(8, 122) if live_now else Vector2(128, 66)
+	_feedback.size = Vector2(172, 10) if live_now else Vector2(184, 10)
 	_set_block_layout(live_now)
 	if not before_air:
 		_show_desk()
@@ -494,7 +494,7 @@ func _on_paper_framing_chosen(kind: int) -> void:
 
 
 func _animate_phone_to_rundown() -> void:
-	_rundown_transfer.position = Vector2(224, 192)
+	_rundown_transfer.position = Vector2(112, 96)
 	_rundown_transfer.modulate = Color.WHITE
 	_rundown_transfer.scale = Vector2(0.5, 0.5)
 	_rundown_transfer.show()
@@ -828,9 +828,9 @@ func _paint_lamps(pending: bool, outcome: String, break_left: float) -> void:
 ## abre espaço para celular e papéis; ao vivo encosta à esquerda e deixa o
 ## banco de teclas à direita.
 func _set_block_layout(live_now: bool) -> void:
-	var first_x: float = 16.0 if live_now else 76.0
+	var first_x: float = 8.0 if live_now else 38.0
 	for i in _blocks.size():
-		_blocks[i].position = Vector2(first_x + i * 88.0, 28.0)
+		_blocks[i].position = Vector2(first_x + i * 44.0, 14.0)
 
 
 func _with_forbidden_links(index: int) -> String:

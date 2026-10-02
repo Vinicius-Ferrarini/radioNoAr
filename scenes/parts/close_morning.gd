@@ -58,7 +58,7 @@ func _add(text: String) -> void:
 	row.tooltip_text = text
 	row.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.clip_text = false
-	row.custom_minimum_size = Vector2(0, 32)
+	row.custom_minimum_size = Vector2(0, 16)
 	row.add_theme_color_override("font_color", _INK)
 	row.add_theme_color_override("font_disabled_color", _INK)
 	row.add_theme_stylebox_override("disabled", StyleBoxEmpty.new())

@@ -35,7 +35,6 @@ escopo, ou ao reverter uma decisão anterior.
 | [0018](0018-retratos-32px-e-celular-amplo.md) | Retratos 32 px e celular amplo | aceito e implementado |
 | [0019](0019-a-janela-e-a-cidade.md) | A janela é a cidade | aceito e implementado |
 | [0020](0020-canvas-e-fontes-2x.md) | Canvas e fontes de sprite em densidade 2× | aceito e implementado |
-| [0021](0021-layout-nativo-e-fonte-pixel.md) | Layout nativo e fonte pixel | aceito e em execução |
 
 Decisões do designer em 2026-09-29, fora de ADR (registradas em
 `docs/GAME_DESIGN.md` e `docs/SPEC.md`): campanha de **21 noites** até o

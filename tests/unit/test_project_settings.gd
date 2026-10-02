@@ -41,8 +41,8 @@ func test_the_main_scene_is_the_double_density_canvas() -> void:
 	add_child_autofree(canvas)
 	await get_tree().process_frame
 	var desk: Control = canvas.get_node("StudioDesk")
-	assert_eq(desk.scale, Vector2.ONE, "a mesa deve ser composta no canvas nativo")
-	assert_eq(desk.size, Vector2(640, 360))
+	assert_eq(desk.scale, Vector2(2, 2), "a mesa lógica 320x180 deve ocupar o canvas 2x")
+	assert_eq(desk.size, Vector2(320, 180))
 
 
 func test_the_autoload_is_registered() -> void:

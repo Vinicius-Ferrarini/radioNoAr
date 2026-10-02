@@ -35,13 +35,13 @@ func _apply_width(max_width: float) -> void:
 	var font := _text.get_theme_font("font")
 	var size := _text.get_theme_font_size("font_size")
 	var measured := font.get_string_size(_text.text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
-	var bubble_width := minf(measured + 20.0, max_width)
+	var bubble_width := minf(measured + 10.0, max_width)
 	custom_minimum_size.x = bubble_width
 
 	# O VBox precisa conhecer a altura embrulhada no mesmo frame em que o
 	# balão nasce. Se ela ficar só por conta do Label, uma rajada inteira
 	# pode ser ordenada com a altura antiga antes do próximo redesenho.
-	var text_width := maxf(2.0, bubble_width - 16.0)
+	var text_width := maxf(1.0, bubble_width - 8.0)
 	var wrapped := font.get_multiline_string_size(
 		_text.text,
 		HORIZONTAL_ALIGNMENT_LEFT,
@@ -52,5 +52,5 @@ func _apply_width(max_width: float) -> void:
 	if _at.visible:
 		var at_font := _at.get_theme_font("font")
 		at_height = at_font.get_height(_at.get_theme_font_size("font_size"))
-	custom_minimum_size.y = ceilf(wrapped.y + at_height + 4.0)
+	custom_minimum_size.y = ceilf(wrapped.y + at_height + 2.0)
 	update_minimum_size()

@@ -5,157 +5,157 @@
 [ext_resource type="Texture2D" uid="uid://rl3oum6fvdu3" path="res://assets/sprites/console_key.png" id="3_console_key"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amber_hover"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.78431374, 0.5254902, 0.17254902, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(1, 0.8784314, 0.6392157, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amber"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.5411765, 0.3529412, 0.13333334, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.9411765, 0.70980394, 0.32156864, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_omiwu"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.11372549, 0.101960786, 0.09019608, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gco77"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.21000001, 0.20333335, 0.19666667, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6l1ye"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.33333334, 0.26666668, 0.18431373, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.9411765, 0.70980394, 0.32156864, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4ytkp"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.33333334, 0.26666668, 0.18431373, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rucdj"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.23529412, 0.19215687, 0.14901961, 1)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_console"]
-content_margin_left = 8.0
-content_margin_top = 6.0
-content_margin_right = 8.0
-content_margin_bottom = 6.0
+content_margin_left = 4.0
+content_margin_top = 3.0
+content_margin_right = 4.0
+content_margin_bottom = 3.0
 texture = ExtResource("3_console_key")
-texture_margin_left = 12.0
-texture_margin_top = 12.0
-texture_margin_right = 12.0
-texture_margin_bottom = 12.0
+texture_margin_left = 6.0
+texture_margin_top = 6.0
+texture_margin_right = 6.0
+texture_margin_bottom = 6.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_danger_hover"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.69803923, 0.22745098, 0.18431373, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(1, 0.8784314, 0.6392157, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_danger"]
-content_margin_left = 6.0
-content_margin_top = 6.0
-content_margin_right = 6.0
-content_margin_bottom = 6.0
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
 bg_color = Color(0.47843137, 0.16470589, 0.13333334, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.69803923, 0.22745098, 0.18431373, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
 bg_color = Color(0.16862746, 0.14117648, 0.11372549, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.33333334, 0.26666668, 0.18431373, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper_hover"]
-content_margin_left = 6.0
-content_margin_top = 4.0
-content_margin_right = 6.0
-content_margin_bottom = 4.0
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
 bg_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
-border_width_left = 4
+border_width_left = 2
 border_color = Color(0.78431374, 0.5254902, 0.17254902, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_paper"]
-content_margin_left = 6.0
-content_margin_top = 4.0
-content_margin_right = 6.0
-content_margin_bottom = 4.0
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
 bg_color = Color(0.7647059, 0.7411765, 0.68235296, 1)
-border_width_left = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_bottom = 1
 border_color = Color(0.56078434, 0.53333336, 0.46666667, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_phone_hover"]
-content_margin_left = 6.0
-content_margin_top = 4.0
-content_margin_right = 6.0
-content_margin_bottom = 4.0
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
 bg_color = Color(0.1764706, 0.27058825, 0.4, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.61960787, 0.76862746, 0.9098039, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_phone"]
-content_margin_left = 6.0
-content_margin_top = 4.0
-content_margin_right = 6.0
-content_margin_bottom = 4.0
+content_margin_left = 3.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
 bg_color = Color(0.08627451, 0.14117648, 0.22745098, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.2901961, 0.43529412, 0.61960787, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5wxyd"]
@@ -174,7 +174,7 @@ bg_color = Color(0.69803923, 0.22745098, 0.18431373, 1)
 
 [resource]
 default_font = ExtResource("2_4yjuo")
-default_font_size = 14
+default_font_size = 7
 AmberButton/base_type = &"Button"
 AmberButton/colors/font_color = Color(1, 0.8784314, 0.6392157, 1)
 AmberButton/styles/focus = SubResource("StyleBoxFlat_amber_hover")
@@ -218,7 +218,7 @@ PhoneButton/styles/pressed = SubResource("StyleBoxFlat_5wxyd")
 ProgressBar/styles/background = SubResource("StyleBoxFlat_5wxyd")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_fppmr")
 RichTextLabel/colors/default_color = Color(0.9098039, 0.89411765, 0.85490197, 1)
-RichTextLabel/font_sizes/bold_font_size = 20
-RichTextLabel/font_sizes/normal_font_size = 14
+RichTextLabel/font_sizes/bold_font_size = 10
+RichTextLabel/font_sizes/normal_font_size = 7
 RichTextLabel/fonts/bold_font = ExtResource("1_nrt0f")
 RichTextLabel/fonts/normal_font = ExtResource("2_4yjuo")

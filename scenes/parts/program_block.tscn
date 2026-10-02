@@ -4,8 +4,8 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/program_cart.png" id="2_slot"]
 
 [node name="ProgramBlock" type="NinePatchRect"]
-offset_right = 88.0
-offset_bottom = 56.0
+offset_right = 44.0
+offset_bottom = 28.0
 mouse_filter = 0
 texture = ExtResource("2_slot")
 script = ExtResource("1_block")
@@ -15,16 +15,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 6.0
-offset_right = -10.0
-offset_bottom = -6.0
+offset_left = 5.0
+offset_top = 3.0
+offset_right = -5.0
+offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 text = "1"
 theme_override_colors/font_color = Color(0.07058824, 0.0627451, 0.05490196, 1)
-theme_override_font_sizes/font_size = 10
+theme_override_font_sizes/font_size = 5
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
